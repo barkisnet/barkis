@@ -1,0 +1,11 @@
+sections:
+  breaking: Breaking Changes
+  features: Features
+  improvements: Improvements
+  bugfixes: Bug Fixes
+
+tags:
+  - barkis
+  - barkiscli
+  - rest
+  - sdk

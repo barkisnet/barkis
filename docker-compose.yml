@@ -1,0 +1,68 @@
+version: '3'
+
+services:
+  barkisdnode0:
+    container_name: barkisdnode0
+    image: "tendermint/barkisdnode"
+    ports:
+      - "26656-26657:26656-26657"
+    environment:
+      - ID=0
+      - LOG=${LOG:-barkisd.log}
+    volumes:
+      - ./build:/barkisd:Z
+    networks:
+      localnet:
+        ipv4_address: 192.168.10.2
+
+  barkisdnode1:
+    container_name: barkisdnode1
+    image: "tendermint/barkisdnode"
+    ports:
+      - "26659-26660:26656-26657"
+    environment:
+      - ID=1
+      - LOG=${LOG:-barkisd.log}
+    volumes:
+      - ./build:/barkisd:Z
+    networks:
+      localnet:
+        ipv4_address: 192.168.10.3
+
+  barkisdnode2:
+    container_name: barkisdnode2
+    image: "tendermint/barkisdnode"
+    environment:
+      - ID=2
+      - LOG=${LOG:-barkisd.log}
+    ports:
+      - "26661-26662:26656-26657"
+    volumes:
+      - ./build:/barkisd:Z
+    networks:
+      localnet:
+        ipv4_address: 192.168.10.4
+
+  barkisdnode3:
+    container_name: barkisdnode3
+    image: "tendermint/barkisdnode"
+    environment:
+      - ID=3
+      - LOG=${LOG:-barkisd.log}
+    ports:
+      - "26663-26664:26656-26657"
+    volumes:
+      - ./build:/barkisd:Z
+    networks:
+      localnet:
+        ipv4_address: 192.168.10.5
+
+networks:
+  localnet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      -
+        subnet: 192.168.10.0/16
+
