@@ -23,14 +23,14 @@ func BeginBlocker(ctx sdk.Context, k Keeper) {
 	mintedCoins := sdk.NewCoins(mintedCoin)
 */
 	if ctx.BlockHeight() == 1 {
-		mintedCoins := sdk.NewCoins(sdk.NewCoin(params.MintDenom, sdk.NewIntWithDecimal(15, 13)))
+		mintedCoins := sdk.NewCoins(sdk.NewCoin(params.MintDenom, sdk.NewIntWithDecimal(125, 12)))
 		err := k.MintCoins(ctx, mintedCoins)
 		if err != nil {
 			panic(err)
 		}
 		minter.RemainedTokens = mintedCoins
 	}
-	unfreezenTokens := sdk.NewCoins(sdk.NewCoin(params.MintDenom, sdk.NewIntWithDecimal(8, 5)))
+	unfreezenTokens := sdk.NewCoins(sdk.NewCoin(params.MintDenom, sdk.NewIntWithDecimal(5567, 2)))
 	if minter.RemainedTokens.IsAllGTE(unfreezenTokens) {
 		// send the minted coins to the fee collector account
 		err := k.AddCollectedFees(ctx, unfreezenTokens)
