@@ -2,7 +2,11 @@ package keys
 
 import (
 	"bufio"
+	"encoding/json"
 	"errors"
+	"github.com/barkisnet/barkis/crypto/keys/keyerror"
+	"github.com/gorilla/mux"
+	"net/http"
 
 	"github.com/spf13/viper"
 
@@ -92,4 +96,52 @@ func confirmDeletion(buf *bufio.Reader) error {
 		return errors.New("aborted")
 	}
 	return nil
+}
+
+////////////////////////
+// REST
+
+// delete key request REST body
+type DeleteKeyBody struct {
+	Password string `json:"password"`
+}
+
+// delete key REST handler
+func DeleteKeyRequestHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	name := vars["name"]
+	var kb keys.Keybase
+	var m DeleteKeyBody
+
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&m)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = w.Write([]byte(err.Error()))
+		return
+	}
+
+	kb, err = NewKeyBaseFromHomeFlag()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = w.Write([]byte(err.Error()))
+		return
+	}
+
+	err = kb.Delete(name, m.Password, false)
+	if keyerror.IsErrKeyNotFound(err) {
+		w.WriteHeader(http.StatusNotFound)
+		_, _ = w.Write([]byte(err.Error()))
+		return
+	} else if keyerror.IsErrWrongPassword(err) {
+		w.WriteHeader(http.StatusUnauthorized)
+		_, _ = w.Write([]byte(err.Error()))
+		return
+	} else if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = w.Write([]byte(err.Error()))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }

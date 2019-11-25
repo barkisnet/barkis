@@ -3,6 +3,9 @@ package keys
 import (
 	"errors"
 	"fmt"
+	"github.com/barkisnet/barkis/crypto/keys/keyerror"
+	"github.com/gorilla/mux"
+	"net/http"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -160,3 +163,47 @@ func getBechKeyOut(bechPrefix string) (bechKeyOutFn, error) {
 
 	return nil, fmt.Errorf("invalid Bech32 prefix encoding provided: %s", bechPrefix)
 }
+
+///////////////////////////
+// REST
+
+// get key REST handler
+func GetKeyRequestHandler(indent bool) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		name := vars["name"]
+		bechPrefix := r.URL.Query().Get(FlagBechPrefix)
+
+		if bechPrefix == "" {
+			bechPrefix = "acc"
+		}
+
+		bechKeyOut, err := getBechKeyOut(bechPrefix)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			_, _ = w.Write([]byte(err.Error()))
+			return
+		}
+
+		info, err := GetKeyInfo(name)
+		if keyerror.IsErrKeyNotFound(err) {
+			w.WriteHeader(http.StatusNotFound)
+			_, _ = w.Write([]byte(err.Error()))
+			return
+		} else if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = w.Write([]byte(err.Error()))
+			return
+		}
+
+		keyOutput, err := bechKeyOut(info)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = w.Write([]byte(err.Error()))
+			return
+		}
+
+		PostProcessResponse(w, cdc, keyOutput, indent)
+	}
+}
+

@@ -8,5 +8,6 @@ import (
 
 // Register routes
 func RegisterRoutes(cliCtx context.CLIContext, r *mux.Router) {
+	RegisteKeysRoutes(r, true)
 	RegisterRPCRoutes(cliCtx, r)
 }

@@ -3,6 +3,7 @@ package keys
 import (
 	"github.com/barkisnet/barkis/client/flags"
 	"github.com/spf13/cobra"
+	"net/http"
 )
 
 func listKeysCmd() *cobra.Command {
@@ -28,4 +29,37 @@ func runListCmd(cmd *cobra.Command, args []string) error {
 		printInfos(infos)
 	}
 	return err
+}
+
+/////////////////////////
+// REST
+
+// query key list REST handler
+func QueryKeysRequestHandler(indent bool) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		kb, err := NewKeyBaseFromHomeFlag()
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = w.Write([]byte(err.Error()))
+			return
+		}
+		infos, err := kb.List()
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = w.Write([]byte(err.Error()))
+			return
+		}
+		// an empty list will be JSONized as null, but we want to keep the empty list
+		if len(infos) == 0 {
+			PostProcessResponse(w, cdc, []string{}, indent)
+			return
+		}
+		keysOutput, err := Bech32KeysOutput(infos)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = w.Write([]byte(err.Error()))
+			return
+		}
+		PostProcessResponse(w, cdc, keysOutput, indent)
+	}
 }

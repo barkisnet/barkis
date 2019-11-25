@@ -3,8 +3,12 @@ package keys
 import (
 	"bufio"
 	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/gorilla/mux"
+	"io/ioutil"
+	"net/http"
 	"sort"
 
 	"github.com/barkisnet/barkis/client/flags"
@@ -34,6 +38,9 @@ const (
 
 	// DefaultKeyPass contains the default key password for genesis transactions
 	DefaultKeyPass = "12345678"
+
+	maxValidAccountValue = int(0x80000000 - 1)
+	maxValidIndexalue    = int(0x80000000 - 1)
 )
 
 func addKeyCommand() *cobra.Command {
@@ -299,4 +306,188 @@ func printCreate(cmd *cobra.Command, info keys.Info, showMnemonic bool, mnemonic
 	}
 
 	return nil
+}
+
+/////////////////////////////
+// REST
+
+// function to just create a new seed to display in the UI before actually persisting it in the keybase
+func generateMnemonic(algo keys.SigningAlgo) string {
+	kb := keys.NewInMemory()
+	pass := DefaultKeyPass
+	name := "inmemorykey"
+	_, seed, _ := kb.CreateMnemonic(name, keys.English, pass, algo)
+	return seed
+}
+
+// CheckAndWriteErrorResponse will check for errors and return
+// a given error message when corresponding
+//TODO: Move to utils/rest or similar
+func CheckAndWriteErrorResponse(w http.ResponseWriter, httpErr int, err error) bool {
+	if err != nil {
+		w.WriteHeader(httpErr)
+		_, _ = w.Write([]byte(err.Error()))
+		return true
+	}
+	return false
+}
+
+// add new key REST handler
+func AddNewKeyRequestHandler(indent bool) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var kb keys.Keybase
+		var m AddNewKey
+
+		kb, err := NewKeyBaseFromHomeFlag()
+		if CheckAndWriteErrorResponse(w, http.StatusInternalServerError, err) {
+			return
+		}
+
+		body, err := ioutil.ReadAll(r.Body)
+		if CheckAndWriteErrorResponse(w, http.StatusBadRequest, err) {
+			return
+		}
+
+		err = json.Unmarshal(body, &m)
+		if CheckAndWriteErrorResponse(w, http.StatusBadRequest, err) {
+			return
+		}
+
+		// Check parameters
+		if m.Name == "" {
+			CheckAndWriteErrorResponse(w, http.StatusBadRequest, errMissingName())
+			return
+		}
+		if m.Password == "" {
+			CheckAndWriteErrorResponse(w, http.StatusBadRequest, errMissingPassword())
+			return
+		}
+
+		mnemonic := m.Mnemonic
+		// if mnemonic is empty, generate one
+		if mnemonic == "" {
+			mnemonic = generateMnemonic(keys.Secp256k1)
+		}
+		if !bip39.IsMnemonicValid(mnemonic) {
+			CheckAndWriteErrorResponse(w, http.StatusBadRequest, errInvalidMnemonic())
+		}
+
+		if m.Account < 0 || m.Account > maxValidAccountValue {
+			CheckAndWriteErrorResponse(w, http.StatusBadRequest, errInvalidAccountNumber())
+			return
+		}
+
+		if m.Index < 0 || m.Index > maxValidIndexalue {
+			CheckAndWriteErrorResponse(w, http.StatusBadRequest, errInvalidIndexNumber())
+			return
+		}
+
+		_, err = kb.Get(m.Name)
+		if err == nil {
+			CheckAndWriteErrorResponse(w, http.StatusConflict, errKeyNameConflict(m.Name))
+			return
+		}
+
+		// create account
+		account := uint32(m.Account)
+		index := uint32(m.Index)
+		info, err := kb.CreateAccount(m.Name, mnemonic, keys.DefaultBIP39Passphrase, m.Password, account, index)
+		if CheckAndWriteErrorResponse(w, http.StatusInternalServerError, err) {
+			return
+		}
+
+		keyOutput, err := Bech32KeyOutput(info)
+		if CheckAndWriteErrorResponse(w, http.StatusInternalServerError, err) {
+			return
+		}
+
+		keyOutput.Mnemonic = mnemonic
+
+		PostProcessResponse(w, cdc, keyOutput, indent)
+	}
+}
+
+// Seed REST request handler
+func SeedRequestHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	algoType := vars["type"]
+
+	// algo type defaults to secp256k1
+	if algoType == "" {
+		algoType = "secp256k1"
+	}
+
+	algo := keys.SigningAlgo(algoType)
+	seed := generateMnemonic(algo)
+
+	w.Header().Set("Content-Type", "application/json")
+	_, _ = w.Write([]byte(seed))
+}
+
+// RecoverRequestHandler performs key recover request
+func RecoverRequestHandler(indent bool) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		name := vars["name"]
+		var m RecoverKey
+
+		body, err := ioutil.ReadAll(r.Body)
+		if CheckAndWriteErrorResponse(w, http.StatusBadRequest, err) {
+			return
+		}
+
+		err = cdc.UnmarshalJSON(body, &m)
+		if CheckAndWriteErrorResponse(w, http.StatusBadRequest, err) {
+			return
+		}
+
+		kb, err := NewKeyBaseFromHomeFlag()
+		CheckAndWriteErrorResponse(w, http.StatusInternalServerError, err)
+
+		if name == "" {
+			CheckAndWriteErrorResponse(w, http.StatusBadRequest, errMissingName())
+			return
+		}
+		if m.Password == "" {
+			CheckAndWriteErrorResponse(w, http.StatusBadRequest, errMissingPassword())
+			return
+		}
+
+		mnemonic := m.Mnemonic
+		if m.Mnemonic == "" {
+			CheckAndWriteErrorResponse(w, http.StatusBadRequest, errMissingMnemonic())
+			return
+		}
+
+		if m.Account < 0 || m.Account > maxValidAccountValue {
+			CheckAndWriteErrorResponse(w, http.StatusBadRequest, errInvalidAccountNumber())
+			return
+		}
+
+		if m.Index < 0 || m.Index > maxValidIndexalue {
+			CheckAndWriteErrorResponse(w, http.StatusBadRequest, errInvalidIndexNumber())
+			return
+		}
+
+		_, err = kb.Get(name)
+		if err == nil {
+			CheckAndWriteErrorResponse(w, http.StatusConflict, errKeyNameConflict(name))
+			return
+		}
+
+		account := uint32(m.Account)
+		index := uint32(m.Index)
+
+		info, err := kb.CreateAccount(name, mnemonic, keys.DefaultBIP39Passphrase, m.Password, account, index)
+		if CheckAndWriteErrorResponse(w, http.StatusInternalServerError, err) {
+			return
+		}
+
+		keyOutput, err := Bech32KeyOutput(info)
+		if CheckAndWriteErrorResponse(w, http.StatusInternalServerError, err) {
+			return
+		}
+
+		PostProcessResponse(w, cdc, keyOutput, indent)
+	}
 }
