@@ -3,11 +3,11 @@ package context
 import (
 	"bytes"
 	"fmt"
+	"github.com/pkg/errors"
 	"io"
 	"os"
 	"path/filepath"
 
-	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 	yaml "gopkg.in/yaml.v2"
 
@@ -281,6 +281,32 @@ func GetFromFields(from string, genOnly bool) (sdk.AccAddress, string, error) {
 		}
 
 		return addr, "", nil
+	}
+
+	keybase, err := keys.NewKeyBaseFromHomeFlag()
+	if err != nil {
+		return nil, "", err
+	}
+
+	var info cryptokeys.Info
+	if addr, err := sdk.AccAddressFromBech32(from); err == nil {
+		info, err = keybase.GetByAddress(addr)
+		if err != nil {
+			return nil, "", err
+		}
+	} else {
+		info, err = keybase.Get(from)
+		if err != nil {
+			return nil, "", err
+		}
+	}
+
+	return info.GetAddress(), info.GetName(), nil
+}
+
+func GetFromFieldsFromAddr(from string) (sdk.AccAddress, string, error) {
+	if from == "" {
+		return nil, "", nil
 	}
 
 	keybase, err := keys.NewKeyBaseFromHomeFlag()

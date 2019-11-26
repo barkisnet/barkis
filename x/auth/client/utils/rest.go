@@ -1,11 +1,11 @@
 package utils
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/barkisnet/barkis/client/context"
 	"github.com/barkisnet/barkis/client/flags"
+	"github.com/barkisnet/barkis/crypto/keys/keyerror"
 	sdk "github.com/barkisnet/barkis/types"
 	"github.com/barkisnet/barkis/types/rest"
 	"github.com/barkisnet/barkis/x/auth/types"
@@ -47,22 +47,23 @@ func WriteGenerateStdTxResponse(w http.ResponseWriter, cliCtx context.CLIContext
 		}
 	}
 
-	stdMsg, err := txBldr.BuildSignMsg(msgs)
-	if err != nil {
+	txBytes, err := txBldr.BuildAndSign(cliCtx.GetFromName(), br.Password, msgs)
+	if keyerror.IsErrKeyNotFound(err) {
 		rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+		return
+	} else if keyerror.IsErrWrongPassword(err) {
+		rest.WriteErrorResponse(w, http.StatusUnauthorized, err.Error())
+		return
+	} else if err != nil {
+		rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	output, err := cliCtx.Codec.MarshalJSON(types.NewStdTx(stdMsg.Msgs, stdMsg.Fee, nil, stdMsg.Memo))
+	res, err := cliCtx.BroadcastTx(txBytes)
 	if err != nil {
 		rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	if _, err := w.Write(output); err != nil {
-		log.Printf("could not write response: %v", err)
-	}
-
-	return
+	rest.PostProcessResponse(w, cliCtx, res)
 }

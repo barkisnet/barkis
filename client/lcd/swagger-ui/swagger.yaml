@@ -16,7 +16,7 @@ tags:
   - name: Bank
     description: Create and broadcast transactions
   - name: Staking
-    description: Stake module APIs
+    description: Staking module APIs
   - name: Governance
     description: Governance module APIs
   - name: Slashing
@@ -453,17 +453,17 @@ paths:
           description: Key name confliction
         500:
           description: Server internal error
-  /keys/seed:
+  /keys/mnemonic:
     get:
-      summary: Create a new seed to create a new account with
+      summary: Create a new mnemonic to create a new account with
       tags:
         - Key Management
       responses:
         200:
-          description: 24 word Seed
+          description: 12 word mnemonic
           schema:
             type: string
-            example: blossom pool issue kidney elevator blame furnace winter account merry vessel security depend exact travel bargain problem jelly rural net again mask roast chest
+            example: blossom pool issue kidney elevator blame furnace winter account merry vessel security
   /keys/{name}/recover:
     post:
       summary: Recover a account from a seed
@@ -609,7 +609,7 @@ paths:
       parameters:
         - in: path
           name: address
-          description: Account address in bech32 format
+          description: Recepient address in bech32 format
           required: true
           type: string
           x-example: barkis1ka54cl8ep6shtxajr5mvp6f7evj2zvf90qt544
@@ -2210,7 +2210,7 @@ definitions:
     properties:
       denom:
         type: string
-        example: stake
+        example: ubarkis
       amount:
         type: string
         example: "50"
@@ -2341,6 +2341,23 @@ definitions:
           sequence:
             type: string
             example: "0"
+  KeyOutput:
+    type: object
+    properties:
+      name:
+        type: string
+        example: Main Account
+      address:
+        type: string
+        example: cosmos1depk54cuajgkzea6zpgkq36tnjwdzv4afc3d27
+      pub_key:
+        type: string
+        example: "barkispub1addwnpepqd9cqykjppq89nwrg848nh6lgh8jtpr28wspn5am2kyjkdyp5a4wqvj2v39"
+      type:
+        type: string
+        example: local
+      seed:
+        type: string
   BlockID:
     type: object
     properties:
@@ -2485,9 +2502,12 @@ definitions:
         type: string
         example: "barkis1ka54cl8ep6shtxajr5mvp6f7evj2zvf90qt544"
         description: Sender address or Keybase name to generate a transaction
+      password:
+        type: string
+        example: "12345678"
       memo:
         type: string
-        example: "Sent token from command line"
+        example: "Sent token from light node"
       chain_id:
         type: string
         example: "barkisnet"
@@ -2507,6 +2527,9 @@ definitions:
         type: array
         items:
           $ref: "#/definitions/Coin"
+      broadcast_mode:
+        type: string
+        example: "sync"
       simulate:
         type: boolean
         example: false

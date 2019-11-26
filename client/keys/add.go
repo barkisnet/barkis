@@ -316,8 +316,8 @@ func generateMnemonic(algo keys.SigningAlgo) string {
 	kb := keys.NewInMemory()
 	pass := DefaultKeyPass
 	name := "inmemorykey"
-	_, seed, _ := kb.CreateMnemonic(name, keys.English, pass, algo)
-	return seed
+	_, mnemonic, _ := kb.CreateMnemonic(name, keys.English, pass, algo)
+	return mnemonic
 }
 
 // CheckAndWriteErrorResponse will check for errors and return
@@ -407,8 +407,8 @@ func AddNewKeyRequestHandler(indent bool) http.HandlerFunc {
 	}
 }
 
-// Seed REST request handler
-func SeedRequestHandler(w http.ResponseWriter, r *http.Request) {
+// Mnemonic REST request handler
+func MnemonicRequestHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	algoType := vars["type"]
 
@@ -418,10 +418,9 @@ func SeedRequestHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	algo := keys.SigningAlgo(algoType)
-	seed := generateMnemonic(algo)
+	mnemonic := generateMnemonic(algo)
 
-	w.Header().Set("Content-Type", "application/json")
-	_, _ = w.Write([]byte(seed))
+	_, _ = w.Write([]byte(mnemonic))
 }
 
 // RecoverRequestHandler performs key recover request
