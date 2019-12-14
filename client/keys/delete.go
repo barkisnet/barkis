@@ -4,16 +4,15 @@ import (
 	"bufio"
 	"encoding/json"
 	"errors"
-	"github.com/barkisnet/barkis/crypto/keys/keyerror"
-	"github.com/gorilla/mux"
 	"net/http"
 
+	"github.com/gorilla/mux"
+	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
 	"github.com/barkisnet/barkis/client/input"
 	"github.com/barkisnet/barkis/crypto/keys"
-
-	"github.com/spf13/cobra"
+	"github.com/barkisnet/barkis/crypto/keys/keyerror"
 )
 
 const (

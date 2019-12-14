@@ -6,24 +6,22 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/gorilla/mux"
 	"io/ioutil"
 	"net/http"
 	"sort"
+
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"github.com/gorilla/mux"
+	"github.com/cosmos/go-bip39"
+	"github.com/tendermint/tendermint/crypto"
+	"github.com/tendermint/tendermint/crypto/multisig"
+	"github.com/tendermint/tendermint/libs/cli"
 
 	"github.com/barkisnet/barkis/client/flags"
 	"github.com/barkisnet/barkis/client/input"
 	"github.com/barkisnet/barkis/crypto/keys"
 	sdk "github.com/barkisnet/barkis/types"
-
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
-
-	"github.com/cosmos/go-bip39"
-
-	"github.com/tendermint/tendermint/crypto"
-	"github.com/tendermint/tendermint/crypto/multisig"
-	"github.com/tendermint/tendermint/libs/cli"
 )
 
 const (

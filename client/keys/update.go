@@ -3,14 +3,14 @@ package keys
 import (
 	"bufio"
 	"encoding/json"
-	"github.com/barkisnet/barkis/crypto/keys"
-	"github.com/barkisnet/barkis/crypto/keys/keyerror"
-	"github.com/gorilla/mux"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 
 	"github.com/barkisnet/barkis/client/input"
+	"github.com/barkisnet/barkis/crypto/keys"
+	"github.com/barkisnet/barkis/crypto/keys/keyerror"
 )
 
 func updateKeyCommand() *cobra.Command {

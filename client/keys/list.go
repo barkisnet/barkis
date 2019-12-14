@@ -1,9 +1,10 @@
 package keys
 
 import (
+	"net/http"
+
 	"github.com/barkisnet/barkis/client/flags"
 	"github.com/spf13/cobra"
-	"net/http"
 )
 
 func listKeysCmd() *cobra.Command {

@@ -3,13 +3,11 @@ package keys
 import (
 	"errors"
 	"fmt"
-	"github.com/barkisnet/barkis/crypto/keys/keyerror"
-	"github.com/gorilla/mux"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-
 	tmcrypto "github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/multisig"
 	"github.com/tendermint/tendermint/libs/cli"
@@ -17,6 +15,7 @@ import (
 	"github.com/barkisnet/barkis/client/flags"
 	"github.com/barkisnet/barkis/crypto"
 	"github.com/barkisnet/barkis/crypto/keys"
+	"github.com/barkisnet/barkis/crypto/keys/keyerror"
 	sdk "github.com/barkisnet/barkis/types"
 )
 
@@ -206,4 +205,3 @@ func GetKeyRequestHandler(indent bool) http.HandlerFunc {
 		PostProcessResponse(w, cdc, keyOutput, indent)
 	}
 }
-

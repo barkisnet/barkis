@@ -3,7 +3,6 @@ package keys
 import (
 	"bufio"
 	"fmt"
-	"github.com/barkisnet/barkis/codec"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -14,6 +13,7 @@ import (
 
 	"github.com/barkisnet/barkis/client/flags"
 	"github.com/barkisnet/barkis/client/input"
+	"github.com/barkisnet/barkis/codec"
 	"github.com/barkisnet/barkis/crypto/keys"
 	sdk "github.com/barkisnet/barkis/types"
 )
