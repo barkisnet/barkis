@@ -231,12 +231,18 @@ func NewBarkisApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 
 // application updates every begin block
 func (app *BarkisApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
-	return app.mm.BeginBlock(ctx, req)
+	sdk.GlobalUpgradeMgr.BeginBlockersFirst(ctx)
+	response := app.mm.BeginBlock(ctx, req)
+	sdk.GlobalUpgradeMgr.BeginBlockersLast(ctx)
+	return response
 }
 
 // application updates every end block
 func (app *BarkisApp) EndBlocker(ctx sdk.Context, req abci.RequestEndBlock) abci.ResponseEndBlock {
-	return app.mm.EndBlock(ctx, req)
+	sdk.GlobalUpgradeMgr.EndBlockersFirst(ctx)
+	response := app.mm.EndBlock(ctx, req)
+	sdk.GlobalUpgradeMgr.EndBlockersLast(ctx)
+	return response
 }
 
 // application update at chain initialization

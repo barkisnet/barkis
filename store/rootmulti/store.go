@@ -17,6 +17,7 @@ import (
 	"github.com/barkisnet/barkis/store/tracekv"
 	"github.com/barkisnet/barkis/store/transient"
 	"github.com/barkisnet/barkis/store/types"
+	sdk "github.com/barkisnet/barkis/types"
 )
 
 const (
@@ -524,6 +525,10 @@ func commitStores(version int64, storeMap map[types.StoreKey]types.CommitStore) 
 	storeInfos := make([]storeInfo, 0, len(storeMap))
 
 	for key, store := range storeMap {
+		if sdk.GlobalUpgradeMgr.Config.NewStoreHeight[key.Name()] > version {
+			continue
+		}
+
 		// Commit
 		commitID := store.Commit()
 
