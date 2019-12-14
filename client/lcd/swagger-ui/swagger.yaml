@@ -9,12 +9,14 @@ tags:
     description: Search, encode, simulate, or broadcast transactions.
   - name: Tendermint RPC
     description: Tendermint APIs, such as query blocks, transactions and validatorset
+  - name: Key Management
+    description: Key management APIs
   - name: Auth
     description: Authenticate accounts
   - name: Bank
     description: Create and broadcast transactions
   - name: Staking
-    description: Stake module APIs
+    description: Staking module APIs
   - name: Governance
     description: Governance module APIs
   - name: Slashing
@@ -399,6 +401,179 @@ paths:
             $ref: "#/definitions/DeliverTxResult"
         500:
           description: Internal Server Error
+  /keys:
+    get:
+      summary: List of accounts stored locally
+      tags:
+        - Key Management
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Array of accounts
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/KeyOutput"
+        500:
+          description: Server internal error
+    post:
+      summary: Create a new account locally
+      tags:
+        - Key Management
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: account
+          description: The account to create
+          schema:
+            type: object
+            required:
+              - name
+              - password
+              - seed
+            properties:
+              name:
+                type: string
+              password:
+                type: string
+              seed:
+                type: string
+      responses:
+        200:
+          description: Returns account information of the created key
+          schema:
+            $ref: "#/definitions/KeyOutput"
+        400:
+          description: Invalid request
+        409:
+          description: Key name confliction
+        500:
+          description: Server internal error
+  /keys/mnemonic:
+    get:
+      summary: Create a new mnemonic to create a new account with
+      tags:
+        - Key Management
+      responses:
+        200:
+          description: 12 word mnemonic
+          schema:
+            type: string
+            example: blossom pool issue kidney elevator blame furnace winter account merry vessel security
+  /keys/{name}/recover:
+    post:
+      summary: Recover a account from a seed
+      tags:
+        - Key Management
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: name
+          description: Account name
+          required: true
+          type: string
+        - in: body
+          name: pwdAndMnemonic
+          description: Provide password and mnemonic to recover a key
+          schema:
+            type: object
+            required:
+              - password
+              - mnemonic
+            properties:
+              password:
+                type: string
+              mnemonic:
+                type: string
+      responses:
+        200:
+          description: Returns account information of the recovered key
+          schema:
+            $ref: "#/definitions/KeyOutput"
+        400:
+          description: Invalid request
+        409:
+          description: Key name confliction
+        500:
+          description: Server internal error
+  /keys/{name}:
+    parameters:
+      - in: path
+        name: name
+        description: Account name
+        required: true
+        type: string
+    get:
+      summary: Get a certain locally stored account
+      tags:
+        - Key Management
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Locally stored account
+          schema:
+            $ref: "#/definitions/KeyOutput"
+        404:
+          description: Key doesn't exist
+    put:
+      summary: Update the password for this account in the KMS
+      tags:
+        - Key Management
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: account
+          description: The new and old password
+          schema:
+            type: object
+            required:
+              - new_password
+              - old_password
+            properties:
+              new_password:
+                type: string
+              old_password:
+                type: string
+      responses:
+        200:
+          description: Updated password
+        401:
+          description: Key password is wrong
+        404:
+          description: Key doesn't exist
+    delete:
+      summary: Remove an account
+      tags:
+        - Key Management
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: account
+          description: The password of the account to remove from the KMS
+          schema:
+            type: object
+            required:
+              - password
+            properties:
+              password:
+                type: string
+      responses:
+        200:
+          description: Removed account
+        401:
+          description: Key password is wrong
+        404:
+          description: Key doesn't exist
   /bank/balances/{address}:
     get:
       summary: Get the account balances
@@ -434,7 +609,7 @@ paths:
       parameters:
         - in: path
           name: address
-          description: Account address in bech32 format
+          description: Recepient address in bech32 format
           required: true
           type: string
           x-example: barkis1ka54cl8ep6shtxajr5mvp6f7evj2zvf90qt544
@@ -2035,7 +2210,7 @@ definitions:
     properties:
       denom:
         type: string
-        example: stake
+        example: ubarkis
       amount:
         type: string
         example: "50"
@@ -2166,6 +2341,23 @@ definitions:
           sequence:
             type: string
             example: "0"
+  KeyOutput:
+    type: object
+    properties:
+      name:
+        type: string
+        example: Main Account
+      address:
+        type: string
+        example: cosmos1depk54cuajgkzea6zpgkq36tnjwdzv4afc3d27
+      pub_key:
+        type: string
+        example: "barkispub1addwnpepqd9cqykjppq89nwrg848nh6lgh8jtpr28wspn5am2kyjkdyp5a4wqvj2v39"
+      type:
+        type: string
+        example: local
+      seed:
+        type: string
   BlockID:
     type: object
     properties:
@@ -2310,9 +2502,12 @@ definitions:
         type: string
         example: "barkis1ka54cl8ep6shtxajr5mvp6f7evj2zvf90qt544"
         description: Sender address or Keybase name to generate a transaction
+      password:
+        type: string
+        example: "12345678"
       memo:
         type: string
-        example: "Sent token from command line"
+        example: "Sent token from light node"
       chain_id:
         type: string
         example: "barkisnet"
@@ -2332,6 +2527,9 @@ definitions:
         type: array
         items:
           $ref: "#/definitions/Coin"
+      broadcast_mode:
+        type: string
+        example: "sync"
       simulate:
         type: boolean
         example: false

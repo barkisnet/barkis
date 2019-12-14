@@ -48,6 +48,7 @@ type GasEstimateResponse struct {
 // that all share common "base" fields.
 type BaseReq struct {
 	From          string       `json:"from"`
+	Password      string       `json:"password"`
 	Memo          string       `json:"memo"`
 	ChainID       string       `json:"chain_id"`
 	AccountNumber uint64       `json:"account_number"`
@@ -56,17 +57,19 @@ type BaseReq struct {
 	GasPrices     sdk.DecCoins `json:"gas_prices"`
 	Gas           string       `json:"gas"`
 	GasAdjustment string       `json:"gas_adjustment"`
+	BroadcastMode string       `json:"broadcast_mode"`
 	Simulate      bool         `json:"simulate"`
 }
 
 // NewBaseReq creates a new basic request instance and sanitizes its values
 func NewBaseReq(
-	from, memo, chainID string, gas, gasAdjustment string, accNumber, seq uint64,
-	fees sdk.Coins, gasPrices sdk.DecCoins, simulate bool,
+	from, password, memo, chainID string, gas, gasAdjustment string, accNumber, seq uint64,
+	fees sdk.Coins, gasPrices sdk.DecCoins, broadcastMode string, simulate bool,
 ) BaseReq {
 
 	return BaseReq{
 		From:          strings.TrimSpace(from),
+		Password:      strings.TrimSpace(password),
 		Memo:          strings.TrimSpace(memo),
 		ChainID:       strings.TrimSpace(chainID),
 		Fees:          fees,
@@ -75,6 +78,7 @@ func NewBaseReq(
 		GasAdjustment: strings.TrimSpace(gasAdjustment),
 		AccountNumber: accNumber,
 		Sequence:      seq,
+		BroadcastMode: strings.TrimSpace(broadcastMode),
 		Simulate:      simulate,
 	}
 }
@@ -82,8 +86,8 @@ func NewBaseReq(
 // Sanitize performs basic sanitization on a BaseReq object.
 func (br BaseReq) Sanitize() BaseReq {
 	return NewBaseReq(
-		br.From, br.Memo, br.ChainID, br.Gas, br.GasAdjustment,
-		br.AccountNumber, br.Sequence, br.Fees, br.GasPrices, br.Simulate,
+		br.From, br.Password, br.Memo, br.ChainID, br.Gas, br.GasAdjustment,
+		br.AccountNumber, br.Sequence, br.Fees, br.GasPrices, br.BroadcastMode, br.Simulate,
 	)
 }
 

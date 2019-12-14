@@ -3,6 +3,7 @@ package keys
 import (
 	"bufio"
 	"fmt"
+	"net/http"
 	"os"
 	"path/filepath"
 
@@ -12,7 +13,9 @@ import (
 
 	"github.com/barkisnet/barkis/client/flags"
 	"github.com/barkisnet/barkis/client/input"
+	"github.com/barkisnet/barkis/codec"
 	"github.com/barkisnet/barkis/crypto/keys"
+	sdk "github.com/barkisnet/barkis/types"
 )
 
 // available output formats.
@@ -170,4 +173,76 @@ func printPubKey(info keys.Info, bechKeyOut bechKeyOutFn) {
 	}
 
 	fmt.Println(ko.PubKey)
+}
+
+// create a list of KeyOutput in bech32 format
+func Bech32KeysOutput(infos []keys.Info) ([]KeyOutput, error) {
+	kos := make([]KeyOutput, len(infos))
+	for i, info := range infos {
+		ko, err := Bech32KeyOutput(info)
+		if err != nil {
+			return nil, err
+		}
+		kos[i] = ko
+	}
+	return kos, nil
+}
+
+// create a KeyOutput in bech32 format
+func Bech32KeyOutput(info keys.Info) (KeyOutput, error) {
+	accAddr := sdk.AccAddress(info.GetPubKey().Address().Bytes())
+	bechPubKey, err := sdk.Bech32ifyAccPub(info.GetPubKey())
+	if err != nil {
+		return KeyOutput{}, err
+	}
+
+	return KeyOutput{
+		Name:    info.GetName(),
+		Type:    info.GetType().String(),
+		Address: accAddr.String(),
+		PubKey:  bechPubKey,
+	}, nil
+}
+
+// ErrorResponse defines the attributes of a JSON error response.
+type ErrorResponse struct {
+	Code  int    `json:"code,omitempty"`
+	Error string `json:"error"`
+}
+
+// NewErrorResponse creates a new ErrorResponse instance.
+func NewErrorResponse(code int, err string) ErrorResponse {
+	return ErrorResponse{Code: code, Error: err}
+}
+
+// WriteErrorResponse prepares and writes a HTTP error
+// given a status code and an error message.
+func WriteErrorResponse(w http.ResponseWriter, status int, err string) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	_, _ = w.Write(codec.Cdc.MustMarshalJSON(NewErrorResponse(0, err)))
+}
+
+// PostProcessResponse performs post processing for a REST response.
+func PostProcessResponse(w http.ResponseWriter, cdc *codec.Codec, response interface{}, indent bool) {
+	var output []byte
+
+	switch response.(type) {
+	default:
+		var err error
+		if indent {
+			output, err = cdc.MarshalJSONIndent(response, "", "  ")
+		} else {
+			output, err = cdc.MarshalJSON(response)
+		}
+		if err != nil {
+			WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+	case []byte:
+		output = response.([]byte)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	_, _ = w.Write(output)
 }
