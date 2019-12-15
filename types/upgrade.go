@@ -162,7 +162,7 @@ func (mgr *UpgradeManager) GetUpgradeHeight(name string) int64 {
 	return mgr.Config.UpgradeHeight[name]
 }
 
-func (mgr *UpgradeManager) RegisterNewStoreHeight(upgradeName string, newStores ...string) {
+func (mgr *UpgradeManager) RegisterNewStore(upgradeName string, newStores ...string) {
 	height := mgr.GetUpgradeHeight(upgradeName)
 	if height == 0 {
 		panic(fmt.Sprintf("no upgrade for %s", upgradeName))
@@ -173,11 +173,11 @@ func (mgr *UpgradeManager) RegisterNewStoreHeight(upgradeName string, newStores 
 	}
 }
 
-func (mgr *UpgradeManager) GetNewStoreHeight(storeName string) int64 {
+func (mgr *UpgradeManager) GetStoreHeight(storeName string) int64 {
 	return mgr.Config.UpgradeHeight[storeName]
 }
 
-func (mgr *UpgradeManager) RegisterNewMsgHeight(upgradeName string, msgTypes ...string) {
+func (mgr *UpgradeManager) RegisterNewMsg(upgradeName string, msgTypes ...string) {
 	height := mgr.GetUpgradeHeight(upgradeName)
 	if height == 0 {
 		panic(fmt.Sprintf("no upgrade for %s", upgradeName))
@@ -188,6 +188,6 @@ func (mgr *UpgradeManager) RegisterNewMsgHeight(upgradeName string, msgTypes ...
 	}
 }
 
-func (mgr *UpgradeManager) GetNewMsgHeight(msgType string) int64 {
+func (mgr *UpgradeManager) GetMsgHeight(msgType string) int64 {
 	return mgr.Config.NewMsgHeight[msgType]
 }

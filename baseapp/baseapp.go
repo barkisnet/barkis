@@ -713,7 +713,7 @@ func validateBasicTxMsgs(msgs []sdk.Msg) sdk.Error {
 	}
 
 	for _, msg := range msgs {
-		upgradeHeight := sdk.GlobalUpgradeMgr.Config.NewMsgHeight[msg.Type()]
+		upgradeHeight := sdk.GlobalUpgradeMgr.GetMsgHeight(msg.Type())
 		if upgradeHeight > sdk.GlobalUpgradeMgr.GetBlockHeight() {
 			return sdk.ErrMsgNotSupported(fmt.Sprintf("%s will be supported after height %d", msg.Type(), upgradeHeight))
 		}

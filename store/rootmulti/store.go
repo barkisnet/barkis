@@ -525,7 +525,7 @@ func commitStores(version int64, storeMap map[types.StoreKey]types.CommitStore) 
 	storeInfos := make([]storeInfo, 0, len(storeMap))
 
 	for key, store := range storeMap {
-		if sdk.GlobalUpgradeMgr.Config.NewStoreHeight[key.Name()] > version {
+		if sdk.GlobalUpgradeMgr.GetStoreHeight(key.Name()) > version {
 			continue
 		}
 
