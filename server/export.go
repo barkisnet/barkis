@@ -4,7 +4,6 @@ package server
 
 import (
 	"fmt"
-	"github.com/barkisnet/barkis/app/config"
 	"io/ioutil"
 	"os"
 
@@ -13,6 +12,7 @@ import (
 	tmtypes "github.com/tendermint/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
+	"github.com/barkisnet/barkis/app/config"
 	"github.com/barkisnet/barkis/client/flags"
 	"github.com/barkisnet/barkis/codec"
 	sdk "github.com/barkisnet/barkis/types"

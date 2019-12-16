@@ -2,7 +2,6 @@ package cli
 
 import (
 	"bytes"
-	"github.com/barkisnet/barkis/app/config"
 	"io"
 	"os"
 	"testing"
@@ -15,6 +14,7 @@ import (
 	"github.com/tendermint/tendermint/libs/cli"
 	"github.com/tendermint/tendermint/libs/log"
 
+	"github.com/barkisnet/barkis/app/config"
 	"github.com/barkisnet/barkis/client"
 	"github.com/barkisnet/barkis/codec"
 	"github.com/barkisnet/barkis/server"

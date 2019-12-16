@@ -2,7 +2,6 @@ package server
 
 import (
 	"fmt"
-	"github.com/barkisnet/barkis/app/config"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -15,6 +14,8 @@ import (
 	"github.com/tendermint/tendermint/p2p"
 	pvm "github.com/tendermint/tendermint/privval"
 	"github.com/tendermint/tendermint/proxy"
+
+	"github.com/barkisnet/barkis/app/config"
 )
 
 // Tendermint full-node start flags

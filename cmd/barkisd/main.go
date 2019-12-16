@@ -14,7 +14,6 @@ import (
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/barkisnet/barkis/app"
-	appConfig "github.com/barkisnet/barkis/app/config"
 	"github.com/barkisnet/barkis/baseapp"
 	"github.com/barkisnet/barkis/client"
 	"github.com/barkisnet/barkis/server"
@@ -40,7 +39,7 @@ func main() {
 	config.SetBech32PrefixForConsensusNode(sdk.Bech32PrefixConsAddr, sdk.Bech32PrefixConsPub)
 	config.Seal()
 
-	ctx := appConfig.NewDefaultContext()
+	ctx := app.ServerContext
 	cobra.EnableCommandSorting = false
 	rootCmd := &cobra.Command{
 		Use:               "barkisd",

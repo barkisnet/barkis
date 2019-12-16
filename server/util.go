@@ -65,7 +65,11 @@ func interceptLoadConfig(context *config.BarkisnetContext) (err error) {
 	}
 	rootDir := tmpConf.RootDir
 	configFilePath := filepath.Join(rootDir, "config/config.toml")
-	// Intercept only if the file doesn't already exist
+
+	context.Config, err = tcmd.ParseConfig() // NOTE: ParseConfig() creates dir/files as necessary.
+	if err != nil {
+		panic(err)
+	}
 
 	if _, err := os.Stat(configFilePath); os.IsNotExist(err) {
 		// the following parse config is needed to create directories
@@ -77,13 +81,6 @@ func interceptLoadConfig(context *config.BarkisnetContext) (err error) {
 		context.Config.Consensus.TimeoutCommit = 5 * time.Second
 		cfg.WriteConfigFile(configFilePath, context.Config)
 		// Fall through, just so that its parsed into memory.
-	}
-
-	if context.Config == nil {
-		context.Config, err = tcmd.ParseConfig() // NOTE: ParseConfig() creates dir/files as necessary.
-		if err != nil {
-			panic(err)
-		}
 	}
 
 	appConfigFilePath := filepath.Join(rootDir, "config/app.toml")

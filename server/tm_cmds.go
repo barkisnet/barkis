@@ -4,7 +4,6 @@ package server
 
 import (
 	"fmt"
-	"github.com/barkisnet/barkis/app/config"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -16,6 +15,7 @@ import (
 	pvm "github.com/tendermint/tendermint/privval"
 	tversion "github.com/tendermint/tendermint/version"
 
+	"github.com/barkisnet/barkis/app/config"
 	"github.com/barkisnet/barkis/codec"
 	sdk "github.com/barkisnet/barkis/types"
 )
