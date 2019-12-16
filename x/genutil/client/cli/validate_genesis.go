@@ -8,13 +8,13 @@ import (
 	"github.com/spf13/cobra"
 	tmtypes "github.com/tendermint/tendermint/types"
 
+	"github.com/barkisnet/barkis/app/config"
 	"github.com/barkisnet/barkis/codec"
-	"github.com/barkisnet/barkis/server"
 	"github.com/barkisnet/barkis/types/module"
 )
 
 // Validate genesis command takes
-func ValidateGenesisCmd(ctx *server.Context, cdc *codec.Codec, mbm module.BasicManager) *cobra.Command {
+func ValidateGenesisCmd(ctx *config.ServerContext, cdc *codec.Codec, mbm module.BasicManager) *cobra.Command {
 	return &cobra.Command{
 		Use:   "validate-genesis [file]",
 		Args:  cobra.RangeArgs(0, 1),

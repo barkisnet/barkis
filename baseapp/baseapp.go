@@ -713,14 +713,22 @@ func validateBasicTxMsgs(msgs []sdk.Msg) sdk.Error {
 	}
 
 	for _, msg := range msgs {
-		upgradeHeight := sdk.GlobalUpgradeMgr.GetMsgHeight(msg.Type())
-		if upgradeHeight > sdk.GlobalUpgradeMgr.GetBlockHeight() {
-			return sdk.ErrMsgNotSupported(fmt.Sprintf("%s will be supported after height %d", msg.Type(), upgradeHeight))
-		}
 		// Validate the Msg.
 		err := msg.ValidateBasic()
 		if err != nil {
 			return err
+		}
+	}
+
+	return nil
+}
+
+// validateNewMsgsUpgrade ensures there is no future supported msgs
+func validateNewMsgsUpgrade(msgs []sdk.Msg) sdk.Error {
+	for _, msg := range msgs {
+		upgradeHeight := sdk.GlobalUpgradeMgr.GetMsgHeight(msg.Type())
+		if upgradeHeight > sdk.GlobalUpgradeMgr.GetBlockHeight() {
+			return sdk.ErrMsgNotSupported(fmt.Sprintf("%s will be supported after height %d", msg.Type(), upgradeHeight))
 		}
 	}
 
@@ -899,6 +907,9 @@ func (app *BaseApp) runTx(mode runTxMode, txBytes []byte, tx sdk.Tx) (result sdk
 	}()
 
 	var msgs = tx.GetMsgs()
+	if err := validateNewMsgsUpgrade(msgs); err != nil {
+		return err.Result()
+	}
 	if err := validateBasicTxMsgs(msgs); err != nil {
 		return err.Result()
 	}

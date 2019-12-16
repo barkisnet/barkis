@@ -4,6 +4,7 @@ package server
 
 import (
 	"fmt"
+	"github.com/barkisnet/barkis/app/config"
 	"io/ioutil"
 	"os"
 
@@ -24,7 +25,7 @@ const (
 )
 
 // ExportCmd dumps app state to JSON.
-func ExportCmd(ctx *Context, cdc *codec.Codec, appExporter AppExporter) *cobra.Command {
+func ExportCmd(ctx *config.ServerContext, cdc *codec.Codec, appExporter AppExporter) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "export",
 		Short: "Export state to JSON",

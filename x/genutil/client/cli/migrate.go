@@ -7,8 +7,8 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/tendermint/tendermint/types"
 
+	"github.com/barkisnet/barkis/app/config"
 	"github.com/barkisnet/barkis/codec"
-	"github.com/barkisnet/barkis/server"
 	sdk "github.com/barkisnet/barkis/types"
 	"github.com/barkisnet/barkis/version"
 	extypes "github.com/barkisnet/barkis/x/genutil"
@@ -24,7 +24,7 @@ const (
 	flagChainId     = "chain-id"
 )
 
-func MigrateGenesisCmd(_ *server.Context, cdc *codec.Codec) *cobra.Command {
+func MigrateGenesisCmd(_ *config.ServerContext, cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "migrate [target-version] [genesis-file]",
 		Short: "Migrate genesis to a specified target version",

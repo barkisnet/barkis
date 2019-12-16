@@ -9,6 +9,7 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 	dbm "github.com/tendermint/tm-db"
 
+	"github.com/barkisnet/barkis/app/config"
 	bam "github.com/barkisnet/barkis/baseapp"
 	"github.com/barkisnet/barkis/codec"
 	"github.com/barkisnet/barkis/simapp"
@@ -66,6 +67,8 @@ var (
 		staking.NotBondedPoolName: {supply.Burner, supply.Staking},
 		gov.ModuleName:            {supply.Burner},
 	}
+
+	ServerContext = config.NewDefaultContext()
 )
 
 // custom tx codec
@@ -219,6 +222,7 @@ func NewBarkisApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	app.SetAnteHandler(auth.NewAnteHandler(app.accountKeeper, app.supplyKeeper, auth.DefaultSigVerificationGasConsumer))
 	app.SetEndBlocker(app.EndBlocker)
 
+	app.registerUpgrade()
 	if loadLatest {
 		err := app.LoadLatestVersion(app.keys[bam.MainStoreKey])
 		if err != nil {
@@ -227,6 +231,17 @@ func NewBarkisApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	}
 
 	return app
+}
+
+func (app *BarkisApp) registerUpgrade() {
+	//Register upgrade height
+	sdk.GlobalUpgradeMgr.RegisterUpgradeHeight("TokenIssue" ,ServerContext.UpgradeConfig.TokenIssueHeight)
+
+	//Register new store if necessary
+	sdk.GlobalUpgradeMgr.RegisterNewStore("TokenIssue", "token")
+
+	//Register new msg types if necessary
+	sdk.GlobalUpgradeMgr.RegisterNewMsg("TokenIssue", "issueToken", "mintToken")
 }
 
 // application updates every begin block

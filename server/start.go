@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"github.com/barkisnet/barkis/app/config"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -28,7 +29,7 @@ const (
 
 // StartCmd runs the service passed in, either stand-alone or in-process with
 // Tendermint.
-func StartCmd(ctx *Context, appCreator AppCreator) *cobra.Command {
+func StartCmd(ctx *config.ServerContext, appCreator AppCreator) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "start",
 		Short: "Run the full node",
@@ -61,7 +62,7 @@ func StartCmd(ctx *Context, appCreator AppCreator) *cobra.Command {
 	return cmd
 }
 
-func startStandAlone(ctx *Context, appCreator AppCreator) error {
+func startStandAlone(ctx *config.ServerContext, appCreator AppCreator) error {
 	addr := viper.GetString(flagAddress)
 	home := viper.GetString("home")
 	traceWriterFile := viper.GetString(flagTraceStore)
@@ -103,7 +104,7 @@ func startStandAlone(ctx *Context, appCreator AppCreator) error {
 	return nil
 }
 
-func startInProcess(ctx *Context, appCreator AppCreator) (*node.Node, error) {
+func startInProcess(ctx *config.ServerContext, appCreator AppCreator) (*node.Node, error) {
 	cfg := ctx.Config
 	home := cfg.RootDir
 	traceWriterFile := viper.GetString(flagTraceStore)

@@ -9,9 +9,9 @@ import (
 	"github.com/tendermint/tendermint/libs/cli"
 	tmtypes "github.com/tendermint/tendermint/types"
 
+	"github.com/barkisnet/barkis/app/config"
 	"github.com/barkisnet/barkis/client"
 	"github.com/barkisnet/barkis/codec"
-	"github.com/barkisnet/barkis/server"
 	"github.com/barkisnet/barkis/x/genutil"
 	"github.com/barkisnet/barkis/x/genutil/types"
 )
@@ -19,7 +19,7 @@ import (
 const flagGenTxDir = "gentx-dir"
 
 // CollectGenTxsCmd - return the cobra command to collect genesis transactions
-func CollectGenTxsCmd(ctx *server.Context, cdc *codec.Codec,
+func CollectGenTxsCmd(ctx *config.ServerContext, cdc *codec.Codec,
 	genAccIterator types.GenesisAccountsIterator, defaultNodeHome string) *cobra.Command {
 
 	cmd := &cobra.Command{

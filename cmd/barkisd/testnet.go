@@ -18,11 +18,11 @@ import (
 	"github.com/tendermint/tendermint/types"
 	tmtime "github.com/tendermint/tendermint/types/time"
 
+	appconfig "github.com/barkisnet/barkis/app/config"
 	"github.com/barkisnet/barkis/client"
 	"github.com/barkisnet/barkis/client/keys"
 	"github.com/barkisnet/barkis/codec"
 	"github.com/barkisnet/barkis/server"
-	srvconfig "github.com/barkisnet/barkis/server/config"
 	sdk "github.com/barkisnet/barkis/types"
 	"github.com/barkisnet/barkis/types/module"
 	"github.com/barkisnet/barkis/x/auth"
@@ -42,7 +42,7 @@ var (
 )
 
 // get cmd to initialize all files for tendermint testnet and application
-func testnetCmd(ctx *server.Context, cdc *codec.Codec,
+func testnetCmd(ctx *appconfig.ServerContext, cdc *codec.Codec,
 	mbm module.BasicManager, genAccIterator genutiltypes.GenesisAccountsIterator,
 ) *cobra.Command {
 
@@ -110,7 +110,7 @@ func InitTestnet(cmd *cobra.Command, config *tmconfig.Config, cdc *codec.Codec,
 	nodeIDs := make([]string, numValidators)
 	valPubKeys := make([]crypto.PubKey, numValidators)
 
-	barkisConfig := srvconfig.DefaultConfig()
+	barkisConfig := appconfig.DefaultAppConfig()
 	barkisConfig.MinGasPrices = minGasPrices
 
 	var (
@@ -236,7 +236,7 @@ func InitTestnet(cmd *cobra.Command, config *tmconfig.Config, cdc *codec.Codec,
 		}
 
 		barkisConfigFilePath := filepath.Join(nodeDir, "config/barkisd.toml")
-		srvconfig.WriteConfigFile(barkisConfigFilePath, barkisConfig)
+		appconfig.WriteConfigFile(barkisConfigFilePath, barkisConfig)
 	}
 
 	if err := initGenFiles(cdc, mbm, chainID, accs, genFiles, numValidators); err != nil {

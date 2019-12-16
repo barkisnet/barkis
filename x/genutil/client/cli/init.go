@@ -13,9 +13,9 @@ import (
 	"github.com/tendermint/tendermint/libs/common"
 	"github.com/tendermint/tendermint/types"
 
+	"github.com/barkisnet/barkis/app/config"
 	"github.com/barkisnet/barkis/client"
 	"github.com/barkisnet/barkis/codec"
-	"github.com/barkisnet/barkis/server"
 	sdk "github.com/barkisnet/barkis/types"
 	"github.com/barkisnet/barkis/types/module"
 	"github.com/barkisnet/barkis/x/genutil"
@@ -58,7 +58,7 @@ func displayInfo(cdc *codec.Codec, info printInfo) error {
 
 // InitCmd returns a command that initializes all files needed for Tendermint
 // and the respective application.
-func InitCmd(ctx *server.Context, cdc *codec.Codec, mbm module.BasicManager,
+func InitCmd(ctx *config.ServerContext, cdc *codec.Codec, mbm module.BasicManager,
 	defaultNodeHome string) *cobra.Command { // nolint: golint
 	cmd := &cobra.Command{
 		Use:   "init [moniker]",
