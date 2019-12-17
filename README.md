@@ -1,10 +1,8 @@
 # Barkis
 
-This repository hosts `Barkis`, the first implementation of the Cosmos Hub.
+This repository hosts `Barkis`, which is implemented with Cosmos.
 
 **Note**: Requires [Go 1.12+](https://golang.org/dl/)
-
-## Cosmos Hub Mainnet
 
 ## Quick Start
 
