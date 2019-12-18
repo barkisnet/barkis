@@ -1,174 +1,133 @@
 package types
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 )
 
-const UpgradeTest = "upgradeTest"
-const StoreKeyNameTest = "storeKeyTest"
-const MsgTypeTest = "msgTypeTest"
-
 func TestUpgrade(t *testing.T) {
 	type testCase struct {
-		config        UpgradeConfig
-		height        int64
-		upgradeResult bool
-		heightResult  bool
-	}
-
-	testCases := []testCase{
-		{
-			config: UpgradeConfig{
-				UpgradeHeight: map[string]int64{},
-			},
-			height:        10000,
-			upgradeResult: false,
-			heightResult:  false,
-		},
-		{
-			config: UpgradeConfig{
-				UpgradeHeight: map[string]int64{
-					UpgradeTest: 545000,
-				},
-			},
-			height:        10000,
-			upgradeResult: false,
-			heightResult:  false,
-		}, {
-			config: UpgradeConfig{
-				UpgradeHeight: map[string]int64{
-					UpgradeTest: 545000,
-				},
-			},
-			height:        545000,
-			upgradeResult: true,
-			heightResult:  true,
-		}, {
-			config: UpgradeConfig{
-				UpgradeHeight: map[string]int64{
-					UpgradeTest: 545000,
-				},
-			},
-			height:        545001,
-			upgradeResult: true,
-			heightResult:  false,
-		},
-	}
-
-	for _, tc := range testCases {
-		GlobalUpgradeMgr.RegisterUpgradeHeight(tc.config)
-		UpgradeMgr.SetHeight(tc.height)
-		require.Equal(t, tc.upgradeResult, IsUpgrade(UpgradeTest))
-		require.Equal(t, tc.heightResult, IsUpgradeHeight(UpgradeTest))
-	}
-}
-
-func TestStoreKey(t *testing.T) {
-	UpgradeMgr = NewUpgradeManager(UpgradeConfig{})
-
-	type testCase struct {
-		config       UpgradeConfig
-		height       int64
-		shouldCommit bool
-	}
-
-	testCases := []testCase{
-		{
-			config: UpgradeConfig{
-				UpgradeHeight: map[string]int64{},
-			},
-			height:       10000,
-			shouldCommit: true,
-		},
-		{
-			config: UpgradeConfig{
-				UpgradeHeight: map[string]int64{
-					UpgradeTest: 545000,
-				},
-			},
-			height:       10000,
-			shouldCommit: false,
-		}, {
-			config: UpgradeConfig{
-				UpgradeHeight: map[string]int64{
-					UpgradeTest: 545000,
-				},
-			},
-			height:       545000,
-			shouldCommit: true,
-		}, {
-			config: UpgradeConfig{
-				UpgradeHeight: map[string]int64{
-					UpgradeTest: 545000,
-				},
-			},
-			height:       545001,
-			shouldCommit: true,
-		},
-	}
-
-	for _, tc := range testCases {
-		UpgradeMgr.AddConfig(tc.config)
-		if UpgradeMgr.GetUpgradeHeight(UpgradeTest) != 0 {
-			UpgradeMgr.RegisterStoreKeys(UpgradeTest, StoreKeyNameTest)
-		}
-		UpgradeMgr.SetHeight(tc.height)
-		require.Equal(t, tc.shouldCommit, ShouldCommitStore(StoreKeyNameTest))
-	}
-}
-
-func TestMsgType(t *testing.T) {
-	UpgradeMgr = NewUpgradeManager(UpgradeConfig{})
-
-	type testCase struct {
+		upgradeName string
+		msgName     string
+		storeName   string
 		config      UpgradeConfig
-		height      int64
-		isSupported bool
+		blockHeight int64
+
+		upgradeResult bool
+		msgCheck      bool
+		storeCheck    bool
 	}
 
 	testCases := []testCase{
 		{
+			upgradeName: "tokenIssue",
+			msgName:     "issueToken",
+			storeName:   "token",
 			config: UpgradeConfig{
-				UpgradeHeight: map[string]int64{},
+				UpgradeHeight:  map[string]int64{"tokenIssue": 10000, "bugfix": 20000},
+				NewStoreHeight: map[string]int64{"token": 10000},
+				NewMsgHeight:   map[string]int64{"issueToken": 10000, "mintToken": 10000},
 			},
-			height:      10000,
-			isSupported: true,
+			blockHeight: 10000,
+
+			upgradeResult: true,
+			msgCheck:      true,
+			storeCheck:    true,
 		},
 		{
+			upgradeName: "tokenIssue",
+			msgName:     "mintToken",
+			storeName:   "token",
 			config: UpgradeConfig{
-				UpgradeHeight: map[string]int64{
-					UpgradeTest: 545000,
-				},
+				UpgradeHeight:  map[string]int64{"tokenIssue": 10000, "bugfix": 20000},
+				NewStoreHeight: map[string]int64{"token": 10000},
+				NewMsgHeight:   map[string]int64{"issueToken": 10000, "mintToken": 10000},
 			},
-			height:      10000,
-			isSupported: false,
-		}, {
+			blockHeight:   9999,
+			upgradeResult: false,
+			msgCheck:      false,
+			storeCheck:    false,
+		},
+		{
+			upgradeName: "tokenIssue",
+			msgName:     "mintToken",
+			storeName:   "token",
 			config: UpgradeConfig{
-				UpgradeHeight: map[string]int64{
-					UpgradeTest: 545000,
-				},
+				UpgradeHeight:  map[string]int64{"tokenIssue": 10000, "bugfix": 20000},
+				NewStoreHeight: map[string]int64{"token": 10000},
+				NewMsgHeight:   map[string]int64{"issueToken": 10000, "mintToken": 10000},
 			},
-			height:      545000,
-			isSupported: true,
-		}, {
+			blockHeight:   10001,
+			upgradeResult: true,
+			msgCheck:      true,
+			storeCheck:    true,
+		},
+		{
+			upgradeName: "tokenIssue",
+			msgName:     "mintToken",
+			storeName:   "token1",
 			config: UpgradeConfig{
-				UpgradeHeight: map[string]int64{
-					UpgradeTest: 545000,
-				},
+				UpgradeHeight:  map[string]int64{"tokenIssue": 10000, "bugfix": 20000},
+				NewStoreHeight: map[string]int64{"token": 10000},
+				NewMsgHeight:   map[string]int64{"issueToken": 10000, "mintToken": 10000},
 			},
-			height:      545001,
-			isSupported: true,
+			blockHeight: 10000,
+
+			upgradeResult: true,
+			msgCheck:      true,
+			storeCheck:    true,
+		},
+		{
+			upgradeName: "bugfix",
+			msgName:     "mintToken",
+			storeName:   "token",
+			config: UpgradeConfig{
+				UpgradeHeight:  map[string]int64{"tokenIssue": 10000, "bugfix": 20000},
+				NewStoreHeight: map[string]int64{"token": 10000},
+				NewMsgHeight:   map[string]int64{"issueToken": 10000, "mintToken": 10000},
+			},
+			blockHeight:   20000,
+			upgradeResult: true,
+			msgCheck:      true,
+			storeCheck:    true,
+		},
+		{
+			upgradeName: "bugfix",
+			msgName:     "mintToken",
+			storeName:   "token",
+			config: UpgradeConfig{
+				UpgradeHeight:  map[string]int64{"tokenIssue": 10000, "bugfix": 20000},
+				NewStoreHeight: map[string]int64{"token": 10000},
+				NewMsgHeight:   map[string]int64{"issueToken": 10000, "mintToken": 10000},
+			},
+			blockHeight:   19999,
+			upgradeResult: false,
+			msgCheck:      true,
+			storeCheck:    true,
+		},
+		{
+			upgradeName: "bugfix",
+			msgName:     "mintToken",
+			storeName:   "token",
+			config: UpgradeConfig{
+				UpgradeHeight:  map[string]int64{"tokenIssue": 10000, "bugfix": 20000},
+				NewStoreHeight: map[string]int64{"token": 10000},
+				NewMsgHeight:   map[string]int64{"issueToken": 10000, "mintToken": 10000},
+			},
+			blockHeight:   20001,
+			upgradeResult: true,
+			msgCheck:      true,
+			storeCheck:    true,
 		},
 	}
 
-	for _, tc := range testCases {
-		UpgradeMgr.AddConfig(tc.config)
-		if UpgradeMgr.GetUpgradeHeight(UpgradeTest) != 0 {
-			UpgradeMgr.RegisterMsgTypes(UpgradeTest, MsgTypeTest)
-		}
-		UpgradeMgr.SetHeight(tc.height)
-		require.Equal(t, tc.isSupported, IsMsgTypeSupported(MsgTypeTest))
+	for index, tc := range testCases {
+		GlobalUpgradeMgr.Config = tc.config
+		GlobalUpgradeMgr.SetBlockHeight(tc.blockHeight)
+		require.Equal(t, tc.upgradeResult, GlobalUpgradeMgr.IsUpgradeHeight(tc.upgradeName), fmt.Sprintf("upgrade height test case failed, index: %d", index))
+		require.Equal(t, tc.msgCheck, GlobalUpgradeMgr.MsgCheck(tc.msgName), fmt.Sprintf("new msg test case failed, index: %d", index))
+		require.Equal(t, tc.storeCheck, GlobalUpgradeMgr.StoreCheck(tc.storeName), fmt.Sprintf("new store test case failed, index: %d", index))
 	}
 }

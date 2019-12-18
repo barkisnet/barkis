@@ -191,3 +191,27 @@ func (mgr *UpgradeManager) RegisterNewMsg(upgradeName string, msgTypes ...string
 func (mgr *UpgradeManager) GetMsgHeight(msgType string) int64 {
 	return mgr.Config.NewMsgHeight[msgType]
 }
+
+func (mgr *UpgradeManager) IsUpgradeHeight(upgradeName string) bool {
+	height, ok := mgr.Config.UpgradeHeight[upgradeName]
+	if !ok {
+		return true
+	}
+	return mgr.BlockHeight >= height
+}
+
+func (mgr *UpgradeManager) MsgCheck(msgType string) bool {
+	height, ok := mgr.Config.NewMsgHeight[msgType]
+	if !ok {
+		return true
+	}
+	return mgr.BlockHeight >= height
+}
+
+func (mgr *UpgradeManager) StoreCheck(storeName string) bool {
+	height, ok := mgr.Config.NewStoreHeight[storeName]
+	if !ok {
+		return true
+	}
+	return mgr.BlockHeight >= height
+}
