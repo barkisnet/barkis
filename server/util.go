@@ -32,7 +32,7 @@ import (
 // PersistentPreRunEFn returns a PersistentPreRunE function for cobra
 // that initailizes the passed in context with a properly configured
 // logger and config object.
-func PersistentPreRunEFn(context *config.BarkisnetContext) func(*cobra.Command, []string) error {
+func PersistentPreRunEFn(context *config.BarkisContext) func(*cobra.Command, []string) error {
 	return func(cmd *cobra.Command, args []string) error {
 		if cmd.Name() == version.Cmd.Name() {
 			return nil
@@ -56,11 +56,10 @@ func PersistentPreRunEFn(context *config.BarkisnetContext) func(*cobra.Command, 
 }
 
 // If a new config is created, change some of the default tendermint settings
-func interceptLoadConfig(context *config.BarkisnetContext) (err error) {
+func interceptLoadConfig(context *config.BarkisContext) (err error) {
 	tmpConf := cfg.DefaultConfig()
 	err = viper.Unmarshal(tmpConf)
 	if err != nil {
-		// TODO: Handle with #870
 		panic(err)
 	}
 	rootDir := tmpConf.RootDir

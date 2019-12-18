@@ -69,7 +69,7 @@ var (
 		gov.ModuleName:            {supply.Burner},
 	}
 
-	ServerContext = config.NewDefaultContext()
+	BarkisContext = config.NewDefaultContext()
 )
 
 // custom tx codec
@@ -237,7 +237,7 @@ func NewBarkisApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 func (app *BarkisApp) registerUpgrade() {
 	tokenIssue := "TokenIssue"
 	//Register upgrade height
-	sdk.GlobalUpgradeMgr.RegisterUpgradeHeight(tokenIssue ,ServerContext.UpgradeConfig.TokenIssueHeight)
+	sdk.GlobalUpgradeMgr.RegisterUpgradeHeight(tokenIssue , BarkisContext.UpgradeConfig.TokenIssueHeight)
 
 	//Register new store if necessary
 	sdk.GlobalUpgradeMgr.RegisterNewStore(tokenIssue, "token")

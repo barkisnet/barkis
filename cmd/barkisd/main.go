@@ -39,7 +39,7 @@ func main() {
 	config.SetBech32PrefixForConsensusNode(sdk.Bech32PrefixConsAddr, sdk.Bech32PrefixConsPub)
 	config.Seal()
 
-	ctx := app.ServerContext
+	ctx := app.BarkisContext
 	cobra.EnableCommandSorting = false
 	rootCmd := &cobra.Command{
 		Use:               "barkisd",

@@ -19,21 +19,21 @@ const (
 	defaultMinGasPrices = ""
 )
 
-type BarkisnetContext struct {
+type BarkisContext struct {
 	*ServerContext
 	*viper.Viper
 	*AppConfig
 }
 
-func NewDefaultContext() *BarkisnetContext {
-	return &BarkisnetContext{
+func NewDefaultContext() *BarkisContext {
+	return &BarkisContext{
 		NewServerContext(cfg.DefaultConfig(),log.NewTMLogger(log.NewSyncWriter(os.Stdout))),
 		viper.New(),
 		DefaultAppConfig(),
 	}
 }
 
-func (context *BarkisnetContext) ParseAppConfigInPlace() error {
+func (context *BarkisContext) ParseAppConfigInPlace() error {
 	homeDir := viper.GetString(cli.HomeFlag)
 	context.Viper.SetConfigName("app")
 	context.Viper.AddConfigPath(homeDir)
