@@ -30,7 +30,13 @@ func BeginBlocker(ctx sdk.Context, k Keeper) {
 		}
 		minter.RemainedTokens = mintedCoins
 	}
-	unfreezenTokens := sdk.NewCoins(sdk.NewCoin(params.MintDenom, sdk.NewIntWithDecimal(5567, 2)))
+	var unfreezenTokens sdk.Coins
+	if sdk.GlobalUpgradeMgr.IsUpgradeHeight(sdk.ChangeReward) {
+		unfreezenTokens = sdk.NewCoins(sdk.NewCoin(params.MintDenom, sdk.NewIntWithDecimal(37, 4))) // 0.37barkis
+	} else {
+		unfreezenTokens = sdk.NewCoins(sdk.NewCoin(params.MintDenom, sdk.NewIntWithDecimal(5567, 2))) // 0.5567barkis
+	}
+
 	if minter.RemainedTokens.IsAllGTE(unfreezenTokens) {
 		// send the minted coins to the fee collector account
 		err := k.AddCollectedFees(ctx, unfreezenTokens)

@@ -1,7 +1,6 @@
 package app
 
 import (
-	"fmt"
 	"io"
 	"os"
 
@@ -235,35 +234,7 @@ func NewBarkisApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 }
 
 func (app *BarkisApp) registerUpgrade() {
-	tokenIssue := "TokenIssue"
-	//Register upgrade height
-	sdk.GlobalUpgradeMgr.RegisterUpgradeHeight(tokenIssue , BarkisContext.UpgradeConfig.TokenIssueHeight)
-
-	//Register new store if necessary
-	sdk.GlobalUpgradeMgr.RegisterNewStore(tokenIssue, "token")
-
-	//Register new msg types if necessary
-	sdk.GlobalUpgradeMgr.RegisterNewMsg(tokenIssue, "issueToken", "mintToken")
-
-	//Register BeginBlocker first for upgrade
-	sdk.GlobalUpgradeMgr.RegisterBeginBlockerFirst(tokenIssue, func(ctx sdk.Context) {
-		ctx.Logger().Error(fmt.Sprintf("BeginBlockerFirst for %s", tokenIssue))
-	})
-
-	//Register BeginBlocker last for upgrade
-	sdk.GlobalUpgradeMgr.RegisterBeginBlockerLast(tokenIssue, func(ctx sdk.Context) {
-		ctx.Logger().Error(fmt.Sprintf("BeginBlockerLast for %s", tokenIssue))
-	})
-
-	//Register EndBlocker first for upgrade
-	sdk.GlobalUpgradeMgr.RegisterEndBlockerFirst(tokenIssue, func(ctx sdk.Context) {
-		ctx.Logger().Error(fmt.Sprintf("EndBlockerFirst for %s", tokenIssue))
-	})
-
-	//Register EndBlocker first for upgrade
-	sdk.GlobalUpgradeMgr.RegisterEndBlockerFirst(tokenIssue, func(ctx sdk.Context) {
-		ctx.Logger().Error(fmt.Sprintf("EndBlockerLast for %s", tokenIssue))
-	})
+	sdk.GlobalUpgradeMgr.RegisterUpgradeHeight(sdk.ChangeReward , BarkisContext.UpgradeConfig.ChangeReward)
 }
 
 // application updates every begin block

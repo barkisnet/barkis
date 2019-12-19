@@ -24,7 +24,7 @@ halt-height = {{ .BaseConfig.HaltHeight }}
 
 [upgrade]
 # Upgrade to support token issue
-TokenIssueHeight = {{ .UpgradeConfig.TokenIssueHeight }}
+ChangeReward = {{ .UpgradeConfig.ChangeReward }}
 `
 
 var configTemplate *template.Template
