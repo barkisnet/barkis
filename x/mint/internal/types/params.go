@@ -9,12 +9,13 @@ import (
 
 // Parameter store keys
 var (
-	KeyMintDenom           = []byte("MintDenom")
-	KeyInflationRateChange = []byte("InflationRateChange")
-	KeyInflationMax        = []byte("InflationMax")
-	KeyInflationMin        = []byte("InflationMin")
-	KeyGoalBonded          = []byte("GoalBonded")
-	KeyBlocksPerYear       = []byte("BlocksPerYear")
+	KeyMintDenom              = []byte("MintDenom")
+	KeyInflationRateChange    = []byte("InflationRateChange")
+	KeyInflationMax           = []byte("InflationMax")
+	KeyInflationMin           = []byte("InflationMin")
+	KeyGoalBonded             = []byte("GoalBonded")
+	KeyBlocksPerYear          = []byte("BlocksPerYear")
+	KeyUnfreezeAmountPerBlock = []byte("UnfreezeAmountPerBlock")
 )
 
 // mint parameters
@@ -25,6 +26,11 @@ type Params struct {
 	InflationMin        sdk.Dec `json:"inflation_min" yaml:"inflation_min"`                 // minimum inflation rate
 	GoalBonded          sdk.Dec `json:"goal_bonded" yaml:"goal_bonded"`                     // goal of percent bonded atoms
 	BlocksPerYear       uint64  `json:"blocks_per_year" yaml:"blocks_per_year"`             // expected blocks per year
+}
+
+type ParamsNew struct {
+	MintDenom              string  `json:"mint_denom" yaml:"mint_denom"`
+	UnfreezeAmountPerBlock sdk.Int `json:"unfreeze_amount_per_block" yaml:"unfreeze_amount_per_block"`
 }
 
 // ParamTable for minting module.
