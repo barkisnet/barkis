@@ -18,9 +18,8 @@ import (
 	tm "github.com/tendermint/tendermint/types"
 
 	"github.com/barkisnet/barkis/app"
-
+	"github.com/barkisnet/barkis/app/config"
 	"github.com/barkisnet/barkis/baseapp"
-	"github.com/barkisnet/barkis/server"
 	"github.com/barkisnet/barkis/store"
 	sdk "github.com/barkisnet/barkis/types"
 )
@@ -53,7 +52,7 @@ func replayTxs(rootDir string) error {
 
 	configDir := filepath.Join(rootDir, "config")
 	dataDir := filepath.Join(rootDir, "data")
-	ctx := server.NewDefaultContext()
+	ctx := config.NewDefaultServerContext()
 
 	// App DB
 	// appDB := dbm.NewMemDB()

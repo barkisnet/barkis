@@ -1,6 +1,7 @@
 package types
 
 import (
+	"bytes"
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
@@ -21,7 +22,9 @@ var (
 // If the passed JSON isn't valid it will return an error.
 func SortJSON(toSortJSON []byte) ([]byte, error) {
 	var c interface{}
-	err := json.Unmarshal(toSortJSON, &c)
+	decoder := json.NewDecoder(bytes.NewReader(toSortJSON))
+	decoder.UseNumber()
+	err := decoder.Decode(&c)
 	if err != nil {
 		return nil, err
 	}

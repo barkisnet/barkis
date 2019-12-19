@@ -12,6 +12,7 @@ import (
 	tmtypes "github.com/tendermint/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
+	"github.com/barkisnet/barkis/app/config"
 	"github.com/barkisnet/barkis/client/flags"
 	"github.com/barkisnet/barkis/codec"
 	sdk "github.com/barkisnet/barkis/types"
@@ -24,7 +25,7 @@ const (
 )
 
 // ExportCmd dumps app state to JSON.
-func ExportCmd(ctx *Context, cdc *codec.Codec, appExporter AppExporter) *cobra.Command {
+func ExportCmd(ctx *config.ServerContext, cdc *codec.Codec, appExporter AppExporter) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "export",
 		Short: "Export state to JSON",

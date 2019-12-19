@@ -21,6 +21,10 @@ minimum-gas-prices = "{{ .BaseConfig.MinGasPrices }}"
 # HaltHeight contains a non-zero height at which a node will gracefully halt
 # and shutdown that can be used to assist upgrades and testing.
 halt-height = {{ .BaseConfig.HaltHeight }}
+
+[upgrade]
+# Upgrade to support token issue
+TokenIssueHeight = {{ .UpgradeConfig.TokenIssueHeight }}
 `
 
 var configTemplate *template.Template
@@ -35,15 +39,15 @@ func init() {
 
 // ParseConfig retrieves the default environment configuration for the
 // application.
-func ParseConfig() (*Config, error) {
-	conf := DefaultConfig()
+func ParseConfig() (*AppConfig, error) {
+	conf := DefaultAppConfig()
 	err := viper.Unmarshal(conf)
 	return conf, err
 }
 
 // WriteConfigFile renders config using the template and writes it to
 // configFilePath.
-func WriteConfigFile(configFilePath string, config *Config) {
+func WriteConfigFile(configFilePath string, config *AppConfig) {
 	var buffer bytes.Buffer
 
 	if err := configTemplate.Execute(&buffer, config); err != nil {

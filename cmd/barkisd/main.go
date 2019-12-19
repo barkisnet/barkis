@@ -14,7 +14,6 @@ import (
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/barkisnet/barkis/app"
-
 	"github.com/barkisnet/barkis/baseapp"
 	"github.com/barkisnet/barkis/client"
 	"github.com/barkisnet/barkis/server"
@@ -40,7 +39,7 @@ func main() {
 	config.SetBech32PrefixForConsensusNode(sdk.Bech32PrefixConsAddr, sdk.Bech32PrefixConsPub)
 	config.Seal()
 
-	ctx := server.NewDefaultContext()
+	ctx := app.BarkisContext
 	cobra.EnableCommandSorting = false
 	rootCmd := &cobra.Command{
 		Use:               "barkisd",
@@ -48,18 +47,18 @@ func main() {
 		PersistentPreRunE: server.PersistentPreRunEFn(ctx),
 	}
 
-	rootCmd.AddCommand(genutilcli.InitCmd(ctx, cdc, app.ModuleBasics, app.DefaultNodeHome))
-	rootCmd.AddCommand(genutilcli.CollectGenTxsCmd(ctx, cdc, genaccounts.AppModuleBasic{}, app.DefaultNodeHome))
-	rootCmd.AddCommand(genutilcli.MigrateGenesisCmd(ctx, cdc))
-	rootCmd.AddCommand(genutilcli.GenTxCmd(ctx, cdc, app.ModuleBasics, staking.AppModuleBasic{},
+	rootCmd.AddCommand(genutilcli.InitCmd(ctx.ServerContext, cdc, app.ModuleBasics, app.DefaultNodeHome))
+	rootCmd.AddCommand(genutilcli.CollectGenTxsCmd(ctx.ServerContext, cdc, genaccounts.AppModuleBasic{}, app.DefaultNodeHome))
+	rootCmd.AddCommand(genutilcli.MigrateGenesisCmd(ctx.ServerContext, cdc))
+	rootCmd.AddCommand(genutilcli.GenTxCmd(ctx.ServerContext, cdc, app.ModuleBasics, staking.AppModuleBasic{},
 		genaccounts.AppModuleBasic{}, app.DefaultNodeHome, app.DefaultCLIHome))
-	rootCmd.AddCommand(genutilcli.ValidateGenesisCmd(ctx, cdc, app.ModuleBasics))
-	rootCmd.AddCommand(genaccscli.AddGenesisAccountCmd(ctx, cdc, app.DefaultNodeHome, app.DefaultCLIHome))
+	rootCmd.AddCommand(genutilcli.ValidateGenesisCmd(ctx.ServerContext, cdc, app.ModuleBasics))
+	rootCmd.AddCommand(genaccscli.AddGenesisAccountCmd(ctx.ServerContext, cdc, app.DefaultNodeHome, app.DefaultCLIHome))
 	rootCmd.AddCommand(client.NewCompletionCmd(rootCmd, true))
-	rootCmd.AddCommand(testnetCmd(ctx, cdc, app.ModuleBasics, genaccounts.AppModuleBasic{}))
+	rootCmd.AddCommand(testnetCmd(ctx.ServerContext, cdc, app.ModuleBasics, genaccounts.AppModuleBasic{}))
 	rootCmd.AddCommand(replayCmd())
 
-	server.AddCommands(ctx, cdc, rootCmd, newApp, exportAppStateAndTMValidators)
+	server.AddCommands(ctx.ServerContext, cdc, rootCmd, newApp, exportAppStateAndTMValidators)
 
 	// prepare and add flags
 	executor := cli.PrepareBaseCmd(rootCmd, "GA", app.DefaultNodeHome)

@@ -723,6 +723,17 @@ func validateBasicTxMsgs(msgs []sdk.Msg) sdk.Error {
 	return nil
 }
 
+// checkNewMsgsUpgradeHeight ensures there is no future supported msgs
+func checkNewMsgsUpgradeHeight(msgs []sdk.Msg) sdk.Error {
+	for _, msg := range msgs {
+		if !sdk.GlobalUpgradeMgr.MsgCheck(msg.Type()) {
+			return sdk.ErrMsgNotSupported(fmt.Sprintf("%s will be supported after height %d", msg.Type(), sdk.GlobalUpgradeMgr.GetMsgHeight(msg.Type())))
+		}
+	}
+
+	return nil
+}
+
 // retrieve the context for the tx w/ txBytes and other memoized values.
 func (app *BaseApp) getContextForTx(mode runTxMode, txBytes []byte) (ctx sdk.Context) {
 	ctx = app.getState(mode).ctx.
@@ -895,6 +906,9 @@ func (app *BaseApp) runTx(mode runTxMode, txBytes []byte, tx sdk.Tx) (result sdk
 	}()
 
 	var msgs = tx.GetMsgs()
+	if err := checkNewMsgsUpgradeHeight(msgs); err != nil {
+		return err.Result()
+	}
 	if err := validateBasicTxMsgs(msgs); err != nil {
 		return err.Result()
 	}

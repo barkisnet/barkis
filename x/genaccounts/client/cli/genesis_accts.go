@@ -7,9 +7,9 @@ import (
 	"github.com/spf13/viper"
 	"github.com/tendermint/tendermint/libs/cli"
 
+	"github.com/barkisnet/barkis/app/config"
 	"github.com/barkisnet/barkis/client/keys"
 	"github.com/barkisnet/barkis/codec"
-	"github.com/barkisnet/barkis/server"
 	sdk "github.com/barkisnet/barkis/types"
 	"github.com/barkisnet/barkis/x/genaccounts"
 	"github.com/barkisnet/barkis/x/genutil"
@@ -23,7 +23,7 @@ const (
 )
 
 // AddGenesisAccountCmd returns add-genesis-account cobra Command.
-func AddGenesisAccountCmd(ctx *server.Context, cdc *codec.Codec,
+func AddGenesisAccountCmd(ctx *config.ServerContext, cdc *codec.Codec,
 	defaultNodeHome, defaultClientHome string) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "add-genesis-account [address_or_key_name] [coin][,[coin]]",

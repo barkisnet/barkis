@@ -14,6 +14,8 @@ import (
 	"github.com/tendermint/tendermint/p2p"
 	pvm "github.com/tendermint/tendermint/privval"
 	"github.com/tendermint/tendermint/proxy"
+
+	"github.com/barkisnet/barkis/app/config"
 )
 
 // Tendermint full-node start flags
@@ -28,7 +30,7 @@ const (
 
 // StartCmd runs the service passed in, either stand-alone or in-process with
 // Tendermint.
-func StartCmd(ctx *Context, appCreator AppCreator) *cobra.Command {
+func StartCmd(ctx *config.ServerContext, appCreator AppCreator) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "start",
 		Short: "Run the full node",
@@ -61,7 +63,7 @@ func StartCmd(ctx *Context, appCreator AppCreator) *cobra.Command {
 	return cmd
 }
 
-func startStandAlone(ctx *Context, appCreator AppCreator) error {
+func startStandAlone(ctx *config.ServerContext, appCreator AppCreator) error {
 	addr := viper.GetString(flagAddress)
 	home := viper.GetString("home")
 	traceWriterFile := viper.GetString(flagTraceStore)
@@ -103,7 +105,7 @@ func startStandAlone(ctx *Context, appCreator AppCreator) error {
 	return nil
 }
 
-func startInProcess(ctx *Context, appCreator AppCreator) (*node.Node, error) {
+func startInProcess(ctx *config.ServerContext, appCreator AppCreator) (*node.Node, error) {
 	cfg := ctx.Config
 	home := cfg.RootDir
 	traceWriterFile := viper.GetString(flagTraceStore)

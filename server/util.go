@@ -21,45 +21,28 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 	pvm "github.com/tendermint/tendermint/privval"
 
+	"github.com/barkisnet/barkis/app/config"
 	"github.com/barkisnet/barkis/client/flags"
 	"github.com/barkisnet/barkis/codec"
-	"github.com/barkisnet/barkis/server/config"
 	"github.com/barkisnet/barkis/version"
 )
-
-// server context
-type Context struct {
-	Config *cfg.Config
-	Logger log.Logger
-}
-
-func NewDefaultContext() *Context {
-	return NewContext(
-		cfg.DefaultConfig(),
-		log.NewTMLogger(log.NewSyncWriter(os.Stdout)),
-	)
-}
-
-func NewContext(config *cfg.Config, logger log.Logger) *Context {
-	return &Context{config, logger}
-}
 
 //___________________________________________________________________________________
 
 // PersistentPreRunEFn returns a PersistentPreRunE function for cobra
 // that initailizes the passed in context with a properly configured
 // logger and config object.
-func PersistentPreRunEFn(context *Context) func(*cobra.Command, []string) error {
+func PersistentPreRunEFn(context *config.BarkisContext) func(*cobra.Command, []string) error {
 	return func(cmd *cobra.Command, args []string) error {
 		if cmd.Name() == version.Cmd.Name() {
 			return nil
 		}
-		config, err := interceptLoadConfig()
+		err := interceptLoadConfig(context)
 		if err != nil {
 			return err
 		}
 		logger := log.NewTMLogger(log.NewSyncWriter(os.Stdout))
-		logger, err = tmflags.ParseLogLevel(config.LogLevel, logger, cfg.DefaultLogLevel())
+		logger, err = tmflags.ParseLogLevel(context.Config.LogLevel, logger, cfg.DefaultLogLevel())
 		if err != nil {
 			return err
 		}
@@ -67,47 +50,47 @@ func PersistentPreRunEFn(context *Context) func(*cobra.Command, []string) error 
 			logger = log.NewTracingLogger(logger)
 		}
 		logger = logger.With("module", "main")
-		context.Config = config
 		context.Logger = logger
 		return nil
 	}
 }
 
 // If a new config is created, change some of the default tendermint settings
-func interceptLoadConfig() (conf *cfg.Config, err error) {
+func interceptLoadConfig(context *config.BarkisContext) (err error) {
 	tmpConf := cfg.DefaultConfig()
 	err = viper.Unmarshal(tmpConf)
 	if err != nil {
-		// TODO: Handle with #870
 		panic(err)
 	}
 	rootDir := tmpConf.RootDir
 	configFilePath := filepath.Join(rootDir, "config/config.toml")
-	// Intercept only if the file doesn't already exist
+
+	context.Config, err = tcmd.ParseConfig() // NOTE: ParseConfig() creates dir/files as necessary.
+	if err != nil {
+		panic(err)
+	}
 
 	if _, err := os.Stat(configFilePath); os.IsNotExist(err) {
 		// the following parse config is needed to create directories
-		conf, _ = tcmd.ParseConfig() // NOTE: ParseConfig() creates dir/files as necessary.
-		conf.ProfListenAddress = "localhost:6060"
-		conf.P2P.RecvRate = 5120000
-		conf.P2P.SendRate = 5120000
-		conf.TxIndex.IndexAllTags = true
-		conf.Consensus.TimeoutCommit = 5 * time.Second
-		cfg.WriteConfigFile(configFilePath, conf)
+		context.Config, _ = tcmd.ParseConfig() // NOTE: ParseConfig() creates dir/files as necessary.
+		context.Config.ProfListenAddress = "localhost:6060"
+		context.Config.P2P.RecvRate = 5120000
+		context.Config.P2P.SendRate = 5120000
+		context.Config.TxIndex.IndexAllTags = true
+		context.Config.Consensus.TimeoutCommit = 5 * time.Second
+		cfg.WriteConfigFile(configFilePath, context.Config)
 		// Fall through, just so that its parsed into memory.
-	}
-
-	if conf == nil {
-		conf, err = tcmd.ParseConfig() // NOTE: ParseConfig() creates dir/files as necessary.
-		if err != nil {
-			panic(err)
-		}
 	}
 
 	appConfigFilePath := filepath.Join(rootDir, "config/app.toml")
 	if _, err := os.Stat(appConfigFilePath); os.IsNotExist(err) {
 		appConf, _ := config.ParseConfig()
 		config.WriteConfigFile(appConfigFilePath, appConf)
+	} else {
+		err = context.ParseAppConfigInPlace()
+		if err != nil {
+			return err
+		}
 	}
 
 	viper.SetConfigName("app")
@@ -118,7 +101,7 @@ func interceptLoadConfig() (conf *cfg.Config, err error) {
 
 // add server commands
 func AddCommands(
-	ctx *Context, cdc *codec.Codec,
+	ctx *config.ServerContext, cdc *codec.Codec,
 	rootCmd *cobra.Command,
 	appCreator AppCreator, appExport AppExporter) {
 

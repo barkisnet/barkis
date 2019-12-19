@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"io"
 	"os"
 
@@ -9,6 +10,7 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 	dbm "github.com/tendermint/tm-db"
 
+	"github.com/barkisnet/barkis/app/config"
 	bam "github.com/barkisnet/barkis/baseapp"
 	"github.com/barkisnet/barkis/codec"
 	"github.com/barkisnet/barkis/simapp"
@@ -66,6 +68,8 @@ var (
 		staking.NotBondedPoolName: {supply.Burner, supply.Staking},
 		gov.ModuleName:            {supply.Burner},
 	}
+
+	BarkisContext = config.NewDefaultContext()
 )
 
 // custom tx codec
@@ -219,6 +223,7 @@ func NewBarkisApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	app.SetAnteHandler(auth.NewAnteHandler(app.accountKeeper, app.supplyKeeper, auth.DefaultSigVerificationGasConsumer))
 	app.SetEndBlocker(app.EndBlocker)
 
+	app.registerUpgrade()
 	if loadLatest {
 		err := app.LoadLatestVersion(app.keys[bam.MainStoreKey])
 		if err != nil {
@@ -229,14 +234,54 @@ func NewBarkisApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	return app
 }
 
+func (app *BarkisApp) registerUpgrade() {
+	tokenIssue := "TokenIssue"
+	//Register upgrade height
+	sdk.GlobalUpgradeMgr.RegisterUpgradeHeight(tokenIssue , BarkisContext.UpgradeConfig.TokenIssueHeight)
+
+	//Register new store if necessary
+	sdk.GlobalUpgradeMgr.RegisterNewStore(tokenIssue, "token")
+
+	//Register new msg types if necessary
+	sdk.GlobalUpgradeMgr.RegisterNewMsg(tokenIssue, "issueToken", "mintToken")
+
+	//Register BeginBlocker first for upgrade
+	sdk.GlobalUpgradeMgr.RegisterBeginBlockerFirst(tokenIssue, func(ctx sdk.Context) {
+		ctx.Logger().Error(fmt.Sprintf("BeginBlockerFirst for %s", tokenIssue))
+	})
+
+	//Register BeginBlocker last for upgrade
+	sdk.GlobalUpgradeMgr.RegisterBeginBlockerLast(tokenIssue, func(ctx sdk.Context) {
+		ctx.Logger().Error(fmt.Sprintf("BeginBlockerLast for %s", tokenIssue))
+	})
+
+	//Register EndBlocker first for upgrade
+	sdk.GlobalUpgradeMgr.RegisterEndBlockerFirst(tokenIssue, func(ctx sdk.Context) {
+		ctx.Logger().Error(fmt.Sprintf("EndBlockerFirst for %s", tokenIssue))
+	})
+
+	//Register EndBlocker first for upgrade
+	sdk.GlobalUpgradeMgr.RegisterEndBlockerFirst(tokenIssue, func(ctx sdk.Context) {
+		ctx.Logger().Error(fmt.Sprintf("EndBlockerLast for %s", tokenIssue))
+	})
+}
+
 // application updates every begin block
 func (app *BarkisApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
-	return app.mm.BeginBlock(ctx, req)
+	sdk.GlobalUpgradeMgr.SetBlockHeight(ctx.BlockHeight())
+
+	sdk.GlobalUpgradeMgr.BeginBlockersFirst(ctx)
+	response := app.mm.BeginBlock(ctx, req)
+	sdk.GlobalUpgradeMgr.BeginBlockersLast(ctx)
+	return response
 }
 
 // application updates every end block
 func (app *BarkisApp) EndBlocker(ctx sdk.Context, req abci.RequestEndBlock) abci.ResponseEndBlock {
-	return app.mm.EndBlock(ctx, req)
+	sdk.GlobalUpgradeMgr.EndBlockersFirst(ctx)
+	response := app.mm.EndBlock(ctx, req)
+	sdk.GlobalUpgradeMgr.EndBlockersLast(ctx)
+	return response
 }
 
 // application update at chain initialization

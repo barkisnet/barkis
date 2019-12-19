@@ -15,12 +15,13 @@ import (
 	pvm "github.com/tendermint/tendermint/privval"
 	tversion "github.com/tendermint/tendermint/version"
 
+	"github.com/barkisnet/barkis/app/config"
 	"github.com/barkisnet/barkis/codec"
 	sdk "github.com/barkisnet/barkis/types"
 )
 
 // ShowNodeIDCmd - ported from Tendermint, dump node ID to stdout
-func ShowNodeIDCmd(ctx *Context) *cobra.Command {
+func ShowNodeIDCmd(ctx *config.ServerContext) *cobra.Command {
 	return &cobra.Command{
 		Use:   "show-node-id",
 		Short: "Show this node's ID",
@@ -37,7 +38,7 @@ func ShowNodeIDCmd(ctx *Context) *cobra.Command {
 }
 
 // ShowValidator - ported from Tendermint, show this node's validator info
-func ShowValidatorCmd(ctx *Context) *cobra.Command {
+func ShowValidatorCmd(ctx *config.ServerContext) *cobra.Command {
 	cmd := cobra.Command{
 		Use:   "show-validator",
 		Short: "Show this node's tendermint validator info",
@@ -68,7 +69,7 @@ func ShowValidatorCmd(ctx *Context) *cobra.Command {
 }
 
 // ShowAddressCmd - show this node's validator address
-func ShowAddressCmd(ctx *Context) *cobra.Command {
+func ShowAddressCmd(ctx *config.ServerContext) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "show-address",
 		Short: "Shows this node's tendermint validator consensus address",
@@ -94,7 +95,7 @@ func ShowAddressCmd(ctx *Context) *cobra.Command {
 }
 
 // VersionCmd prints tendermint and ABCI version numbers.
-func VersionCmd(ctx *Context) *cobra.Command {
+func VersionCmd(ctx *config.ServerContext) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "version",
 		Short: "Print tendermint libraries' version",
@@ -137,7 +138,7 @@ func printlnJSON(v interface{}) error {
 }
 
 // UnsafeResetAllCmd - extension of the tendermint command, resets initialization
-func UnsafeResetAllCmd(ctx *Context) *cobra.Command {
+func UnsafeResetAllCmd(ctx *config.ServerContext) *cobra.Command {
 	return &cobra.Command{
 		Use:   "unsafe-reset-all",
 		Short: "Resets the blockchain database, removes address book files, and resets priv_validator.json to the genesis state",

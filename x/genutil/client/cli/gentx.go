@@ -18,6 +18,7 @@ import (
 	"github.com/tendermint/tendermint/libs/common"
 	tmtypes "github.com/tendermint/tendermint/types"
 
+	"github.com/barkisnet/barkis/app/config"
 	"github.com/barkisnet/barkis/client"
 	"github.com/barkisnet/barkis/client/context"
 	"github.com/barkisnet/barkis/codec"
@@ -41,7 +42,7 @@ type StakingMsgBuildingHelpers interface {
 
 // GenTxCmd builds the application's gentx command.
 // nolint: errcheck
-func GenTxCmd(ctx *server.Context, cdc *codec.Codec, mbm module.BasicManager, smbh StakingMsgBuildingHelpers,
+func GenTxCmd(ctx *config.ServerContext, cdc *codec.Codec, mbm module.BasicManager, smbh StakingMsgBuildingHelpers,
 	genAccIterator types.GenesisAccountsIterator, defaultNodeHome, defaultCLIHome string) *cobra.Command {
 
 	ipDefault, _ := server.ExternalIP()
