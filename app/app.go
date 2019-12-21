@@ -17,6 +17,7 @@ import (
 	sdk "github.com/barkisnet/barkis/types"
 	"github.com/barkisnet/barkis/types/module"
 	"github.com/barkisnet/barkis/version"
+	"github.com/barkisnet/barkis/x/asset"
 	"github.com/barkisnet/barkis/x/auth"
 	"github.com/barkisnet/barkis/x/bank"
 	"github.com/barkisnet/barkis/x/crisis"
@@ -67,6 +68,7 @@ var (
 		staking.BondedPoolName:    {supply.Burner, supply.Staking},
 		staking.NotBondedPoolName: {supply.Burner, supply.Staking},
 		gov.ModuleName:            {supply.Burner},
+		asset.ModuleName:          {supply.Minter},
 	}
 
 	BarkisContext = config.NewDefaultContext()

@@ -2,6 +2,8 @@ package types
 
 import (
 	"fmt"
+	"regexp"
+
 	sdk "github.com/barkisnet/barkis/types"
 )
 
@@ -9,11 +11,14 @@ const (
 	IssueMsgType = "issueMsg"
 	MintMsgType  = "mintMsg"
 
-	maxTokenNameLength         = 64
+	maxTokenNameLength         = 32
 	maxTokenSymbolLength       = 10
 	maxDecimals                = 10
-	nativeTokenSymbol          = "ubarkis"
-	maxTotalSupply       int64 = 9000000000000000000
+	maxTotalSupply       int64 = 9000000000000000000 // int64 max value: 9,223,372,036,854,775,807
+)
+
+var (
+	isAlpha = regexp.MustCompile(`^[a-zA-Z]+$`).MatchString
 )
 
 var _ sdk.Msg = IssueMsg{}
@@ -50,15 +55,28 @@ func (msg IssueMsg) ValidateBasic() sdk.Error {
 	}
 
 	if len(msg.Name) == 0 || len(msg.Name) > maxTokenNameLength {
-		return sdk.ErrInvalidCoins(fmt.Sprintf("token name length shoud be (0, %d]", maxTokenNameLength))
+		return ErrNoInvalidTokenName(DefaultCodespace, fmt.Sprintf("token name length shoud be in (0, %d]", maxTokenNameLength))
+	}
+	if msg.Name == sdk.DefaultBondDenom {
+		return ErrNoInvalidTokenName(DefaultCodespace, fmt.Sprintf("token name should be identical to native token %s", sdk.DefaultBondDenom))
 	}
 
 	if len(msg.Symbol) == 0 || len(msg.Symbol) > maxTokenSymbolLength {
-		return sdk.ErrInvalidCoins(fmt.Sprintf("token symbol length shoud be (0, %d]", maxTokenSymbolLength))
+		return ErrInvalidTokenSymbol(DefaultCodespace, fmt.Sprintf("token symbol length shoud be in (0, %d]", maxTokenSymbolLength))
+	}
+	if msg.Symbol == sdk.DefaultBondDenom {
+		return ErrInvalidTokenSymbol(DefaultCodespace, fmt.Sprintf("token symbol should be identical to native token %s", sdk.DefaultBondDenom))
+	}
+	if !isAlpha(msg.Symbol) {
+		return ErrInvalidTokenSymbol(DefaultCodespace, "token symbol should only contains alphabet")
 	}
 
-	if msg.TotalSupply <= 0 || msg.TotalSupply > maxTotalSupply {
-		return sdk.ErrInvalidCoins(fmt.Sprintf("total supply should be less than or equal to %d", maxTotalSupply))
+	if msg.TotalSupply < 0 || msg.TotalSupply > maxTotalSupply {
+		return ErrInvalidTotalSupply(DefaultCodespace, fmt.Sprintf("total supply should be in [0, %d]", maxTotalSupply))
+	}
+
+	if msg.Decimals < 0 || msg.Decimals > maxDecimals {
+		return ErrInvalidDecimal(DefaultCodespace, fmt.Sprintf("total supply should be in [0, %d]", maxDecimals))
 	}
 
 	return nil
@@ -89,9 +107,19 @@ func (msg MintMsg) ValidateBasic() sdk.Error {
 	if msg.From == nil {
 		return sdk.ErrInvalidAddress("sender address cannot be empty")
 	}
-	if msg.Amount <= 0 || msg.Amount > maxTotalSupply {
-		return sdk.ErrInvalidCoins(fmt.Sprintf("total supply should be less than or equal to %d", maxTotalSupply))
+
+	if len(msg.Symbol) == 0 || len(msg.Symbol) > maxTokenSymbolLength {
+		return ErrInvalidTokenSymbol(DefaultCodespace, fmt.Sprintf("token symbol length shoud be in (0, %d]", maxTokenSymbolLength))
+	}
+	if msg.Symbol == sdk.DefaultBondDenom {
+		return ErrInvalidTokenSymbol(DefaultCodespace, fmt.Sprintf("token symbol should be identical to native token %s", sdk.DefaultBondDenom))
+	}
+	if !isAlpha(msg.Symbol) {
+		return ErrInvalidTokenSymbol(DefaultCodespace, "token symbol should only contains alphabet")
 	}
 
+	if msg.Amount <= 0 || msg.Amount > maxTotalSupply {
+		return ErrInvalidMintAmount(DefaultCodespace, fmt.Sprintf("mint amount should be in (0, %d]", maxTotalSupply))
+	}
 	return nil
 }

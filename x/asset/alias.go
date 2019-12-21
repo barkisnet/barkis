@@ -16,7 +16,7 @@ const (
 var (
 	// functions aliases
 	RegisterCodec = types.RegisterCodec
-	NewKeeper    = keeper.NewKeeper
+	NewKeeper     = keeper.NewKeeper
 	NewQuerier    = keeper.NewQuerier
 
 	// variable aliases
