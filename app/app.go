@@ -1,7 +1,6 @@
 package app
 
 import (
-	"fmt"
 	"io"
 	"os"
 
@@ -271,11 +270,7 @@ func (app *BarkisApp) registerUpgrade() {
 
 	//Register BeginBlocker first for upgrade
 	sdk.GlobalUpgradeMgr.RegisterBeginBlockerFirst(sdk.TokenIssueUpgrade, func(ctx sdk.Context) {
-		assetParamSubspace, ok := app.paramsKeeper.GetSubspace(asset.ModuleName)
-		if !ok {
-			panic(fmt.Sprintf("failed to load param subspace for asset module"))
-		}
-		assetParamSubspace.Set(ctx, asset.ParamKeyMaxDecimal, 10)
+		app.assetKeeper.SetParams(ctx, asset.NewParams(10))
 	})
 }
 

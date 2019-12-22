@@ -33,7 +33,7 @@ func NewHandler(k Keeper) sdk.Handler {
 
 func handleIssueMsg(ctx sdk.Context, k Keeper, msg IssueMsg) sdk.Result {
 	maxDecimal := k.GetMaxDecimal(ctx)
-	if msg.Decimals > maxDecimal {
+	if msg.Decimal > maxDecimal {
 		return types.ErrInvalidDecimal(types.DefaultCodespace, fmt.Sprintf("token decimal should not greater than %d", maxDecimal)).Result()
 	}
 	if k.IsTokenExist(ctx, strings.ToUpper(msg.Symbol)) {
@@ -43,7 +43,7 @@ func handleIssueMsg(ctx sdk.Context, k Keeper, msg IssueMsg) sdk.Result {
 	txHashStr := strings.ToUpper(hex.EncodeToString(txHash))
 	suffix := txHashStr[:types.TokenSymbolSuffixLen]
 
-	token := types.NewToken(strings.ToUpper(msg.Symbol)+suffix, msg.Name, msg.Decimals, msg.TotalSupply, msg.Mintable, msg.Description, msg.From)
+	token := types.NewToken(strings.ToUpper(msg.Symbol)+suffix, msg.Name, msg.Decimal, msg.TotalSupply, msg.Mintable, msg.Description, msg.From)
 	k.SetToken(ctx, token)
 
 	mintedToken := sdk.Coins{sdk.NewCoin(token.Symbol, sdk.NewInt(token.TotalSupply))}

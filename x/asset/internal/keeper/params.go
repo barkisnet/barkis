@@ -21,6 +21,12 @@ type Params struct {
 	MaxDecimal int8 `json:"param_max_decimal"`
 }
 
+func NewParams(decimal int8) *Params {
+	return &Params{
+		MaxDecimal: decimal,
+	}
+}
+
 // ParamTable for issuing new assets
 func ParamKeyTable() params.KeyTable {
 	return params.NewKeyTable().RegisterParamSet(&Params{})
@@ -44,4 +50,14 @@ func (k Keeper) GetMaxDecimal(ctx sdk.Context) int8 {
 // nolint: errcheck
 func (k Keeper) SetMaxDecimal(ctx sdk.Context, maxDecimal int8) {
 	k.paramSpace.Set(ctx, ParamKeyMaxDecimal, &maxDecimal)
+}
+
+// Get all parameteras as Params
+func (k Keeper) GetParams(ctx sdk.Context) *Params {
+	return NewParams(k.GetMaxDecimal(ctx))
+}
+
+// set the params
+func (k Keeper) SetParams(ctx sdk.Context, params *Params) {
+	k.paramSpace.SetParamSet(ctx, params)
 }

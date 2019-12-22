@@ -31,7 +31,7 @@ func NewKeeper(cdc *codec.Codec, key sdk.StoreKey, paramSpace params.Subspace, s
 func (k *Keeper) SetToken(ctx sdk.Context, token *types.Token) {
 	store := ctx.KVStore(k.storeKey)
 	tokenKey := types.BuildTokenKey(token.Symbol)
-	store.Set(tokenKey, k.serializeToken(token))
+	store.Set(tokenKey, k.SerializeToken(token))
 }
 
 func (k *Keeper) GetToken(ctx sdk.Context, symbol string) *types.Token {
@@ -41,7 +41,12 @@ func (k *Keeper) GetToken(ctx sdk.Context, symbol string) *types.Token {
 	if bz == nil {
 		return nil
 	}
-	return k.decodeToToken(bz)
+	return k.DecodeToToken(bz)
+}
+
+func (k *Keeper) ListAllToken(ctx sdk.Context) sdk.Iterator {
+	store := ctx.KVStore(k.storeKey)
+	return sdk.KVStorePrefixIterator(store, types.TokenKeyPrefix)
 }
 
 func (k *Keeper) IsTokenExist(ctx sdk.Context, symbol string) bool {
@@ -50,7 +55,7 @@ func (k *Keeper) IsTokenExist(ctx sdk.Context, symbol string) bool {
 	return store.Has(tokenKey)
 }
 
-func (k *Keeper) serializeToken(token *types.Token) []byte {
+func (k *Keeper) SerializeToken(token *types.Token) []byte {
 	bz, err := k.cdc.MarshalBinaryLengthPrefixed(*token)
 	if err != nil {
 		panic(err)
@@ -58,7 +63,7 @@ func (k *Keeper) serializeToken(token *types.Token) []byte {
 	return bz
 }
 
-func (k *Keeper) decodeToToken(bz []byte) *types.Token {
+func (k *Keeper) DecodeToToken(bz []byte) *types.Token {
 	var token types.Token
 	err := k.cdc.UnmarshalBinaryLengthPrefixed(bz, &token)
 	if err != nil {

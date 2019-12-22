@@ -18,6 +18,7 @@ var (
 	RegisterCodec = types.RegisterCodec
 	NewKeeper     = keeper.NewKeeper
 	NewQuerier    = keeper.NewQuerier
+	NewParams     = keeper.NewParams
 
 	// variable aliases
 	ModuleCdc = types.ModuleCdc
