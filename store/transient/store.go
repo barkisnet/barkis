@@ -32,6 +32,9 @@ func (ts *Store) Commit() (id types.CommitID) {
 func (ts *Store) SetPruning(pruning types.PruningOptions) {
 }
 
+func (ts *Store) SetVersion(version int64) {
+}
+
 // Implements CommitStore
 func (ts *Store) LastCommitID() (id types.CommitID) {
 	return

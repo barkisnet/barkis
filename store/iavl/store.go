@@ -140,6 +140,13 @@ func (st *Store) SetPruning(opt types.PruningOptions) {
 	st.storeEvery = opt.KeepEvery()
 }
 
+func (st *Store) SetVersion(version int64) {
+	err := st.tree.SetVersion(version)
+	if err != nil {
+		panic(err)
+	}
+}
+
 // VersionExists returns whether or not a given version is stored.
 func (st *Store) VersionExists(version int64) bool {
 	return st.tree.VersionExists(version)
