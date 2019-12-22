@@ -7,12 +7,18 @@ import (
 
 // GenesisState is the bank state that must be provided at genesis.
 type GenesisState struct {
-	Tokens []*types.Token `json:"tokens"`
+	Params *types.Params  `json:"params" yaml:"params"`
+	Tokens []*types.Token `json:"tokens" yaml:"tokens"`
 }
 
 // NewGenesisState creates a new genesis state.
 func NewGenesisState() GenesisState {
 	return GenesisState{
+		Params: &types.Params{
+			MaxDecimal: 0,
+			IssueFee:   nil,
+			MintFee:    nil,
+		},
 		Tokens: nil,
 	}
 }
@@ -25,6 +31,7 @@ func InitGenesis(ctx sdk.Context, keeper Keeper, data GenesisState) {
 	for _, token := range data.Tokens {
 		keeper.SetToken(ctx, token)
 	}
+	keeper.SetParams(ctx, data.Params)
 }
 
 // ExportGenesis returns a GenesisState for a given context and keeper.
@@ -39,6 +46,7 @@ func ExportGenesis(ctx sdk.Context, keeper Keeper) GenesisState {
 	}
 
 	return GenesisState{
+		Params: keeper.GetParams(ctx),
 		Tokens: tokens,
 	}
 }
@@ -51,6 +59,9 @@ func ValidateGenesis(data GenesisState) error {
 		if err != nil {
 			return err
 		}
+	}
+	if err := data.Params.Validate(); err != nil {
+		return err
 	}
 	return nil
 }

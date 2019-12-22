@@ -18,12 +18,11 @@ var (
 	RegisterCodec = types.RegisterCodec
 	NewKeeper     = keeper.NewKeeper
 	NewQuerier    = keeper.NewQuerier
-	NewParams     = keeper.NewParams
+	NewParams     = types.NewParams
 
 	// variable aliases
 	ModuleCdc = types.ModuleCdc
 	StoreKey  = types.StoreKey
-	ParamKeyMaxDecimal = keeper.ParamKeyMaxDecimal
 )
 
 type (
