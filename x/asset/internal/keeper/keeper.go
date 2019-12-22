@@ -1,35 +1,68 @@
 package keeper
 
 import (
-	"fmt"
+	"github.com/barkisnet/barkis/codec"
 	sdk "github.com/barkisnet/barkis/types"
 	"github.com/barkisnet/barkis/x/asset/internal/types"
 	"github.com/barkisnet/barkis/x/params"
-	"github.com/barkisnet/barkis/codec"
 )
 
 // Keeper of the distribution store
 type Keeper struct {
-	storeKey      sdk.StoreKey
-	cdc           *codec.Codec
-	paramSpace    params.Subspace
-	supplyKeeper types.SupplyKeeper
-	codespace sdk.CodespaceType
+	storeKey     sdk.StoreKey
+	cdc          *codec.Codec
+	paramSpace   params.Subspace
+	SupplyKeeper types.SupplyKeeper
+	codespace    sdk.CodespaceType
 }
 
 // NewKeeper creates a new distribution Keeper instance
 func NewKeeper(cdc *codec.Codec, key sdk.StoreKey, paramSpace params.Subspace, supplyKeeper types.SupplyKeeper, codespace sdk.CodespaceType) Keeper {
 
-	// ensure distribution module account is set
-	if addr := supplyKeeper.GetModuleAddress(types.ModuleName); addr == nil {
-		panic(fmt.Sprintf("%s module account has not been set", types.ModuleName))
-	}
-
 	return Keeper{
-		storeKey:         key,
-		cdc:              cdc,
-		paramSpace:       paramSpace.WithKeyTable(types.ParamKeyTable()),
-		supplyKeeper:     supplyKeeper,
-		codespace:        codespace,
+		storeKey:     key,
+		cdc:          cdc,
+		paramSpace:   paramSpace.WithKeyTable(ParamKeyTable()),
+		SupplyKeeper: supplyKeeper,
+		codespace:    codespace,
 	}
+}
+
+func (k *Keeper) SetToken(ctx sdk.Context, token *types.Token) {
+	store := ctx.KVStore(k.storeKey)
+	tokenKey := types.BuildTokenKey(token.Symbol)
+	store.Set(tokenKey, k.serializeToken(token))
+}
+
+func (k *Keeper) GetToken(ctx sdk.Context, symbol string) *types.Token {
+	store := ctx.KVStore(k.storeKey)
+	tokenKey := types.BuildTokenKey(symbol)
+	bz := store.Get(tokenKey)
+	if bz == nil {
+		return nil
+	}
+	return k.decodeToToken(bz)
+}
+
+func (k *Keeper) IsTokenExist(ctx sdk.Context, symbol string) bool {
+	store := ctx.KVStore(k.storeKey)
+	tokenKey := types.BuildTokenKey(symbol)
+	return store.Has(tokenKey)
+}
+
+func (k *Keeper) serializeToken(token *types.Token) []byte {
+	bz, err := k.cdc.MarshalBinaryLengthPrefixed(*token)
+	if err != nil {
+		panic(err)
+	}
+	return bz
+}
+
+func (k *Keeper) decodeToToken(bz []byte) *types.Token {
+	var token types.Token
+	err := k.cdc.UnmarshalBinaryLengthPrefixed(bz, &token)
+	if err != nil {
+		panic(err)
+	}
+	return &token
 }

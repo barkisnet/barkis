@@ -7,6 +7,8 @@ import (
 
 // SupplyKeeper defines the expected supply keeper
 type SupplyKeeper interface {
+	GetModuleAddress(moduleName string) sdk.AccAddress
+	GetModuleAccountAndPermissions(ctx sdk.Context, moduleName string) (supplyexported.ModuleAccountI, []string)
 	GetModuleAccount(ctx sdk.Context, name string) supplyexported.ModuleAccountI
 	SetModuleAccount(sdk.Context, supplyexported.ModuleAccountI)
 	SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) sdk.Error

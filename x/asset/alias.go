@@ -10,7 +10,7 @@ const (
 	ModuleName        = types.ModuleName
 	RouterKey         = types.RouterKey
 	QuerierRoute      = types.QuerierRoute
-	DefaultParamspace = types.DefaultParamspace
+	DefaultParamspace = keeper.DefaultParamspace
 )
 
 var (

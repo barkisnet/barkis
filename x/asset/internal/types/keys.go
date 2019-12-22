@@ -4,18 +4,24 @@ const (
 	// module name
 	ModuleName = "asset"
 
-	// StoreKey is the store key string for slashing
+	// StoreKey is the store key string for asset
 	StoreKey = ModuleName
 
-	// RouterKey is the message route for slashing
+	// RouterKey is the message route for asset
 	RouterKey = ModuleName
 
-	// QuerierRoute is the querier route for slashing
+	// QuerierRoute is the querier route for asset
 	QuerierRoute = ModuleName
 )
 
-// Query endpoints supported by the slashing querier
-const (
+var (
+	TokenKeyPrefix = []byte{0x01}
+
+	ParamStoreKeyMaxDecimal = []byte("MaxDecimal")
 )
+
+func BuildTokenKey(symbol string) []byte {
+	return append(TokenKeyPrefix, []byte(symbol)...)
+}
 
 
