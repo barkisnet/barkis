@@ -21,6 +21,8 @@ var (
 
 	// variable aliases
 	ModuleCdc = types.ModuleCdc
+	StoreKey  = types.StoreKey
+	ParamKeyMaxDecimal = keeper.ParamKeyMaxDecimal
 )
 
 type (

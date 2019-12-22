@@ -4,6 +4,7 @@ import "fmt"
 
 const (
 	RewardUpgrade = "RewardUpgrade"
+	TokenIssueUpgrade = "TokenIssueUpgrade"
 )
 
 var GlobalUpgradeMgr = NewUpgradeManager()

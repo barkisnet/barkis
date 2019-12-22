@@ -58,6 +58,7 @@ var (
 		crisis.AppModuleBasic{},
 		slashing.AppModuleBasic{},
 		supply.AppModuleBasic{},
+		asset.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -108,6 +109,7 @@ type BarkisApp struct {
 	govKeeper      gov.Keeper
 	crisisKeeper   crisis.Keeper
 	paramsKeeper   params.Keeper
+	assetKeeper    asset.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -126,7 +128,7 @@ func NewBarkisApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	keys := sdk.NewKVStoreKeys(
 		bam.MainStoreKey, auth.StoreKey, staking.StoreKey,
 		supply.StoreKey, mint.StoreKey, distr.StoreKey, slashing.StoreKey,
-		gov.StoreKey, params.StoreKey,
+		gov.StoreKey, params.StoreKey, asset.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(staking.TStoreKey, params.TStoreKey)
 
@@ -148,6 +150,7 @@ func NewBarkisApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	slashingSubspace := app.paramsKeeper.Subspace(slashing.DefaultParamspace)
 	govSubspace := app.paramsKeeper.Subspace(gov.DefaultParamspace)
 	crisisSubspace := app.paramsKeeper.Subspace(crisis.DefaultParamspace)
+	assetSubspace := app.paramsKeeper.Subspace(asset.DefaultParamspace)
 
 	// add keepers
 	app.accountKeeper = auth.NewAccountKeeper(app.cdc, keys[auth.StoreKey], authSubspace, auth.ProtoBaseAccount)
@@ -181,6 +184,8 @@ func NewBarkisApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 		staking.NewMultiStakingHooks(app.distrKeeper.Hooks(), app.slashingKeeper.Hooks()),
 	)
 
+	app.assetKeeper = asset.NewKeeper(cdc, keys[asset.StoreKey], assetSubspace, app.supplyKeeper, asset.DefaultCodespace)
+
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
 	app.mm = module.NewManager(
@@ -195,6 +200,7 @@ func NewBarkisApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 		mint.NewAppModule(app.mintKeeper),
 		slashing.NewAppModule(app.slashingKeeper, app.stakingKeeper),
 		staking.NewAppModule(app.stakingKeeper, app.distrKeeper, app.accountKeeper, app.supplyKeeper),
+		asset.NewAppModule(app.assetKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -209,7 +215,7 @@ func NewBarkisApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	app.mm.SetOrderInitGenesis(
 		genaccounts.ModuleName, distr.ModuleName, staking.ModuleName,
 		auth.ModuleName, bank.ModuleName, slashing.ModuleName, gov.ModuleName,
-		mint.ModuleName, supply.ModuleName, crisis.ModuleName, genutil.ModuleName,
+		mint.ModuleName, supply.ModuleName, crisis.ModuleName, genutil.ModuleName, asset.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.crisisKeeper)
@@ -253,6 +259,23 @@ func (app *BarkisApp) registerUpgrade() {
 		mintSubspace.UpdateKeyTable(mint.UpdatedParamKeyTable())
 		app.distrKeeper.SetBonusProposerReward(ctx, bonusProposerReward)
 		app.mintKeeper.SetUnfreezeAmountPerBlock(ctx, 431000)
+	})
+
+	sdk.GlobalUpgradeMgr.RegisterUpgradeHeight(sdk.TokenIssueUpgrade, BarkisContext.UpgradeConfig.TokenIssueHeight)
+
+	//Register new store if necessary
+	sdk.GlobalUpgradeMgr.RegisterNewStore(sdk.TokenIssueUpgrade, asset.StoreKey)
+
+	//Register new msg types if necessary
+	sdk.GlobalUpgradeMgr.RegisterNewMsg(sdk.TokenIssueUpgrade, asset.IssueMsg{}.Type(), asset.MintMsg{}.Type())
+
+	//Register BeginBlocker first for upgrade
+	sdk.GlobalUpgradeMgr.RegisterBeginBlockerFirst(sdk.TokenIssueUpgrade, func(ctx sdk.Context) {
+		assetParamSubspace, ok := app.paramsKeeper.GetSubspace(asset.ModuleName)
+		if !ok {
+			panic(fmt.Sprintf("failed to load param subspace for asset module"))
+		}
+		assetParamSubspace.Set(ctx, asset.ParamKeyMaxDecimal, 10)
 	})
 }
 

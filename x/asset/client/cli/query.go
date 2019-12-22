@@ -8,17 +8,18 @@ import (
 	"github.com/barkisnet/barkis/x/asset/internal/types"
 )
 
-// GetTxCmd returns the transaction commands for this module
-func GetTxCmd(cdc *codec.Codec) *cobra.Command {
-	txCmd := &cobra.Command{
+func GetQueryCmd(queryRoute string, cdc *codec.Codec) *cobra.Command {
+	distQueryCmd := &cobra.Command{
 		Use:                        types.ModuleName,
-		Short:                      "Transaction commands for the asset module",
+		Short:                      "Querying commands for the asset module",
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,
 	}
-	txCmd.AddCommand(client.PostCommands(
+
+	distQueryCmd.AddCommand(client.GetCommands(
 
 	)...)
-	return txCmd
+
+	return distQueryCmd
 }
