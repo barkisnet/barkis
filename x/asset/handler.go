@@ -43,7 +43,7 @@ func handleIssueMsg(ctx sdk.Context, k Keeper, msg IssueMsg) sdk.Result {
 	txHashStr := strings.ToLower(hex.EncodeToString(txHash))
 	suffix := txHashStr[:types.TokenSymbolSuffixLen]
 
-	token := types.NewToken(strings.ToLower(msg.Symbol) + "-" + suffix, msg.Name, msg.Decimal, msg.TotalSupply, msg.Mintable, msg.Description, msg.From)
+	token := types.NewToken(strings.ToLower(msg.Symbol) + types.TokenJoiner + suffix, msg.Name, msg.Decimal, msg.TotalSupply, msg.Mintable, msg.Description, msg.From)
 	k.SetToken(ctx, token)
 
 	mintedToken := sdk.Coins{sdk.NewCoin(token.Symbol, sdk.NewInt(token.TotalSupply))}

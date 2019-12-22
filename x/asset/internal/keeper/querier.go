@@ -17,9 +17,9 @@ func NewQuerier(k Keeper) sdk.Querier {
 		switch path[0] {
 		case assetTypes.QueryParams:
 			return queryParams(ctx, path[1:], req, k)
-		case assetTypes.QueryToken:
+		case assetTypes.GetToken:
 			return queryToken(ctx, path[1:], req, k)
-		case assetTypes.QueryList:
+		case assetTypes.ListToken:
 			return listToken(ctx, path[1:], req, k)
 		default:
 			return nil, sdk.ErrUnknownRequest("unknown asset query endpoint")
@@ -43,7 +43,7 @@ func queryToken(ctx sdk.Context, path []string, req abci.RequestQuery, k Keeper)
 	if len(path) < 1 {
 		return nil, sdk.ErrUnknownRequest("wrong query request")
 	}
-	tokenSymbol := path[1]
+	tokenSymbol := path[0]
 	token := k.GetToken(ctx, tokenSymbol)
 	if token == nil {
 		return nil, sdk.ErrUnknownRequest(fmt.Sprintf("token %s is not exist", tokenSymbol))

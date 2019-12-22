@@ -3,9 +3,9 @@ package types
 // querier keys
 const (
 	DefaultQueryLimit = 100
-	QueryParams = "params"
-	QueryToken  = "get"
-	QueryList   = "list"
+	QueryParams       = "params"
+	GetToken          = "get"
+	ListToken         = "list"
 )
 
 // QueryTokensParams defines the params for the following queries:

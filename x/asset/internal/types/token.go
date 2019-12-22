@@ -8,6 +8,10 @@ import (
 	sdk "github.com/barkisnet/barkis/types"
 )
 
+const (
+	TokenJoiner = "_"
+)
+
 var (
 	isAlpha  = regexp.MustCompile(`^[a-z]+$`).MatchString
 	isTxHash = regexp.MustCompile(`^[a-f0-9]+$`).MatchString
@@ -104,7 +108,7 @@ func validateOriginalTokenSymbol(symbol string) error {
 }
 
 func validateTokenSymbol(symbol string) error {
-	symbolPaths := strings.Split(symbol, "-")
+	symbolPaths := strings.Split(symbol, TokenJoiner)
 	if len(symbolPaths) != 2 {
 		return fmt.Errorf("valid token symbol should be XXX-YYY")
 	}

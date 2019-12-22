@@ -77,7 +77,7 @@ func GetTokenCmd(queryRoute string, cdc *codec.Codec) *cobra.Command {
 
 			symbol := args[0]
 
-			resp, _, err := cliCtx.Query(fmt.Sprintf("custom/%s/%s/%s", queryRoute, types.QueryToken, symbol))
+			resp, _, err := cliCtx.Query(fmt.Sprintf("custom/%s/%s/%s", queryRoute, types.GetToken, symbol))
 			if err != nil {
 				return err
 			}
@@ -114,7 +114,7 @@ func ListTokenCmd(queryRoute string, cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 
-			resp, _, err := cliCtx.QueryWithData(fmt.Sprintf("custom/%s/%s", queryRoute, types.QueryList), bz)
+			resp, _, err := cliCtx.QueryWithData(fmt.Sprintf("custom/%s/%s", queryRoute, types.ListToken), bz)
 			if err != nil {
 				return err
 			}
