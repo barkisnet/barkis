@@ -270,7 +270,10 @@ func (app *BarkisApp) registerUpgrade() {
 
 	//Register BeginBlocker first for upgrade
 	sdk.GlobalUpgradeMgr.RegisterBeginBlockerFirst(sdk.TokenIssueUpgrade, func(ctx sdk.Context) {
-		app.assetKeeper.SetParams(ctx, asset.NewParams(10))
+		maxTokenDecimal := int8(10)
+		issueFee := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10000000000))) //10000barkis
+		mintFee := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(5000000000))) //5000barkis
+		app.assetKeeper.SetParams(ctx, asset.NewParams(maxTokenDecimal, issueFee, mintFee))
 	})
 }
 

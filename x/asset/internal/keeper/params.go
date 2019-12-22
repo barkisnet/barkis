@@ -6,9 +6,10 @@ import (
 	"github.com/barkisnet/barkis/x/params"
 )
 
-
 var (
 	ParamKeyMaxDecimal = []byte("paramMaxDecimal")
+	ParamKeyIssueFee   = []byte("paramIssueFee")
+	ParamKeyMintFee    = []byte("paramMintFee")
 )
 
 const (
@@ -18,12 +19,16 @@ const (
 
 // issue new assets parameters
 type Params struct {
-	MaxDecimal int8 `json:"param_max_decimal"`
+	MaxDecimal int8      `json:"param_max_decimal"`
+	IssueFee   sdk.Coins `json:"issue_fee"`
+	MintFee    sdk.Coins `json:"mint_fee"`
 }
 
-func NewParams(decimal int8) *Params {
+func NewParams(decimal int8, issueFee, mintFee sdk.Coins) *Params {
 	return &Params{
 		MaxDecimal: decimal,
+		IssueFee:   issueFee,
+		MintFee:    mintFee,
 	}
 }
 
@@ -36,10 +41,11 @@ func ParamKeyTable() params.KeyTable {
 func (p *Params) ParamSetPairs() params.ParamSetPairs {
 	return params.ParamSetPairs{
 		{ParamKeyMaxDecimal, &p.MaxDecimal},
+		{ParamKeyIssueFee, &p.IssueFee},
+		{ParamKeyMintFee, &p.MintFee},
 	}
 }
 
-// returns the current CommunityTax rate from the global param store
 // nolint: errcheck
 func (k Keeper) GetMaxDecimal(ctx sdk.Context) int8 {
 	var maxDecimal int8
@@ -52,9 +58,33 @@ func (k Keeper) SetMaxDecimal(ctx sdk.Context, maxDecimal int8) {
 	k.paramSpace.Set(ctx, ParamKeyMaxDecimal, &maxDecimal)
 }
 
+// nolint: errcheck
+func (k Keeper) GetIssueFee(ctx sdk.Context) sdk.Coins {
+	var issueFee sdk.Coins
+	k.paramSpace.Get(ctx, ParamKeyMaxDecimal, &issueFee)
+	return issueFee
+}
+
+// nolint: errcheck
+func (k Keeper) SetIssueFee(ctx sdk.Context, issueFee sdk.Coins) {
+	k.paramSpace.Set(ctx, ParamKeyMaxDecimal, &issueFee)
+}
+
+// nolint: errcheck
+func (k Keeper) GetMintFee(ctx sdk.Context) sdk.Coins {
+	var mintFee sdk.Coins
+	k.paramSpace.Get(ctx, ParamKeyMaxDecimal, &mintFee)
+	return mintFee
+}
+
+// nolint: errcheck
+func (k Keeper) SetMintFee(ctx sdk.Context, mintFee sdk.Coins) {
+	k.paramSpace.Set(ctx, ParamKeyMaxDecimal, &mintFee)
+}
+
 // Get all parameteras as Params
 func (k Keeper) GetParams(ctx sdk.Context) *Params {
-	return NewParams(k.GetMaxDecimal(ctx))
+	return NewParams(k.GetMaxDecimal(ctx), k.GetIssueFee(ctx), k.GetMintFee(ctx))
 }
 
 // set the params

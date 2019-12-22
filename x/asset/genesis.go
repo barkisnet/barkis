@@ -7,13 +7,13 @@ import (
 
 // GenesisState is the bank state that must be provided at genesis.
 type GenesisState struct {
-	Assets []*types.Token `json:"assets"`
+	Tokens []*types.Token `json:"tokens"`
 }
 
 // NewGenesisState creates a new genesis state.
 func NewGenesisState() GenesisState {
 	return GenesisState{
-		Assets: nil,
+		Tokens: nil,
 	}
 }
 
@@ -22,31 +22,31 @@ func DefaultGenesisState() GenesisState { return NewGenesisState() }
 
 // InitGenesis sets distribution information for genesis.
 func InitGenesis(ctx sdk.Context, keeper Keeper, data GenesisState) {
-	for _, token := range data.Assets {
+	for _, token := range data.Tokens {
 		keeper.SetToken(ctx, token)
 	}
 }
 
 // ExportGenesis returns a GenesisState for a given context and keeper.
 func ExportGenesis(ctx sdk.Context, keeper Keeper) GenesisState {
-	iter := keeper.ListAllToken(ctx)
+	iter := keeper.ListToken(ctx)
 	defer iter.Close()
 
-	var assets []*types.Token
+	var tokens []*types.Token
 	for ; iter.Valid(); iter.Next() {
 		token := keeper.DecodeToToken(iter.Value())
-		assets = append(assets, token)
+		tokens = append(tokens, token)
 	}
 
 	return GenesisState{
-		Assets: assets,
+		Tokens: tokens,
 	}
 }
 
 // ValidateGenesis performs basic validation of bank genesis data returning an
 // error for any failed validation criteria.
 func ValidateGenesis(data GenesisState) error {
-	for _, token := range data.Assets {
+	for _, token := range data.Tokens {
 		err := types.ValidateToken(token)
 		if err != nil {
 			return err

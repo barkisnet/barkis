@@ -44,7 +44,7 @@ func (k *Keeper) GetToken(ctx sdk.Context, symbol string) *types.Token {
 	return k.DecodeToToken(bz)
 }
 
-func (k *Keeper) ListAllToken(ctx sdk.Context) sdk.Iterator {
+func (k *Keeper) ListToken(ctx sdk.Context) sdk.Iterator {
 	store := ctx.KVStore(k.storeKey)
 	return sdk.KVStorePrefixIterator(store, types.TokenKeyPrefix)
 }
