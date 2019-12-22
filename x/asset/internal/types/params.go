@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+
 	sdk "github.com/barkisnet/barkis/types"
 	"github.com/barkisnet/barkis/x/params"
 )
@@ -17,6 +18,13 @@ type Params struct {
 	MaxDecimal int8      `json:"param_max_decimal"`
 	IssueFee   sdk.Coins `json:"param_issue_fee"`
 	MintFee    sdk.Coins `json:"param_mint_fee"`
+}
+
+func (params Params) String() string {
+	return fmt.Sprintf(`Asset parameters:
+  MaxDecimal:   %d
+  IssueFee:     %s
+  MintFee:      %s`, params.MaxDecimal, params.IssueFee.String(), params.MintFee.String())
 }
 
 func NewParams(decimal int8, issueFee, mintFee sdk.Coins) *Params {

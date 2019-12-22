@@ -19,8 +19,10 @@ func NewQuerier(k Keeper) sdk.Querier {
 			return queryParams(ctx, path[1:], req, k)
 		case assetTypes.QueryToken:
 			return queryToken(ctx, path[1:], req, k)
+		case assetTypes.QueryList:
+			return listToken(ctx, path[1:], req, k)
 		default:
-			return nil, sdk.ErrUnknownRequest("unknown staking query endpoint")
+			return nil, sdk.ErrUnknownRequest("unknown asset query endpoint")
 		}
 	}
 }

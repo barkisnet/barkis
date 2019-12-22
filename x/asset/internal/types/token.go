@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	isAlpha  = regexp.MustCompile(`^[a-zA-Z]+$`).MatchString
-	isTxHash = regexp.MustCompile(`^[a-fA-F0-9]+$`).MatchString
+	isAlpha  = regexp.MustCompile(`^[a-z]+$`).MatchString
+	isTxHash = regexp.MustCompile(`^[a-f0-9]+$`).MatchString
 )
 
 type Token struct {
@@ -34,6 +34,27 @@ func NewToken(symbol, name string, decimal int8, totalSupply int64,
 		Description: description,
 		Owner:       owner,
 	}
+}
+
+func (token *Token) String() string {
+	return fmt.Sprintf(`Token:
+  name:          %s
+  symbol:      %s
+  Decimal:      %d
+  TotalSupply:    %d
+  Mintable: %t
+  Owner: %s
+  Description:   %s`, token.Name, token.Symbol, token.Decimal,
+		token.TotalSupply, token.Mintable, token.Owner.String(), token.Description)
+}
+
+type TokenList []*Token
+
+func (tokenList TokenList) String() (out string) {
+	for _, token := range tokenList {
+		out += token.String() + "\n"
+	}
+	return strings.TrimSpace(out)
 }
 
 func ValidateToken(token *Token) error {

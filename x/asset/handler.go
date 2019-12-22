@@ -36,14 +36,14 @@ func handleIssueMsg(ctx sdk.Context, k Keeper, msg IssueMsg) sdk.Result {
 	if msg.Decimal > maxDecimal {
 		return types.ErrInvalidDecimal(types.DefaultCodespace, fmt.Sprintf("token decimal should not greater than %d", maxDecimal)).Result()
 	}
-	if k.IsTokenExist(ctx, strings.ToUpper(msg.Symbol)) {
-		return types.ErrInvalidTokenSymbol(types.DefaultCodespace, fmt.Sprintf("duplicated token symbol: %s", strings.ToUpper(msg.Symbol))).Result()
+	if k.IsTokenExist(ctx, strings.ToLower(msg.Symbol)) {
+		return types.ErrInvalidTokenSymbol(types.DefaultCodespace, fmt.Sprintf("duplicated token symbol: %s", strings.ToLower(msg.Symbol))).Result()
 	}
 	txHash := tmhash.Sum(ctx.TxBytes())
-	txHashStr := strings.ToUpper(hex.EncodeToString(txHash))
+	txHashStr := strings.ToLower(hex.EncodeToString(txHash))
 	suffix := txHashStr[:types.TokenSymbolSuffixLen]
 
-	token := types.NewToken(strings.ToUpper(msg.Symbol)+suffix, msg.Name, msg.Decimal, msg.TotalSupply, msg.Mintable, msg.Description, msg.From)
+	token := types.NewToken(strings.ToLower(msg.Symbol) + "-" + suffix, msg.Name, msg.Decimal, msg.TotalSupply, msg.Mintable, msg.Description, msg.From)
 	k.SetToken(ctx, token)
 
 	mintedToken := sdk.Coins{sdk.NewCoin(token.Symbol, sdk.NewInt(token.TotalSupply))}
@@ -64,14 +64,14 @@ func handleIssueMsg(ctx sdk.Context, k Keeper, msg IssueMsg) sdk.Result {
 			sdk.NewAttribute(types.EventTypeIssueToken, mintedToken.String()),
 		),
 	)
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return sdk.Result{Events: ctx.EventManager().Events(), Data: []byte(token.Symbol)}
 }
 
 func handleMintMsg(ctx sdk.Context, k Keeper, msg MintMsg) sdk.Result {
-	if !k.IsTokenExist(ctx, strings.ToUpper(msg.Symbol)) {
-		return types.ErrInvalidTokenSymbol(types.DefaultCodespace, fmt.Sprintf("token %s is not exist", strings.ToUpper(msg.Symbol))).Result()
+	if !k.IsTokenExist(ctx, strings.ToLower(msg.Symbol)) {
+		return types.ErrInvalidTokenSymbol(types.DefaultCodespace, fmt.Sprintf("token %s is not exist", strings.ToLower(msg.Symbol))).Result()
 	}
-	token := k.GetToken(ctx, strings.ToUpper(msg.Symbol))
+	token := k.GetToken(ctx, strings.ToLower(msg.Symbol))
 	if !token.Mintable {
 		return types.ErrNotMintableToken(types.DefaultCodespace, fmt.Sprintf("token %s is not mintable", token.Symbol)).Result()
 	}
