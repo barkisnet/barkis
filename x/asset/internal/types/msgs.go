@@ -104,9 +104,9 @@ func (msg MintMsg) ValidateBasic() sdk.Error {
 	if len(msg.From) != sdk.AddrLen {
 		return sdk.ErrInvalidAddress(fmt.Sprintf("sender address length should be %d", sdk.AddrLen))
 	}
-	symbolPaths := strings.Split(msg.Symbol, "-")
+	symbolPaths := strings.Split(msg.Symbol, TokenJoiner)
 	if len(symbolPaths) != 2 {
-		return ErrInvalidMintAmount(DefaultCodespace, fmt.Sprintf("valid token symbol should be XXX-YYY"))
+		return ErrInvalidMintAmount(DefaultCodespace, fmt.Sprintf("invalid symbol, token symbol should follow pattern XXX%sYYY", TokenJoiner))
 	}
 
 	if err := validateTokenSymbol(msg.Symbol); err != nil {

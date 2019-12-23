@@ -47,7 +47,7 @@ func (p *Params) ParamSetPairs() params.ParamSetPairs {
 // validate a set of params
 func (p Params) Validate() error {
 	if p.MaxDecimal < 0 {
-		return fmt.Errorf("token decimal must be positive")
+		return fmt.Errorf("token decimal must not negative")
 	}
 	if !p.IssueFee.IsAllPositive() {
 		return fmt.Errorf("issue fee must be positive")
