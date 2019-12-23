@@ -14,6 +14,10 @@ import (
 // creates a querier for staking REST endpoints
 func NewQuerier(k Keeper) sdk.Querier {
 	return func(ctx sdk.Context, path []string, req abci.RequestQuery) (res []byte, err sdk.Error) {
+		if !sdk.GlobalUpgradeMgr.IsUpgradeApplied(sdk.TokenIssueUpgrade) {
+			return nil, sdk.ErrUnknownRequest(fmt.Sprintf("asset related query is not support until %d",
+				sdk.GlobalUpgradeMgr.GetUpgradeHeight(sdk.TokenIssueUpgrade)))
+		}
 		switch path[0] {
 		case assetTypes.QueryParams:
 			return queryParams(ctx, path[1:], req, k)
