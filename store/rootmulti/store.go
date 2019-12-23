@@ -535,7 +535,7 @@ func commitStores(version int64, storeMap map[types.StoreKey]types.CommitStore) 
 			continue
 		}
 
-		if sdk.GlobalUpgradeMgr.Config.NewStoreHeight[key.Name()] == sdk.GlobalUpgradeMgr.BlockHeight {
+		if sdk.GlobalUpgradeMgr.IsOnStoreStartHeight(key.Name()) {
 			store.SetVersion(version - 1)
 		}
 
