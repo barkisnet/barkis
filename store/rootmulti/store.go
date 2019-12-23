@@ -62,6 +62,9 @@ func (rs *Store) SetPruning(pruningOpts types.PruningOptions) {
 	}
 }
 
+func (rs *Store) SetVersion(version int64) {
+}
+
 // SetLazyLoading sets if the iavl store should be loaded lazily or not
 func (rs *Store) SetLazyLoading(lazyLoading bool) {
 	rs.lazyLoading = lazyLoading
@@ -251,6 +254,9 @@ func (rs *Store) CacheMultiStoreWithVersion(version int64) (types.CacheMultiStor
 	for key, store := range rs.stores {
 		switch store.GetStoreType() {
 		case types.StoreTypeIAVL:
+			if !sdk.GlobalUpgradeMgr.StoreCheck(key.Name()) {
+				continue
+			}
 			// Attempt to lazy-load an already saved IAVL store version. If the
 			// version does not exist or is pruned, an error should be returned.
 			iavlStore, err := store.(*iavl.Store).GetImmutable(version)
@@ -527,6 +533,10 @@ func commitStores(version int64, storeMap map[types.StoreKey]types.CommitStore) 
 	for key, store := range storeMap {
 		if !sdk.GlobalUpgradeMgr.StoreCheck(key.Name()) {
 			continue
+		}
+
+		if sdk.GlobalUpgradeMgr.IsOnStoreStartHeight(key.Name()) {
+			store.SetVersion(version - 1)
 		}
 
 		// Commit

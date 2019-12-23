@@ -54,6 +54,10 @@ func (ms multiStore) SetPruning(opts sdk.PruningOptions) {
 	panic("not implemented")
 }
 
+func (ms multiStore) SetVersion(version int64) {
+	panic("not implemented")
+}
+
 func (ms multiStore) GetCommitKVStore(key sdk.StoreKey) sdk.CommitKVStore {
 	panic("not implemented")
 }

@@ -22,6 +22,7 @@ type (
 		Set(key, value []byte) bool
 		Remove(key []byte) ([]byte, bool)
 		SaveVersion() ([]byte, int64, error)
+		SetVersion(version int64) error
 		DeleteVersion(version int64) error
 		Version() int64
 		Hash() []byte
@@ -49,6 +50,10 @@ func (it *immutableTree) Remove(_ []byte) ([]byte, bool) {
 
 func (it *immutableTree) SaveVersion() ([]byte, int64, error) {
 	panic("cannot call 'SaveVersion' on an immutable IAVL tree")
+}
+
+func (it *immutableTree) SetVersion(_ int64) error {
+	panic("cannot call 'SetVersion' on an immutable IAVL tree")
 }
 
 func (it *immutableTree) DeleteVersion(_ int64) error {

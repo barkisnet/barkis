@@ -215,3 +215,11 @@ func (mgr *UpgradeManager) StoreCheck(storeName string) bool {
 	}
 	return mgr.BlockHeight >= height
 }
+
+func (mgr *UpgradeManager) IsOnStoreStartHeight(storeName string) bool {
+	height, ok := mgr.Config.NewStoreHeight[storeName]
+	if !ok {
+		return false
+	}
+	return mgr.BlockHeight == height
+}
