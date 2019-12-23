@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/hex"
 	"fmt"
+	"github.com/barkisnet/barkis/x/auth"
 	"strings"
 
 	"github.com/tendermint/tendermint/crypto/tmhash"
@@ -46,9 +47,15 @@ func handleIssueMsg(ctx sdk.Context, k Keeper, msg IssueMsg) sdk.Result {
 	token := types.NewToken(strings.ToLower(msg.Symbol) + types.TokenJoiner + suffix, msg.Name, msg.Decimal, msg.TotalSupply, msg.Mintable, msg.Description, msg.From)
 	k.SetToken(ctx, token)
 
+	issueFee := k.GetIssueFee(ctx)
+	err := k.SupplyKeeper.SendCoinsFromAccountToModule(ctx, msg.From, auth.FeeCollectorName, issueFee)
+	if err != nil {
+		return err.Result()
+	}
+
 	mintedToken := sdk.Coins{sdk.NewCoin(token.Symbol, sdk.NewInt(token.TotalSupply))}
 
-	err := k.SupplyKeeper.MintCoins(ctx, types.ModuleName, mintedToken)
+	err = k.SupplyKeeper.MintCoins(ctx, types.ModuleName, mintedToken)
 	if err != nil {
 		return err.Result()
 	}
@@ -83,11 +90,17 @@ func handleMintMsg(ctx sdk.Context, k Keeper, msg MintMsg) sdk.Result {
 		return types.ErrInvalidMintAmount(types.DefaultCodespace, fmt.Sprintf("minted too many token, maximum possible minted amount %d, actual minted amount %d", possibleMintAmount, msg.Amount)).Result()
 	}
 
+	mintFee := k.GetMintFee(ctx)
+	err := k.SupplyKeeper.SendCoinsFromAccountToModule(ctx, msg.From, auth.FeeCollectorName, mintFee)
+	if err != nil {
+		return err.Result()
+	}
+
 	token.TotalSupply = msg.Amount + token.TotalSupply
 	k.SetToken(ctx, token)
 
 	mintedToken := sdk.Coins{sdk.NewCoin(token.Symbol, sdk.NewInt(msg.Amount))}
-	err := k.SupplyKeeper.MintCoins(ctx, types.ModuleName, mintedToken)
+	err = k.SupplyKeeper.MintCoins(ctx, types.ModuleName, mintedToken)
 	if err != nil {
 		return err.Result()
 	}
