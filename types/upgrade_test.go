@@ -126,7 +126,7 @@ func TestUpgrade(t *testing.T) {
 	for index, tc := range testCases {
 		GlobalUpgradeMgr.Config = tc.config
 		GlobalUpgradeMgr.SetBlockHeight(tc.blockHeight)
-		require.Equal(t, tc.upgradeResult, GlobalUpgradeMgr.IsUpgradeHeight(tc.upgradeName), fmt.Sprintf("upgrade height test case failed, index: %d", index))
+		require.Equal(t, tc.upgradeResult, GlobalUpgradeMgr.IsUpgradeApplied(tc.upgradeName), fmt.Sprintf("upgrade height test case failed, index: %d", index))
 		require.Equal(t, tc.msgCheck, GlobalUpgradeMgr.MsgCheck(tc.msgName), fmt.Sprintf("new msg test case failed, index: %d", index))
 		require.Equal(t, tc.storeCheck, GlobalUpgradeMgr.StoreCheck(tc.storeName), fmt.Sprintf("new store test case failed, index: %d", index))
 	}
