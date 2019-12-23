@@ -43,4 +43,4 @@ require (
 	gopkg.in/yaml.v2 v2.2.2
 )
 
-replace github.com/tendermint/iavl => github.com/pengqi-bc/iavl v0.12.5-0.20191222133538-175bdd956a60
+replace github.com/tendermint/iavl => github.com/barkisnet/iavl v0.12.4-barkis
