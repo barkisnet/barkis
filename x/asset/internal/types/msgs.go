@@ -8,6 +8,7 @@ import (
 )
 
 const (
+	//todo refactor name
 	IssueMsgType = "issueMsg"
 	MintMsgType  = "mintMsg"
 
