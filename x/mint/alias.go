@@ -16,8 +16,7 @@ const (
 	StoreKey              = types.StoreKey
 	QuerierRoute          = types.QuerierRoute
 	QueryParameters       = types.QueryParameters
-	QueryInflation        = types.QueryInflation
-	QueryAnnualProvisions = types.QueryAnnualProvisions
+	QueryRemainAmount        = types.QueryRemainAmount
 )
 
 var (
@@ -37,11 +36,6 @@ var (
 	ModuleCdc              = types.ModuleCdc
 	MinterKey              = types.MinterKey
 	KeyMintDenom           = types.KeyMintDenom
-	KeyInflationRateChange = types.KeyInflationRateChange
-	KeyInflationMax        = types.KeyInflationMax
-	KeyInflationMin        = types.KeyInflationMin
-	KeyGoalBonded          = types.KeyGoalBonded
-	KeyBlocksPerYear       = types.KeyBlocksPerYear
 )
 
 type (

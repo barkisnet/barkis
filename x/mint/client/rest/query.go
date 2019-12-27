@@ -18,13 +18,8 @@ func registerQueryRoutes(cliCtx context.CLIContext, r *mux.Router) {
 	).Methods("GET")
 
 	r.HandleFunc(
-		"/minting/inflation",
-		queryInflationHandlerFn(cliCtx),
-	).Methods("GET")
-
-	r.HandleFunc(
-		"/minting/annual-provisions",
-		queryAnnualProvisionsHandlerFn(cliCtx),
+		"/minting/remainedFreezeAmount",
+		queryRemainedFreezeAmountFn(cliCtx),
 	).Methods("GET")
 }
 
@@ -48,29 +43,9 @@ func queryParamsHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 	}
 }
 
-func queryInflationHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
+func queryRemainedFreezeAmountFn(cliCtx context.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryInflation)
-
-		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
-		if !ok {
-			return
-		}
-
-		res, height, err := cliCtx.QueryWithData(route, nil)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-
-		cliCtx = cliCtx.WithHeight(height)
-		rest.PostProcessResponse(w, cliCtx, res)
-	}
-}
-
-func queryAnnualProvisionsHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryAnnualProvisions)
+		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryRemainAmount)
 
 		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
 		if !ok {

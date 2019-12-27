@@ -2,6 +2,10 @@ package types
 
 import "fmt"
 
+const (
+	RewardUpgrade = "RewardUpgrade"
+)
+
 var GlobalUpgradeMgr = NewUpgradeManager()
 
 type UpgradeConfig struct {
