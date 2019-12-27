@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"io"
 	"os"
 
@@ -242,6 +243,11 @@ func (app *BarkisApp) registerUpgrade() {
 		if err != nil {
 			panic(err)
 		}
+		mintSubspace , ok := app.paramsKeeper.GetSubspace(mint.DefaultParamspace)
+		if ! ok {
+			panic(fmt.Errorf("failed to get mint params subspace"))
+		}
+		mintSubspace.UpdateKeyTable(mint.UpdatedParamKeyTable())
 		app.distrKeeper.SetBonusProposerReward(ctx, bonusProposerReward)
 		app.mintKeeper.SetUnfreezeAmountPerBlock(ctx, 431000)
 	})

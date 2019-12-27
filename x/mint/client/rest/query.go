@@ -18,8 +18,8 @@ func registerQueryRoutes(cliCtx context.CLIContext, r *mux.Router) {
 	).Methods("GET")
 
 	r.HandleFunc(
-		"/minting/remainedFreezeAmount",
-		queryRemainedFreezeAmountFn(cliCtx),
+		"/minting/remainedAmount",
+		queryRemainedAmountFn(cliCtx),
 	).Methods("GET")
 }
 
@@ -43,7 +43,7 @@ func queryParamsHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 	}
 }
 
-func queryRemainedFreezeAmountFn(cliCtx context.CLIContext) http.HandlerFunc {
+func queryRemainedAmountFn(cliCtx context.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryRemainAmount)
 

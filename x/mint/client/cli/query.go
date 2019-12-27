@@ -48,7 +48,7 @@ func GetCmdQueryParams(cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 
-			var params types.Params
+			var params types.UpdatedParams
 			if err := cdc.UnmarshalJSON(res, &params); err != nil {
 				return err
 			}
@@ -74,12 +74,12 @@ func GetCmdQueryRemainAmount(cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 
-			var inflation sdk.Dec
-			if err := cdc.UnmarshalJSON(res, &inflation); err != nil {
+			var remained sdk.Coins
+			if err := cdc.UnmarshalJSON(res, &remained); err != nil {
 				return err
 			}
 
-			return cliCtx.PrintOutput(inflation)
+			return cliCtx.PrintOutput(remained)
 		},
 	}
 }

@@ -111,7 +111,7 @@ func UpdatedParamKeyTable() params.KeyTable {
 	return params.NewKeyTable().RegisterParamSet(&UpdatedParams{})
 }
 
-func NewParamsUpdated(mintDenom string, unfreezeAmountPerBlock int64) UpdatedParams {
+func NewUpdatedParams(mintDenom string, unfreezeAmountPerBlock int64) UpdatedParams {
 	return UpdatedParams{
 		MintDenom:              mintDenom,
 		UnfreezeAmountPerBlock: unfreezeAmountPerBlock,
