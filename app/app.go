@@ -239,6 +239,7 @@ func (app *BarkisApp) registerUpgrade() {
 	sdk.GlobalUpgradeMgr.RegisterUpgradeHeight(sdk.RewardUpgrade , BarkisContext.UpgradeConfig.RewardUpgrade)
 
 	sdk.GlobalUpgradeMgr.RegisterBeginBlockerFirst(sdk.RewardUpgrade, func(ctx sdk.Context) {
+		app.govKeeper.SetVotingParams(ctx, gov.NewVotingParams( 604800000000000)) // one week
 		bonusProposerReward, err := sdk.NewDecFromStr("0.1838")
 		if err != nil {
 			panic(err)
