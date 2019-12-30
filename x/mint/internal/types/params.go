@@ -9,12 +9,13 @@ import (
 
 // Parameter store keys
 var (
-	KeyMintDenom           = []byte("MintDenom")
-	KeyInflationRateChange = []byte("InflationRateChange")
-	KeyInflationMax        = []byte("InflationMax")
-	KeyInflationMin        = []byte("InflationMin")
-	KeyGoalBonded          = []byte("GoalBonded")
-	KeyBlocksPerYear       = []byte("BlocksPerYear")
+	KeyMintDenom              = []byte("MintDenom")
+	KeyInflationRateChange    = []byte("InflationRateChange")
+	KeyInflationMax           = []byte("InflationMax")
+	KeyInflationMin           = []byte("InflationMin")
+	KeyGoalBonded             = []byte("GoalBonded")
+	KeyBlocksPerYear          = []byte("BlocksPerYear")
+	KeyUnfreezeAmountPerBlock = []byte("UnfreezeAmountPerBlock")
 )
 
 // mint parameters
@@ -97,5 +98,55 @@ func (p *Params) ParamSetPairs() params.ParamSetPairs {
 		{KeyInflationMin, &p.InflationMin},
 		{KeyGoalBonded, &p.GoalBonded},
 		{KeyBlocksPerYear, &p.BlocksPerYear},
+	}
+}
+
+type UpdatedParams struct {
+	MintDenom              string `json:"mint_denom" yaml:"mint_denom"`
+	UnfreezeAmountPerBlock int64  `json:"unfreeze_amount_per_block" yaml:"unfreeze_amount_per_block"`
+}
+
+// ParamTable for minting module.
+func UpdatedParamKeyTable() params.KeyTable {
+	return params.NewKeyTable().RegisterParamSet(&UpdatedParams{})
+}
+
+func NewUpdatedParams(mintDenom string, unfreezeAmountPerBlock int64) UpdatedParams {
+	return UpdatedParams{
+		MintDenom:              mintDenom,
+		UnfreezeAmountPerBlock: unfreezeAmountPerBlock,
+	}
+}
+
+// default minting module parameters
+func DefaultUpdatedParams() UpdatedParams {
+	return UpdatedParams{
+		MintDenom:              sdk.DefaultBondDenom,
+		UnfreezeAmountPerBlock: 1000000,
+	}
+}
+
+// validate params
+func ValidateUpdatedParams(params UpdatedParams) error {
+	if params.MintDenom == "" {
+		return fmt.Errorf("mint parameter MintDenom can't be an empty string")
+	}
+	return nil
+}
+
+func (p UpdatedParams) String() string {
+	return fmt.Sprintf(`Minting Params:
+  Mint Denom:             %s
+  UnfreezeAmountPerBlock: %d
+`,
+		p.MintDenom, p.UnfreezeAmountPerBlock,
+	)
+}
+
+// Implements params.ParamSet
+func (p *UpdatedParams) ParamSetPairs() params.ParamSetPairs {
+	return params.ParamSetPairs{
+		{KeyMintDenom, &p.MintDenom},
+		{KeyUnfreezeAmountPerBlock, &p.UnfreezeAmountPerBlock},
 	}
 }

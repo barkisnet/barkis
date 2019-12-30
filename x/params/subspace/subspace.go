@@ -68,6 +68,25 @@ func (s Subspace) WithKeyTable(table KeyTable) Subspace {
 	return s
 }
 
+// WithKeyTable initializes KeyTable and returns modified Subspace
+func (s Subspace) UpdateKeyTable(table KeyTable) Subspace {
+	if table.m == nil {
+		panic("SetKeyTable() called with nil KeyTable")
+	}
+
+	for k, v := range table.m {
+		s.table.m[k] = v
+	}
+
+	// Allocate additional capicity for Subspace.name
+	// So we don't have to allocate extra space each time appending to the key
+	name := s.name
+	s.name = make([]byte, len(name), len(name)+table.maxKeyLength())
+	copy(s.name, name)
+
+	return s
+}
+
 // Returns a KVStore identical with ctx.KVStore(s.key).Prefix()
 func (s Subspace) kvStore(ctx sdk.Context) sdk.KVStore {
 	// append here is safe, appends within a function won't cause

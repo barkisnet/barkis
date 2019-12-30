@@ -94,9 +94,9 @@ func ValidateGenesis(data GenesisState) error {
 func InitGenesis(ctx sdk.Context, k Keeper, supplyKeeper SupplyKeeper, data GenesisState) {
 
 	k.setProposalID(ctx, data.StartingProposalID)
-	k.setDepositParams(ctx, data.DepositParams)
-	k.setVotingParams(ctx, data.VotingParams)
-	k.setTallyParams(ctx, data.TallyParams)
+	k.SetDepositParams(ctx, data.DepositParams)
+	k.SetVotingParams(ctx, data.VotingParams)
+	k.SetTallyParams(ctx, data.TallyParams)
 
 	// check if the deposits pool account exists
 	moduleAcc := k.GetGovernanceAccount(ctx)

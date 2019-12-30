@@ -155,7 +155,7 @@ func NewBarkisApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 		app.cdc, keys[staking.StoreKey], tkeys[staking.TStoreKey],
 		app.supplyKeeper, stakingSubspace, staking.DefaultCodespace,
 	)
-	app.mintKeeper = mint.NewKeeper(app.cdc, keys[mint.StoreKey], mintSubspace, &stakingKeeper, app.supplyKeeper, auth.FeeCollectorName)
+	app.mintKeeper = mint.NewKeeper(app.cdc, keys[mint.StoreKey], mintSubspace, app.supplyKeeper, auth.FeeCollectorName)
 	app.distrKeeper = distr.NewKeeper(app.cdc, keys[distr.StoreKey], distrSubspace, &stakingKeeper,
 		app.supplyKeeper, distr.DefaultCodespace, auth.FeeCollectorName, app.ModuleAccountAddrs())
 	app.slashingKeeper = slashing.NewKeeper(
@@ -235,34 +235,22 @@ func NewBarkisApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 }
 
 func (app *BarkisApp) registerUpgrade() {
-	tokenIssue := "TokenIssue"
 	//Register upgrade height
-	sdk.GlobalUpgradeMgr.RegisterUpgradeHeight(tokenIssue , BarkisContext.UpgradeConfig.TokenIssueHeight)
+	sdk.GlobalUpgradeMgr.RegisterUpgradeHeight(sdk.RewardUpgrade , BarkisContext.UpgradeConfig.RewardUpgrade)
 
-	//Register new store if necessary
-	sdk.GlobalUpgradeMgr.RegisterNewStore(tokenIssue, "token")
-
-	//Register new msg types if necessary
-	sdk.GlobalUpgradeMgr.RegisterNewMsg(tokenIssue, "issueToken", "mintToken")
-
-	//Register BeginBlocker first for upgrade
-	sdk.GlobalUpgradeMgr.RegisterBeginBlockerFirst(tokenIssue, func(ctx sdk.Context) {
-		ctx.Logger().Error(fmt.Sprintf("BeginBlockerFirst for %s", tokenIssue))
-	})
-
-	//Register BeginBlocker last for upgrade
-	sdk.GlobalUpgradeMgr.RegisterBeginBlockerLast(tokenIssue, func(ctx sdk.Context) {
-		ctx.Logger().Error(fmt.Sprintf("BeginBlockerLast for %s", tokenIssue))
-	})
-
-	//Register EndBlocker first for upgrade
-	sdk.GlobalUpgradeMgr.RegisterEndBlockerFirst(tokenIssue, func(ctx sdk.Context) {
-		ctx.Logger().Error(fmt.Sprintf("EndBlockerFirst for %s", tokenIssue))
-	})
-
-	//Register EndBlocker first for upgrade
-	sdk.GlobalUpgradeMgr.RegisterEndBlockerFirst(tokenIssue, func(ctx sdk.Context) {
-		ctx.Logger().Error(fmt.Sprintf("EndBlockerLast for %s", tokenIssue))
+	sdk.GlobalUpgradeMgr.RegisterBeginBlockerFirst(sdk.RewardUpgrade, func(ctx sdk.Context) {
+		app.govKeeper.SetVotingParams(ctx, gov.NewVotingParams( 604800000000000)) // one week
+		bonusProposerReward, err := sdk.NewDecFromStr("0.1838")
+		if err != nil {
+			panic(err)
+		}
+		mintSubspace , ok := app.paramsKeeper.GetSubspace(mint.DefaultParamspace)
+		if ! ok {
+			panic(fmt.Errorf("failed to get mint params subspace"))
+		}
+		mintSubspace.UpdateKeyTable(mint.UpdatedParamKeyTable())
+		app.distrKeeper.SetBonusProposerReward(ctx, bonusProposerReward)
+		app.mintKeeper.SetUnfreezeAmountPerBlock(ctx, 431000)
 	})
 }
 

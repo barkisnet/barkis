@@ -16,15 +16,13 @@ type Keeper struct {
 	cdc              *codec.Codec
 	storeKey         sdk.StoreKey
 	paramSpace       params.Subspace
-	sk               types.StakingKeeper
 	supplyKeeper     types.SupplyKeeper
 	feeCollectorName string
 }
 
 // NewKeeper creates a new mint Keeper instance
 func NewKeeper(
-	cdc *codec.Codec, key sdk.StoreKey, paramSpace params.Subspace,
-	sk types.StakingKeeper, supplyKeeper types.SupplyKeeper, feeCollectorName string) Keeper {
+	cdc *codec.Codec, key sdk.StoreKey, paramSpace params.Subspace, supplyKeeper types.SupplyKeeper, feeCollectorName string) Keeper {
 
 	// ensure mint module account is set
 	if addr := supplyKeeper.GetModuleAddress(types.ModuleName); addr == nil {
@@ -35,7 +33,6 @@ func NewKeeper(
 		cdc:              cdc,
 		storeKey:         key,
 		paramSpace:       paramSpace.WithKeyTable(types.ParamKeyTable()),
-		sk:               sk,
 		supplyKeeper:     supplyKeeper,
 		feeCollectorName: feeCollectorName,
 	}
@@ -70,6 +67,12 @@ func (k Keeper) SetMinter(ctx sdk.Context, minter types.Minter) {
 //______________________________________________________________________
 
 // GetParams returns the total set of minting parameters.
+func (k Keeper) GetUpdatedParams(ctx sdk.Context) (params types.UpdatedParams) {
+	k.paramSpace.GetParamSet(ctx, &params)
+	return params
+}
+
+// GetParams returns the total set of minting parameters.
 func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
 	k.paramSpace.GetParamSet(ctx, &params)
 	return params
@@ -80,18 +83,14 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 	k.paramSpace.SetParamSet(ctx, &params)
 }
 
-//______________________________________________________________________
-
-// StakingTokenSupply implements an alias call to the underlying staking keeper's
-// StakingTokenSupply to be used in BeginBlocker.
-func (k Keeper) StakingTokenSupply(ctx sdk.Context) sdk.Int {
-	return k.sk.StakingTokenSupply(ctx)
+func (k Keeper) GetUnfreezeAmountPerBlock(ctx sdk.Context) int64 {
+	var unfreezeAmount int64
+	k.paramSpace.Get(ctx, types.KeyUnfreezeAmountPerBlock, &unfreezeAmount)
+	return unfreezeAmount
 }
 
-// BondedRatio implements an alias call to the underlying staking keeper's
-// BondedRatio to be used in BeginBlocker.
-func (k Keeper) BondedRatio(ctx sdk.Context) sdk.Dec {
-	return k.sk.BondedRatio(ctx)
+func (k Keeper) SetUnfreezeAmountPerBlock(ctx sdk.Context, unfreezeAmount int64) {
+	k.paramSpace.Set(ctx, types.KeyUnfreezeAmountPerBlock, &unfreezeAmount)
 }
 
 // MintCoins implements an alias call to the underlying supply keeper's
