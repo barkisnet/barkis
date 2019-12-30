@@ -2041,21 +2041,13 @@ paths:
             properties:
               mint_denom:
                 type: string
-              inflation_rate_change:
-                type: string
-              inflation_max:
-                type: string
-              inflation_min:
-                type: string
-              goal_bonded:
-                type: string
-              blocks_per_year:
+              unfreeze_amount_per_block:
                 type: string
         500:
           description: Internal Server Error
-  /minting/inflation:
+  /minting/remainedAmount:
     get:
-      summary: Current minting inflation value
+      summary: Current remained unfreeze amount
       tags:
         - Mint
       produces:
@@ -2064,21 +2056,9 @@ paths:
         200:
           description: OK
           schema:
-            type: string
-        500:
-          description: Internal Server Error
-  /minting/annual-provisions:
-    get:
-      summary: Current minting annual provisions value
-      tags:
-        - Mint
-      produces:
-        - application/json
-      responses:
-        200:
-          description: OK
-          schema:
-            type: string
+            type: array
+            items:
+              $ref: "#/definitions/Coin"
         500:
           description: Internal Server Error
   /supply/total:
