@@ -27,7 +27,7 @@ type BarkisContext struct {
 
 func NewDefaultContext() *BarkisContext {
 	return &BarkisContext{
-		NewServerContext(cfg.DefaultConfig(),log.NewTMLogger(log.NewSyncWriter(os.Stdout))),
+		NewServerContext(cfg.DefaultConfig(), log.NewTMLogger(log.NewSyncWriter(os.Stdout))),
 		viper.New(),
 		DefaultAppConfig(),
 	}
@@ -89,7 +89,8 @@ type BaseConfig struct {
 }
 
 type UpgradeConfig struct {
-	RewardUpgrade int64 `mapstructure:"RewardUpgrade"`
+	RewardUpgrade    int64 `mapstructure:"RewardUpgrade"`
+	TokenIssueHeight int64 `mapstructure:"TokenIssueHeight"`
 }
 
 // SetMinGasPrices sets the validator's minimum gas prices.
@@ -127,7 +128,8 @@ func DefaultAppConfig() *AppConfig {
 			HaltHeight:   0,
 		},
 		UpgradeConfig: UpgradeConfig{
-			RewardUpgrade: math.MaxInt64,
+			RewardUpgrade:    math.MaxInt64,
+			TokenIssueHeight: math.MaxInt64,
 		},
 	}
 }

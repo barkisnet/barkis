@@ -25,6 +25,9 @@ halt-height = {{ .BaseConfig.HaltHeight }}
 [upgrade]
 # Upgrade to change reward rules
 RewardUpgrade = {{ .UpgradeConfig.RewardUpgrade }}
+
+# Upgrade to change reward rules
+TokenIssueHeight = {{ .UpgradeConfig.TokenIssueHeight }}
 `
 
 var configTemplate *template.Template
