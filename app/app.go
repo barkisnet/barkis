@@ -245,16 +245,16 @@ func NewBarkisApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 func (app *BarkisApp) registerUpgrade() {
 	//------------------------------------------------------------------------------------------------------------------------------------
 	//Register upgrade height
-	sdk.GlobalUpgradeMgr.RegisterUpgradeHeight(sdk.RewardUpgrade , BarkisContext.UpgradeConfig.RewardUpgrade)
+	sdk.GlobalUpgradeMgr.RegisterUpgradeHeight(sdk.RewardUpgrade, BarkisContext.UpgradeConfig.RewardUpgrade)
 
 	sdk.GlobalUpgradeMgr.RegisterBeginBlockerFirst(sdk.RewardUpgrade, func(ctx sdk.Context) {
-		app.govKeeper.SetVotingParams(ctx, gov.NewVotingParams( 604800000000000)) // one week
+		app.govKeeper.SetVotingParams(ctx, gov.NewVotingParams(604800000000000)) // one week
 		bonusProposerReward, err := sdk.NewDecFromStr("0.1838")
 		if err != nil {
 			panic(err)
 		}
-		mintSubspace , ok := app.paramsKeeper.GetSubspace(mint.DefaultParamspace)
-		if ! ok {
+		mintSubspace, ok := app.paramsKeeper.GetSubspace(mint.DefaultParamspace)
+		if !ok {
 			panic(fmt.Errorf("failed to get mint params subspace"))
 		}
 		mintSubspace.UpdateKeyTable(mint.UpdatedParamKeyTable())
@@ -276,30 +276,34 @@ func (app *BarkisApp) registerUpgrade() {
 	sdk.GlobalUpgradeMgr.RegisterBeginBlockerFirst(sdk.TokenIssueUpgrade, func(ctx sdk.Context) {
 		maxTokenDecimal := int8(10)
 		issueFee := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10000000000))) //10000barkis
-		mintFee := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(5000000000))) //5000barkis
+		mintFee := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(5000000000)))   //5000barkis
 		app.assetKeeper.SetParams(ctx, asset.NewParams(maxTokenDecimal, issueFee, mintFee))
 	})
 
 	//------------------------------------------------------------------------------------------------------------------------------------
 
 	//Register upgrade height
-	sdk.GlobalUpgradeMgr.RegisterUpgradeHeight(sdk.UpdateVotingPeriodHeight , BarkisContext.UpgradeConfig.UpdateVotingPeriodHeight)
+	sdk.GlobalUpgradeMgr.RegisterUpgradeHeight(sdk.UpdateVotingPeriodHeight, BarkisContext.UpgradeConfig.UpdateVotingPeriodHeight)
 
 	sdk.GlobalUpgradeMgr.RegisterBeginBlockerFirst(sdk.UpdateVotingPeriodHeight, func(ctx sdk.Context) {
-		app.govKeeper.SetVotingParams(ctx, gov.NewVotingParams( 7200000000000)) // one day
+		app.govKeeper.SetVotingParams(ctx, gov.NewVotingParams(7200000000000)) // one day
 
 		stakingParam := app.stakingKeeper.GetParams(ctx)
-		stakingParam.MaxValidators = 3; // maximum validator quantity
+		stakingParam.MaxValidators = 3 // maximum validator quantity
 		app.stakingKeeper.SetParams(ctx, stakingParam)
 	})
 
 	//------------------------------------------------------------------------------------------------------------------------------------
-	sdk.GlobalUpgradeMgr.RegisterUpgradeHeight(sdk.UpdateTokenSymbolRulesHeight , BarkisContext.UpgradeConfig.UpdateTokenSymbolRulesHeight)
+	sdk.GlobalUpgradeMgr.RegisterUpgradeHeight(sdk.UpdateTokenSymbolRulesHeight, BarkisContext.UpgradeConfig.UpdateTokenSymbolRulesHeight)
 
 	sdk.GlobalUpgradeMgr.RegisterBeginBlockerFirst(sdk.UpdateTokenSymbolRulesHeight, func(ctx sdk.Context) {
 		app.assetKeeper.SetIssueFee(ctx, sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(2000000000)))) //2000barkis
-		app.assetKeeper.SetMintFee(ctx, sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(1000000000)))) //1000barkis
+		app.assetKeeper.SetMintFee(ctx, sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(1000000000))))  //1000barkis
 	})
+
+	//------------------------------------------------------------------------------------------------------------------------------------
+	sdk.GlobalUpgradeMgr.RegisterUpgradeHeight(sdk.DelayTransferUpgrade, BarkisContext.UpgradeConfig.TokenIssueHeight)
+	sdk.GlobalUpgradeMgr.RegisterNewMsg(sdk.DelayTransferUpgrade, asset.DelayTransferMsg{}.Type())
 }
 
 // application updates every begin block

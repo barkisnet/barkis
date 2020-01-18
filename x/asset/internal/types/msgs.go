@@ -10,6 +10,7 @@ const (
 	//todo refactor name
 	IssueMsgType = "issueMsg"
 	MintMsgType  = "mintMsg"
+	DelayMsgType = "delayMsgType"
 
 	MaxTokenNameLength         = 32
 	MaxTokenSymbolLength       = 12
@@ -110,6 +111,48 @@ func (msg MintMsg) ValidateBasic() sdk.Error {
 
 	if msg.Amount <= 0 || msg.Amount > MaxTotalSupply {
 		return ErrInvalidMintAmount(DefaultCodespace, fmt.Sprintf("mint amount should be in (0, %d]", MaxTotalSupply))
+	}
+	return nil
+}
+
+type DelayTransferMsg struct {
+	From        sdk.AccAddress `json:"from" yaml:"from"`
+	To          sdk.AccAddress `json:"to" yaml:"to"`
+	Amount      sdk.Coins      `json:"amount" yaml:"amount"`
+	DelayPeriod int64          `json:"delay_period" yaml:"delay_period"`
+}
+
+func NewDelayTransferMsg(from, to sdk.AccAddress, amount sdk.Coins, delayPeriod int64) DelayTransferMsg {
+	return DelayTransferMsg{
+		From:        from,
+		To:          to,
+		Amount:      amount,
+		DelayPeriod: delayPeriod,
+	}
+}
+
+func (msg DelayTransferMsg) Route() string                { return RouterKey }
+func (msg DelayTransferMsg) Type() string                 { return DelayMsgType }
+func (msg DelayTransferMsg) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.From} }
+func (msg DelayTransferMsg) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
+}
+func (msg DelayTransferMsg) ValidateBasic() sdk.Error {
+	if len(msg.From) != sdk.AddrLen {
+		return sdk.ErrInvalidAddress(fmt.Sprintf("sender address length should be %d", sdk.AddrLen))
+	}
+	if len(msg.To) != sdk.AddrLen {
+		return sdk.ErrInvalidAddress(fmt.Sprintf("sender address length should be %d", sdk.AddrLen))
+	}
+	if !msg.Amount.IsValid() {
+		return sdk.ErrInvalidCoins("send amount is invalid: " + msg.Amount.String())
+	}
+	if !msg.Amount.IsAllPositive() {
+		return sdk.ErrInsufficientCoins("send amount must be positive")
+	}
+	if msg.DelayPeriod < 0 {
+		return ErrInvalidDelayPeriod(DefaultCodespace, "negative delay period")
 	}
 	return nil
 }

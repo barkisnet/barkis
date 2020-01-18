@@ -28,6 +28,7 @@ var (
 type (
 	Keeper = keeper.Keeper
 
-	IssueMsg = types.IssueMsg
-	MintMsg  = types.MintMsg
+	IssueMsg         = types.IssueMsg
+	MintMsg          = types.MintMsg
+	DelayTransferMsg = types.DelayTransferMsg
 )

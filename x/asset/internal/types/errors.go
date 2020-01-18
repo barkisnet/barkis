@@ -20,6 +20,7 @@ const (
 	CodeInvalidTokenDescription CodeType = 106
 	CodeNotMintableToken        CodeType = 107
 	CodeUnauthorizedMint        CodeType = 108
+	CodeInvalidDelayPeriod      CodeType = 109
 )
 
 func ErrNoInvalidTokenName(codespace sdk.CodespaceType, msg string) sdk.Error {
@@ -52,4 +53,8 @@ func ErrNotMintableToken(codespace sdk.CodespaceType, msg string) sdk.Error {
 
 func ErrUnauthorizedMint(codespace sdk.CodespaceType, msg string) sdk.Error {
 	return sdk.NewError(codespace, CodeUnauthorizedMint, msg)
+}
+
+func ErrInvalidDelayPeriod(codespace sdk.CodespaceType, msg string) sdk.Error {
+	return sdk.NewError(codespace, CodeInvalidDelayPeriod, msg)
 }
