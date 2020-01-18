@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"fmt"
 	"github.com/barkisnet/barkis/codec"
 	sdk "github.com/barkisnet/barkis/types"
 	"github.com/barkisnet/barkis/x/asset/internal/types"
@@ -31,6 +32,18 @@ func NewKeeper(cdc *codec.Codec, key sdk.StoreKey, paramSpace params.Subspace, s
 func (k *Keeper) SetToken(ctx sdk.Context, token *types.Token) {
 	store := ctx.KVStore(k.storeKey)
 	tokenKey := types.BuildTokenKey(token.Symbol)
+	if store.Has(tokenKey) {
+		panic(fmt.Errorf("duplicated token symbol"))
+	}
+	store.Set(tokenKey, k.SerializeToken(token))
+}
+
+func (k *Keeper) UpdateToken(ctx sdk.Context, token *types.Token) {
+	store := ctx.KVStore(k.storeKey)
+	tokenKey := types.BuildTokenKey(token.Symbol)
+	if !store.Has(tokenKey) {
+		panic(fmt.Errorf("non-exist token"))
+	}
 	store.Set(tokenKey, k.SerializeToken(token))
 }
 

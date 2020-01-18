@@ -35,6 +35,14 @@ func NewParams(decimal int8, issueFee, mintFee sdk.Coins) *Params {
 	}
 }
 
+func DefaultParams() *Params {
+	return &Params{
+		MaxDecimal: 10,
+		IssueFee:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(1000000000))),
+		MintFee:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(100000000))),
+	}
+}
+
 // Implements params.ParamSet
 func (p *Params) ParamSetPairs() params.ParamSetPairs {
 	return params.ParamSetPairs{

@@ -4,13 +4,13 @@ import (
 	"bytes"
 	"encoding/hex"
 	"fmt"
-	"github.com/barkisnet/barkis/x/auth"
 	"strings"
 
 	"github.com/tendermint/tendermint/crypto/tmhash"
 
 	sdk "github.com/barkisnet/barkis/types"
 	"github.com/barkisnet/barkis/x/asset/internal/types"
+	"github.com/barkisnet/barkis/x/auth"
 )
 
 // NewHandler returns a handler for "bank" type messages.
@@ -44,7 +44,7 @@ func handleIssueMsg(ctx sdk.Context, k Keeper, msg IssueMsg) sdk.Result {
 	txHashStr := strings.ToLower(hex.EncodeToString(txHash))
 	suffix := txHashStr[:types.TokenSymbolSuffixLen]
 
-	token := types.NewToken(strings.ToLower(msg.Symbol) + types.TokenJoiner + suffix, msg.Name, msg.Decimal, msg.TotalSupply, msg.Mintable, msg.Description, msg.From)
+	token := types.NewToken(strings.ToLower(msg.Symbol)+types.TokenJoiner+suffix, msg.Name, msg.Decimal, msg.TotalSupply, msg.Mintable, msg.Description, msg.From)
 	k.SetToken(ctx, token)
 
 	issueFee := k.GetIssueFee(ctx)
@@ -97,7 +97,7 @@ func handleMintMsg(ctx sdk.Context, k Keeper, msg MintMsg) sdk.Result {
 	}
 
 	token.TotalSupply = msg.Amount + token.TotalSupply
-	k.SetToken(ctx, token)
+	k.UpdateToken(ctx, token)
 
 	mintedToken := sdk.Coins{sdk.NewCoin(token.Symbol, sdk.NewInt(msg.Amount))}
 	err = k.SupplyKeeper.MintCoins(ctx, types.ModuleName, mintedToken)

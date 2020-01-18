@@ -58,8 +58,8 @@ func (msg IssueMsg) ValidateBasic() sdk.Error {
 	if len(msg.Name) == 0 || len(msg.Name) > MaxTokenNameLength {
 		return ErrNoInvalidTokenName(DefaultCodespace, fmt.Sprintf("token name length shoud be in (0, %d]", MaxTokenNameLength))
 	}
-	if msg.Name == sdk.DefaultBondDenom {
-		return ErrNoInvalidTokenName(DefaultCodespace, fmt.Sprintf("token name should be identical to native token %s", sdk.DefaultBondDenom))
+	if msg.Name == sdk.DefaultBondDenom || msg.Name == sdk.DefaultBondDenomName {
+		return ErrNoInvalidTokenName(DefaultCodespace, fmt.Sprintf("token name should be identical to native token %s/%s", sdk.DefaultBondDenom, sdk.DefaultBondDenomName))
 	}
 
 	if err := validateOriginalTokenSymbol(msg.Symbol); err != nil {
@@ -107,7 +107,7 @@ func (msg MintMsg) ValidateBasic() sdk.Error {
 	}
 	symbolPaths := strings.Split(msg.Symbol, TokenJoiner)
 	if len(symbolPaths) != 2 {
-		return ErrInvalidMintAmount(DefaultCodespace, fmt.Sprintf("invalid symbol, token symbol should follow pattern XXX%sYYY", TokenJoiner))
+		return ErrInvalidTokenSymbol(DefaultCodespace, fmt.Sprintf("invalid symbol, token symbol should follow pattern XXX%sYYY", TokenJoiner))
 	}
 
 	if err := validateTokenSymbol(msg.Symbol); err != nil {

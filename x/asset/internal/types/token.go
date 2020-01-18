@@ -98,8 +98,8 @@ func validateOriginalTokenSymbol(symbol string) error {
 	if len(symbol) == 0 || len(symbol) > MaxTokenSymbolLength {
 		return fmt.Errorf("token symbol length shoud be in (0, %d]", MaxTokenSymbolLength)
 	}
-	if symbol == sdk.DefaultBondDenom {
-		return fmt.Errorf("token symbol should be identical to native token %s", sdk.DefaultBondDenom)
+	if symbol == sdk.DefaultBondDenom || symbol == sdk.DefaultBondDenomName {
+		return fmt.Errorf("token symbol should be identical to native token %s/%s", sdk.DefaultBondDenom, sdk.DefaultBondDenomName)
 	}
 	if !isAlpha(symbol) {
 		return fmt.Errorf("token symbol should only contains alphabet")
