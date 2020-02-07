@@ -10,6 +10,7 @@ import (
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/libs/log"
 
+	appconfig "github.com/barkisnet/barkis/app/config"
 	"github.com/barkisnet/barkis/server"
 	sdk "github.com/barkisnet/barkis/types"
 )
@@ -19,9 +20,9 @@ func TestPrepareFlagsForTxCreateValidator(t *testing.T) {
 	config, err := tcmd.ParseConfig()
 	require.Nil(t, err)
 	logger := log.NewNopLogger()
-	ctx := server.NewContext(config, logger)
+	ctx := appconfig.NewServerContext(config, logger)
 
-	valPubKey, _ := sdk.GetConsPubKeyBech32("cosmosvalconspub1zcjduepq7jsrkl9fgqk0wj3ahmfr8pgxj6vakj2wzn656s8pehh0zhv2w5as5gd80a")
+	valPubKey, _ := sdk.GetConsPubKeyBech32("barkisvalconspub1zcjduepq0mu3g6yrkxsytqsn9sclsk83ndxqwejmrgt2t0lj4q5pn8d7vvmq93prza")
 
 	type args struct {
 		config    *cfg.Config

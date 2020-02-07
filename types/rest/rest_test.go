@@ -14,6 +14,7 @@ import (
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 
 	"github.com/barkisnet/barkis/client/context"
+	"github.com/barkisnet/barkis/client/flags"
 	"github.com/barkisnet/barkis/codec"
 	"github.com/barkisnet/barkis/types"
 )
@@ -21,26 +22,26 @@ import (
 type mockResponseWriter struct{}
 
 func TestBaseReqValidateBasic(t *testing.T) {
-	fromAddr := "cosmos1cq0sxam6x4l0sv9yz3a2vlqhdhvt2k6jtgcse0"
+	fromAddr := "barkis1ka54cl8ep6shtxajr5mvp6f7evj2zvf90qt544"
 	tenstakes, err := types.ParseCoins("10stake")
 	require.NoError(t, err)
 	onestake, err := types.ParseDecCoins("1.0stake")
 	require.NoError(t, err)
 
 	req1 := NewBaseReq(
-		fromAddr, "", "nonempty", "", "", 0, 0, tenstakes, nil, false,
+		fromAddr, "", "", "nonempty", "", "", 0, 0, tenstakes, nil, flags.BroadcastSync, false, true,
 	)
 	req2 := NewBaseReq(
-		"", "", "nonempty", "", "", 0, 0, tenstakes, nil, false,
+		"", "", "", "nonempty", "", "", 0, 0, tenstakes, nil, flags.BroadcastSync, false, true,
 	)
 	req3 := NewBaseReq(
-		fromAddr, "", "", "", "", 0, 0, tenstakes, nil, false,
+		fromAddr, "", "", "", "", "", 0, 0, tenstakes, nil, flags.BroadcastSync, false, true,
 	)
 	req4 := NewBaseReq(
-		fromAddr, "", "nonempty", "", "", 0, 0, tenstakes, onestake, false,
+		fromAddr, "", "", "nonempty", "", "", 0, 0, tenstakes, onestake, flags.BroadcastSync, false, true,
 	)
 	req5 := NewBaseReq(
-		fromAddr, "", "nonempty", "", "", 0, 0, types.Coins{}, types.DecCoins{}, false,
+		fromAddr, "", "", "nonempty", "", "", 0, 0, types.Coins{}, types.DecCoins{}, flags.BroadcastSync, false, true,
 	)
 
 	tests := []struct {

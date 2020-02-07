@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/barkisnet/barkis/client/context"
@@ -45,6 +46,25 @@ func WriteGenerateStdTxResponse(w http.ResponseWriter, cliCtx context.CLIContext
 			rest.WriteSimulationResponse(w, cliCtx.Codec, txBldr.Gas())
 			return
 		}
+	}
+	if br.GenerateOnly {
+		stdMsg, err := txBldr.BuildSignMsg(msgs)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		output, err := cliCtx.Codec.MarshalJSON(types.NewStdTx(stdMsg.Msgs, stdMsg.Fee, nil, stdMsg.Memo))
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		if _, err := w.Write(output); err != nil {
+			log.Printf("could not write response: %v", err)
+		}
+		return
 	}
 
 	txBytes, err := txBldr.BuildAndSign(cliCtx.GetFromName(), br.Password, msgs)
