@@ -17,6 +17,7 @@ import (
 	sdk "github.com/barkisnet/barkis/types"
 	"github.com/barkisnet/barkis/types/module"
 	"github.com/barkisnet/barkis/version"
+	"github.com/barkisnet/barkis/x/asset"
 	"github.com/barkisnet/barkis/x/auth"
 	"github.com/barkisnet/barkis/x/bank"
 	"github.com/barkisnet/barkis/x/crisis"
@@ -57,6 +58,7 @@ var (
 		crisis.AppModuleBasic{},
 		slashing.AppModuleBasic{},
 		supply.AppModuleBasic{},
+		asset.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -67,6 +69,7 @@ var (
 		staking.BondedPoolName:    {supply.Burner, supply.Staking},
 		staking.NotBondedPoolName: {supply.Burner, supply.Staking},
 		gov.ModuleName:            {supply.Burner},
+		asset.ModuleName:          {supply.Minter},
 	}
 
 	BarkisContext = config.NewDefaultContext()
@@ -106,6 +109,7 @@ type BarkisApp struct {
 	govKeeper      gov.Keeper
 	crisisKeeper   crisis.Keeper
 	paramsKeeper   params.Keeper
+	assetKeeper    asset.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -124,7 +128,7 @@ func NewBarkisApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	keys := sdk.NewKVStoreKeys(
 		bam.MainStoreKey, auth.StoreKey, staking.StoreKey,
 		supply.StoreKey, mint.StoreKey, distr.StoreKey, slashing.StoreKey,
-		gov.StoreKey, params.StoreKey,
+		gov.StoreKey, params.StoreKey, asset.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(staking.TStoreKey, params.TStoreKey)
 
@@ -146,6 +150,7 @@ func NewBarkisApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	slashingSubspace := app.paramsKeeper.Subspace(slashing.DefaultParamspace)
 	govSubspace := app.paramsKeeper.Subspace(gov.DefaultParamspace)
 	crisisSubspace := app.paramsKeeper.Subspace(crisis.DefaultParamspace)
+	assetSubspace := app.paramsKeeper.Subspace(asset.DefaultParamspace)
 
 	// add keepers
 	app.accountKeeper = auth.NewAccountKeeper(app.cdc, keys[auth.StoreKey], authSubspace, auth.ProtoBaseAccount)
@@ -179,6 +184,8 @@ func NewBarkisApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 		staking.NewMultiStakingHooks(app.distrKeeper.Hooks(), app.slashingKeeper.Hooks()),
 	)
 
+	app.assetKeeper = asset.NewKeeper(cdc, keys[asset.StoreKey], assetSubspace, app.supplyKeeper, asset.DefaultCodespace)
+
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
 	app.mm = module.NewManager(
@@ -193,6 +200,7 @@ func NewBarkisApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 		mint.NewAppModule(app.mintKeeper),
 		slashing.NewAppModule(app.slashingKeeper, app.stakingKeeper),
 		staking.NewAppModule(app.stakingKeeper, app.distrKeeper, app.accountKeeper, app.supplyKeeper),
+		asset.NewAppModule(app.assetKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -207,7 +215,7 @@ func NewBarkisApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	app.mm.SetOrderInitGenesis(
 		genaccounts.ModuleName, distr.ModuleName, staking.ModuleName,
 		auth.ModuleName, bank.ModuleName, slashing.ModuleName, gov.ModuleName,
-		mint.ModuleName, supply.ModuleName, crisis.ModuleName, genutil.ModuleName,
+		mint.ModuleName, supply.ModuleName, crisis.ModuleName, genutil.ModuleName, asset.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.crisisKeeper)
@@ -251,6 +259,22 @@ func (app *BarkisApp) registerUpgrade() {
 		mintSubspace.UpdateKeyTable(mint.UpdatedParamKeyTable())
 		app.distrKeeper.SetBonusProposerReward(ctx, bonusProposerReward)
 		app.mintKeeper.SetUnfreezeAmountPerBlock(ctx, 431000)
+	})
+
+	sdk.GlobalUpgradeMgr.RegisterUpgradeHeight(sdk.TokenIssueUpgrade, BarkisContext.UpgradeConfig.TokenIssueHeight)
+
+	//Register new store if necessary
+	sdk.GlobalUpgradeMgr.RegisterNewStore(sdk.TokenIssueUpgrade, asset.StoreKey)
+
+	//Register new msg types if necessary
+	sdk.GlobalUpgradeMgr.RegisterNewMsg(sdk.TokenIssueUpgrade, asset.IssueMsg{}.Type(), asset.MintMsg{}.Type())
+
+	//Register BeginBlocker first for upgrade
+	sdk.GlobalUpgradeMgr.RegisterBeginBlockerFirst(sdk.TokenIssueUpgrade, func(ctx sdk.Context) {
+		maxTokenDecimal := int8(10)
+		issueFee := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10000000000))) //10000barkis
+		mintFee := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(5000000000))) //5000barkis
+		app.assetKeeper.SetParams(ctx, asset.NewParams(maxTokenDecimal, issueFee, mintFee))
 	})
 }
 

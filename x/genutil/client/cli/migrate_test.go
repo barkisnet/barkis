@@ -12,8 +12,8 @@ import (
 	"github.com/tendermint/tendermint/libs/cli"
 	"github.com/tendermint/tendermint/libs/log"
 
+	appconfig "github.com/barkisnet/barkis/app/config"
 	"github.com/barkisnet/barkis/client"
-	"github.com/barkisnet/barkis/server"
 	"github.com/barkisnet/barkis/tests"
 )
 
@@ -37,7 +37,7 @@ func TestMigrateGenesis(t *testing.T) {
 	logger := log.NewNopLogger()
 	cfg, err := tcmd.ParseConfig()
 	require.Nil(t, err)
-	ctx := server.NewContext(cfg, logger)
+	ctx := appconfig.NewServerContext(cfg, logger)
 	cdc := makeCodec()
 
 	genesisPath := path.Join(home, "genesis.json")

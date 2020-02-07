@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/barkisnet/barkis/client"
+	"github.com/barkisnet/barkis/client/flags"
 	clientkeys "github.com/barkisnet/barkis/client/keys"
 	"github.com/barkisnet/barkis/client/rpc"
 	"github.com/barkisnet/barkis/codec"
@@ -326,7 +327,7 @@ func doTransferWithGas(
 
 	from := addr.String()
 	baseReq := rest.NewBaseReq(
-		from, memo, chainID, gas, fmt.Sprintf("%f", gasAdjustment), accnum, sequence, fees, nil, simulate,
+		from, "", memo, chainID, gas, fmt.Sprintf("%f", gasAdjustment), accnum, sequence, fees, nil, flags.BroadcastSync, simulate, true,
 	)
 
 	sr := bankrest.SendReq{
@@ -370,7 +371,7 @@ func doTransferWithGasAccAuto(
 
 	from := addr.String()
 	baseReq := rest.NewBaseReq(
-		from, memo, chainID, gas, fmt.Sprintf("%f", gasAdjustment), 0, 0, fees, nil, simulate,
+		from, "", memo, chainID, gas, fmt.Sprintf("%f", gasAdjustment), 0, 0, fees, nil, flags.BroadcastSync, simulate, true,
 	)
 
 	sr := bankrest.SendReq{
@@ -438,7 +439,7 @@ func doDelegate(
 	chainID := viper.GetString(client.FlagChainID)
 	from := acc.GetAddress().String()
 
-	baseReq := rest.NewBaseReq(from, "", chainID, "", "", accnum, sequence, fees, nil, false)
+	baseReq := rest.NewBaseReq(from, "", "", chainID, "", "", accnum, sequence, fees, nil, flags.BroadcastSync,false, true)
 	msg := stakingrest.DelegateRequest{
 		BaseReq:          baseReq,
 		DelegatorAddress: delAddr,
@@ -475,7 +476,7 @@ func doUndelegate(
 	chainID := viper.GetString(client.FlagChainID)
 	from := acc.GetAddress().String()
 
-	baseReq := rest.NewBaseReq(from, "", chainID, "", "", accnum, sequence, fees, nil, false)
+	baseReq := rest.NewBaseReq(from, "", "", chainID, "", "", accnum, sequence, fees, nil, flags.BroadcastSync, false,  true)
 	msg := stakingrest.UndelegateRequest{
 		BaseReq:          baseReq,
 		DelegatorAddress: delAddr,
@@ -511,7 +512,7 @@ func doBeginRedelegation(
 	chainID := viper.GetString(client.FlagChainID)
 	from := acc.GetAddress().String()
 
-	baseReq := rest.NewBaseReq(from, "", chainID, "", "", accnum, sequence, fees, nil, false)
+	baseReq := rest.NewBaseReq(from, "", "", chainID, "", "", accnum, sequence, fees, nil, flags.BroadcastSync, false, true)
 	msg := stakingrest.RedelegateRequest{
 		BaseReq:             baseReq,
 		DelegatorAddress:    delAddr,
@@ -724,7 +725,7 @@ func doSubmitProposal(
 	chainID := viper.GetString(client.FlagChainID)
 	from := acc.GetAddress().String()
 
-	baseReq := rest.NewBaseReq(from, "", chainID, "", "", accnum, sequence, fees, nil, false)
+	baseReq := rest.NewBaseReq(from, "", "", chainID, "", "", accnum, sequence, fees, nil, flags.BroadcastSync, false, true)
 	pr := govrest.PostProposalReq{
 		Title:          "Test",
 		Description:    "test",
@@ -762,7 +763,7 @@ func doSubmitParamChangeProposal(
 	chainID := viper.GetString(client.FlagChainID)
 	from := acc.GetAddress().String()
 
-	baseReq := rest.NewBaseReq(from, "", chainID, "", "", accnum, sequence, fees, nil, false)
+	baseReq := rest.NewBaseReq(from, "", "", chainID, "", "", accnum, sequence, fees, nil, flags.BroadcastSync, false, true)
 	pr := paramscutils.ParamChangeProposalReq{
 		BaseReq:     baseReq,
 		Title:       "Test",
@@ -801,7 +802,7 @@ func doSubmitCommunityPoolSpendProposal(
 	chainID := viper.GetString(client.FlagChainID)
 	from := acc.GetAddress().String()
 
-	baseReq := rest.NewBaseReq(from, "", chainID, "", "", accnum, sequence, fees, nil, false)
+	baseReq := rest.NewBaseReq(from, "", "", chainID, "", "", accnum, sequence, fees, nil, flags.BroadcastSync, false, true)
 	pr := distrrest.CommunityPoolSpendProposalReq{
 		BaseReq:     baseReq,
 		Title:       "Test",
@@ -895,7 +896,7 @@ func doDeposit(
 	chainID := viper.GetString(client.FlagChainID)
 	from := acc.GetAddress().String()
 
-	baseReq := rest.NewBaseReq(from, "", chainID, "", "", accnum, sequence, fees, nil, false)
+	baseReq := rest.NewBaseReq(from, "", "", chainID, "", "", accnum, sequence, fees, nil, flags.BroadcastSync, false, true)
 	dr := govrest.DepositReq{
 		Depositor: proposerAddr,
 		Amount:    sdk.Coins{sdk.NewCoin(sdk.DefaultBondDenom, amount)},
@@ -953,7 +954,7 @@ func doVote(
 	chainID := viper.GetString(client.FlagChainID)
 	from := acc.GetAddress().String()
 
-	baseReq := rest.NewBaseReq(from, "", chainID, "", "", accnum, sequence, fees, nil, false)
+	baseReq := rest.NewBaseReq(from, "", "", chainID, "", "", accnum, sequence, fees, nil, flags.BroadcastSync, false, true)
 	vr := govrest.VoteReq{
 		Voter:   proposerAddr,
 		Option:  option,
@@ -1108,7 +1109,7 @@ func doUnjail(
 	from := acc.GetAddress().String()
 	chainID := viper.GetString(client.FlagChainID)
 
-	baseReq := rest.NewBaseReq(from, "", chainID, "", "", 1, 1, fees, nil, false)
+	baseReq := rest.NewBaseReq(from, "", "", chainID, "", "", 1, 1, fees, nil, flags.BroadcastSync, false, true)
 	ur := slashingrest.UnjailReq{
 		BaseReq: baseReq,
 	}
@@ -1145,7 +1146,7 @@ func doWithdrawDelegatorAllRewards(
 	chainID := viper.GetString(client.FlagChainID)
 	from := acc.GetAddress().String()
 
-	baseReq := rest.NewBaseReq(from, "", chainID, "", "", accnum, sequence, fees, nil, false)
+	baseReq := rest.NewBaseReq(from, "", "", chainID, "", "", accnum, sequence, fees, nil, flags.BroadcastSync, false, true)
 	wr := struct {
 		BaseReq rest.BaseReq `json:"base_req"`
 	}{BaseReq: baseReq}

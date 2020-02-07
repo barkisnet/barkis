@@ -15,6 +15,7 @@ import (
 	"github.com/barkisnet/barkis/types/module"
 	"github.com/barkisnet/barkis/version"
 	"github.com/barkisnet/barkis/x/auth"
+	"github.com/barkisnet/barkis/x/asset"
 	"github.com/barkisnet/barkis/x/bank"
 	"github.com/barkisnet/barkis/x/crisis"
 	distr "github.com/barkisnet/barkis/x/distribution"
@@ -54,6 +55,7 @@ var (
 		crisis.AppModuleBasic{},
 		slashing.AppModuleBasic{},
 		supply.AppModuleBasic{},
+		asset.AppModuleBasic{},
 	)
 
 	// module account permissions

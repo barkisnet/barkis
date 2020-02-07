@@ -59,12 +59,13 @@ type BaseReq struct {
 	GasAdjustment string       `json:"gas_adjustment"`
 	BroadcastMode string       `json:"broadcast_mode"`
 	Simulate      bool         `json:"simulate"`
+	GenerateOnly  bool         `json:"generate_only"`
 }
 
 // NewBaseReq creates a new basic request instance and sanitizes its values
 func NewBaseReq(
 	from, password, memo, chainID string, gas, gasAdjustment string, accNumber, seq uint64,
-	fees sdk.Coins, gasPrices sdk.DecCoins, broadcastMode string, simulate bool,
+	fees sdk.Coins, gasPrices sdk.DecCoins, broadcastMode string, simulate, generateOnly bool,
 ) BaseReq {
 
 	return BaseReq{
@@ -80,6 +81,7 @@ func NewBaseReq(
 		Sequence:      seq,
 		BroadcastMode: strings.TrimSpace(broadcastMode),
 		Simulate:      simulate,
+		GenerateOnly:  generateOnly,
 	}
 }
 
@@ -87,7 +89,7 @@ func NewBaseReq(
 func (br BaseReq) Sanitize() BaseReq {
 	return NewBaseReq(
 		br.From, br.Password, br.Memo, br.ChainID, br.Gas, br.GasAdjustment,
-		br.AccountNumber, br.Sequence, br.Fees, br.GasPrices, br.BroadcastMode, br.Simulate,
+		br.AccountNumber, br.Sequence, br.Fees, br.GasPrices, br.BroadcastMode, br.Simulate, br.GenerateOnly,
 	)
 }
 

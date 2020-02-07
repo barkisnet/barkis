@@ -11,6 +11,8 @@ tags:
     description: Tendermint APIs, such as query blocks, transactions and validatorset
   - name: Key Management
     description: Key management APIs
+  - name: Asset
+    description: Issue and mint tokens
   - name: Auth
     description: Authenticate accounts
   - name: Bank
@@ -635,6 +637,159 @@ paths:
           description: Invalid request
         500:
           description: Server internal error
+  /asset/issue:
+    post:
+      summary: Issue token
+      tags:
+        - Asset
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: account
+          description: The sender and tx information
+          required: true
+          schema:
+            type: object
+            properties:
+              base_req:
+                $ref: "#/definitions/BaseReq"
+              name:
+                type: string
+                example: bitcoin
+              symbol:
+                type: string
+                example: btc
+              decimals:
+                type: string
+                example: "10"
+              total_supply:
+                type: string
+                example: "10000"
+              mintable:
+                type: boolean
+                example: true
+              description:
+                type: string
+                example: "bitcoin token"
+      responses:
+        202:
+          description: Tx was succesfully generated
+          schema:
+            $ref: "#/definitions/StdTx"
+        400:
+          description: Invalid request
+        500:
+          description: Server internal error
+  /asset/mint:
+    post:
+      summary: Mint token
+      tags:
+        - Asset
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: account
+          description: The sender and tx information
+          required: true
+          schema:
+            type: object
+            properties:
+              base_req:
+                $ref: "#/definitions/BaseReq"
+              symbol:
+                type: string
+                example: btc_a4b
+              amount:
+                type: string
+                example: "10000"
+      responses:
+        202:
+          description: Tx was succesfully generated
+          schema:
+            $ref: "#/definitions/StdTx"
+        400:
+          description: Invalid request
+        500:
+          description: Server internal error
+  /asset/get/{symbol}:
+    get:
+      summary: Get a specified token information
+      tags:
+        - Asset
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: symbol
+          description: Token symbol
+          required: true
+          type: string
+          x-example: btc_a4b
+      responses:
+        200:
+          description: Token information
+          schema:
+            $ref: "#/definitions/Token"
+        500:
+          description: Server internal error
+  /asset/list:
+    get:
+      summary: List all tokens information
+      tags:
+        - Asset
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: page
+          description: The page number.
+          type: integer
+          x-example: 1
+        - in: query
+          name: limit
+          description: The maximum number of items per page.
+          type: integer
+          x-example: 1
+      responses:
+        200:
+          description: Token information list
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Token"
+        500:
+          description: Server internal error
+  /asset/params:
+    get:
+      summary: List asset module parameters
+      tags:
+        - Asset
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              param_max_decimal:
+                type: number
+              param_issue_fee:
+                type: array
+                items:
+                  $ref: "#/definitions/Coin"
+              param_mint_fee:
+                type: array
+                items:
+                  $ref: "#/definitions/Coin"
+        500:
+          description: Internal Server Error
   /auth/accounts/{address}:
     get:
       summary: Get the account information on blockchain
@@ -2093,7 +2248,7 @@ paths:
         200:
           description: OK
           schema:
-             type: string
+            type: string
         400:
           description: Invalid coin denomination
         500:
@@ -2194,6 +2349,30 @@ definitions:
       amount:
         type: string
         example: "50"
+  Token:
+    type: object
+    properties:
+      name:
+        type: string
+        example: bitcoin
+      symbol:
+        type: string
+        example: btc_a4b
+      decimals:
+        type: number
+        example: 20
+      total_supply:
+        type: number
+        example: 10000
+      mintable:
+        type: boolean
+        example: true
+      description:
+        type: string
+        example: "bitcoin token"
+      owner:
+        type: string
+        example: barkis1ka54cl8ep6shtxajr5mvp6f7evj2zvf90qt544
   Hash:
     type: string
     example: EE5F3404034C524501629B56E0DDC38FAD651F04
@@ -2514,6 +2693,10 @@ definitions:
         type: boolean
         example: false
         description: Estimate gas for a transaction (cannot be used in conjunction with generate_only)
+      generate_only:
+        type: boolean
+        example: true
+        description: Generate unsigned transaction
   TendermintValidator:
     type: object
     properties:
