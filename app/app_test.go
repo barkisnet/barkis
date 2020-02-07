@@ -5,12 +5,11 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/tendermint/tm-db"
 	"github.com/tendermint/tendermint/libs/log"
+	"github.com/tendermint/tm-db"
 
 	"github.com/barkisnet/barkis/codec"
 	"github.com/barkisnet/barkis/simapp"
-
 	abci "github.com/tendermint/tendermint/abci/types"
 )
 

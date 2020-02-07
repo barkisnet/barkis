@@ -57,7 +57,7 @@ func TestLazyKeyManagement(t *testing.T) {
 	require.NotNil(t, err)
 	_, err = kb.GetByAddress(accAddr(i2))
 	require.NoError(t, err)
-	addr, err := sdk.AccAddressFromBech32("cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t")
+	addr, err := sdk.AccAddressFromBech32("barkis1ka54cl8ep6shtxajr5mvp6f7evj2zvf90qt544")
 	require.NoError(t, err)
 	_, err = kb.GetByAddress(addr)
 	require.NotNil(t, err)

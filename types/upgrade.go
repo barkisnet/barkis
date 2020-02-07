@@ -157,9 +157,9 @@ func (mgr *UpgradeManager) RegisterEndBlockerLast(name string, endBlocker func(C
 
 // Add new upgrade
 func (mgr *UpgradeManager) RegisterUpgradeHeight(name string, height int64) {
-	if mgr.Config.UpgradeHeight[name] != 0 {
-		panic("duplicated upgrade name")
-	}
+	//if mgr.Config.UpgradeHeight[name] != 0 {
+	//	panic("duplicated upgrade name")
+	//}
 	mgr.Config.UpgradeHeight[name] = height
 }
 

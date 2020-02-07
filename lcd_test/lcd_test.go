@@ -66,8 +66,8 @@ func TestValidators(t *testing.T) {
 	require.NoError(t, err)
 	defer cleanup()
 	resultVals := getValidatorSets(t, port, -1, false)
-	require.Contains(t, resultVals.Validators[0].Address.String(), "cosmosvalcons")
-	require.Contains(t, resultVals.Validators[0].PubKey, "cosmosvalconspub")
+	require.Contains(t, resultVals.Validators[0].Address.String(), "barkisvalcons")
+	require.Contains(t, resultVals.Validators[0].PubKey, "barkisvalconspub")
 	getValidatorSets(t, port, 2, false)
 	getValidatorSets(t, port, 10000000, true)
 }
@@ -1083,16 +1083,10 @@ func TestMintingQueries(t *testing.T) {
 	var params mint.Params
 	require.NoError(t, cdc.UnmarshalJSON(extractResultFromResponse(t, []byte(body)), &params))
 
-	res, body = Request(t, port, "GET", "/minting/inflation", nil)
+	res, body = Request(t, port, "GET", "/minting/remainedAmount", nil)
 	require.Equal(t, http.StatusOK, res.StatusCode, body)
 
-	var inflation sdk.Dec
-	require.NoError(t, cdc.UnmarshalJSON(extractResultFromResponse(t, []byte(body)), &inflation))
-
-	res, body = Request(t, port, "GET", "/minting/annual-provisions", nil)
-	require.Equal(t, http.StatusOK, res.StatusCode, body)
-
-	var annualProvisions sdk.Dec
+	var annualProvisions sdk.Coins
 	require.NoError(t, cdc.UnmarshalJSON(extractResultFromResponse(t, []byte(body)), &annualProvisions))
 }
 

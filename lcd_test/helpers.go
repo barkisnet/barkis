@@ -12,6 +12,7 @@ import (
 
 	"github.com/barkisnet/barkis/baseapp"
 	"github.com/barkisnet/barkis/client"
+	clientkeys "github.com/barkisnet/barkis/client/keys"
 	"github.com/barkisnet/barkis/client/lcd"
 	"github.com/barkisnet/barkis/codec"
 	crkeys "github.com/barkisnet/barkis/crypto/keys"
@@ -385,7 +386,7 @@ func CreateAddrs(kb crkeys.Keybase, numAddrs int) (addrs []sdk.AccAddress, seeds
 
 	for i := 0; i < numAddrs; i++ {
 		name := fmt.Sprintf("test%d", i)
-		password := "1234567890"
+		password := clientkeys.DefaultKeyPass
 		info, seed, err = kb.CreateMnemonic(name, crkeys.English, password, crkeys.Secp256k1)
 		if err != nil {
 			errs = append(errs, err)

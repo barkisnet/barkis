@@ -1,6 +1,7 @@
 package simapp
 
 import (
+	"github.com/barkisnet/barkis/x/asset"
 	"io"
 	"os"
 
@@ -54,6 +55,7 @@ var (
 		crisis.AppModuleBasic{},
 		slashing.AppModuleBasic{},
 		supply.AppModuleBasic{},
+		asset.AppModuleBasic{},
 	)
 
 	// module account permissions
