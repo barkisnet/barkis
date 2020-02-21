@@ -28,6 +28,9 @@ RewardUpgrade = {{ .UpgradeConfig.RewardUpgrade }}
 
 # Upgrade to change reward rules
 TokenIssueHeight = {{ .UpgradeConfig.TokenIssueHeight }}
+
+# Upgrade to update voting period
+UpdateVotingPeriodHeight = {{ .UpgradeConfig.UpdateVotingPeriodHeight }}
 `
 
 var configTemplate *template.Template
