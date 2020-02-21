@@ -243,6 +243,7 @@ func NewBarkisApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 }
 
 func (app *BarkisApp) registerUpgrade() {
+	//------------------------------------------------------------------------------------------------------------------------------------
 	//Register upgrade height
 	sdk.GlobalUpgradeMgr.RegisterUpgradeHeight(sdk.RewardUpgrade , BarkisContext.UpgradeConfig.RewardUpgrade)
 
@@ -261,6 +262,8 @@ func (app *BarkisApp) registerUpgrade() {
 		app.mintKeeper.SetUnfreezeAmountPerBlock(ctx, 431000)
 	})
 
+	//------------------------------------------------------------------------------------------------------------------------------------
+
 	sdk.GlobalUpgradeMgr.RegisterUpgradeHeight(sdk.TokenIssueUpgrade, BarkisContext.UpgradeConfig.TokenIssueHeight)
 
 	//Register new store if necessary
@@ -275,6 +278,19 @@ func (app *BarkisApp) registerUpgrade() {
 		issueFee := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10000000000))) //10000barkis
 		mintFee := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(5000000000))) //5000barkis
 		app.assetKeeper.SetParams(ctx, asset.NewParams(maxTokenDecimal, issueFee, mintFee))
+	})
+
+	//------------------------------------------------------------------------------------------------------------------------------------
+
+	//Register upgrade height
+	sdk.GlobalUpgradeMgr.RegisterUpgradeHeight(sdk.UpdateVotingPeriodHeight , BarkisContext.UpgradeConfig.UpdateVotingPeriodHeight)
+
+	sdk.GlobalUpgradeMgr.RegisterBeginBlockerFirst(sdk.UpdateVotingPeriodHeight, func(ctx sdk.Context) {
+		app.govKeeper.SetVotingParams(ctx, gov.NewVotingParams( 7200000000000)) // one day
+
+		stakingParam := app.stakingKeeper.GetParams(ctx)
+		stakingParam.MaxValidators = 3; // maximum validator quantity
+		app.stakingKeeper.SetParams(ctx, stakingParam)
 	})
 }
 

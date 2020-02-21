@@ -5,6 +5,7 @@ import "fmt"
 const (
 	RewardUpgrade = "RewardUpgrade"
 	TokenIssueUpgrade = "TokenIssueUpgrade"
+	UpdateVotingPeriodHeight = "UpdateVotingPeriodHeight"
 )
 
 var GlobalUpgradeMgr = NewUpgradeManager()
