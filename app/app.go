@@ -297,7 +297,10 @@ func (app *BarkisApp) registerUpgrade() {
 	sdk.GlobalUpgradeMgr.RegisterUpgradeHeight(sdk.UpdateTokenSymbolRulesHeight , BarkisContext.UpgradeConfig.UpdateTokenSymbolRulesHeight)
 
 	sdk.GlobalUpgradeMgr.RegisterBeginBlockerFirst(sdk.UpdateTokenSymbolRulesHeight, func(ctx sdk.Context) {
-		app.assetKeeper.SetMaxDecimal(ctx, 12) // change max decimal from 10 to 12
+		maxTokenDecimal := int8(12) // change max decimal from 10 to 12
+		issueFee := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(2000000000))) //2000barkis
+		mintFee := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(1000000000))) //1000barkis
+		app.assetKeeper.SetParams(ctx, asset.NewParams(maxTokenDecimal, issueFee, mintFee))
 	})
 }
 
