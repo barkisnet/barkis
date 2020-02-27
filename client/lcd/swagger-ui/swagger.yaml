@@ -704,7 +704,7 @@ paths:
                 $ref: "#/definitions/BaseReq"
               symbol:
                 type: string
-                example: btc_a4b
+                example: btc
               amount:
                 type: string
                 example: "10000"
@@ -730,7 +730,7 @@ paths:
           description: Token symbol
           required: true
           type: string
-          x-example: btc_a4b
+          x-example: btc
       responses:
         200:
           description: Token information
@@ -755,7 +755,7 @@ paths:
           name: limit
           description: The maximum number of items per page.
           type: integer
-          x-example: 1
+          x-example: 10
       responses:
         200:
           description: Token information list
@@ -2357,7 +2357,7 @@ definitions:
         example: bitcoin
       symbol:
         type: string
-        example: btc_a4b
+        example: btc
       decimals:
         type: number
         example: 20

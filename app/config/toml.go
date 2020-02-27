@@ -31,6 +31,9 @@ TokenIssueHeight = {{ .UpgradeConfig.TokenIssueHeight }}
 
 # Upgrade to update voting period
 UpdateVotingPeriodHeight = {{ .UpgradeConfig.UpdateVotingPeriodHeight }}
+
+# Upgrade to update token symbol rules
+UpdateTokenSymbolRulesHeight = {{ .UpgradeConfig.UpdateTokenSymbolRulesHeight }}
 `
 
 var configTemplate *template.Template

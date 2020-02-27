@@ -20,6 +20,8 @@ func TestIssueMsgValidation(t *testing.T) {
 		tx      IssueMsg
 	}{
 		{true, 0, NewIssueMsg(issuer, "bitcoin", "btc", 21000000000000, false, 6, "bitcoin on barkisnet")},
+		{false, CodeInvalidTokenSymbol, NewIssueMsg(issuer, "bitcoin", "Btc", 21000000000000, false, 6, "bitcoin on barkisnet")},
+		{false, CodeInvalidTokenSymbol, NewIssueMsg(issuer, "bitcoin", "BTC", 21000000000000, false, 6, "bitcoin on barkisnet")},
 		{false, sdk.CodeInvalidAddress, NewIssueMsg(emptyAddr, "bitcoin", "btc", 21000000000000, false, 6, "bitcoin on barkisnet")},
 
 		{false, CodeInvalidTokenSymbol, NewIssueMsg(issuer, "bitcoin", "ubarkis", 21000000000000, false, 6, "bitcoin on barkisnet")},
@@ -57,16 +59,20 @@ func TestMintMsgValidation(t *testing.T) {
 		errCode CodeType
 		tx      MintMsg
 	}{
-		{true, 0, NewMintMsg(minter, "btc_123", 10000)},
+		{true, 0, NewMintMsg(minter, "btc", 10000)},
 
-		{false, sdk.CodeInvalidAddress, NewMintMsg(emptyAddr, "btc_123", 10000)},
+		{false, sdk.CodeInvalidAddress, NewMintMsg(emptyAddr, "btc", 10000)},
 
-		{false, CodeInvalidTokenSymbol, NewMintMsg(minter, "btc", 10000)},
+		{false, CodeInvalidTokenSymbol, NewMintMsg(minter, "Btc", 10000)},
+		{false, CodeInvalidTokenSymbol, NewMintMsg(minter, "BTC", 10000)},
 		{false, CodeInvalidTokenSymbol, NewMintMsg(minter, "btc_", 10000)},
+		{false, CodeInvalidTokenSymbol, NewMintMsg(minter, "btc_123", 10000)},
 		{false, CodeInvalidTokenSymbol, NewMintMsg(minter, "ubarkis", 10000)},
+		{false, CodeInvalidTokenSymbol, NewMintMsg(minter, "Ubarkis", 10000)},
 		{false, CodeInvalidTokenSymbol, NewMintMsg(minter, "barkis", 10000)},
+		{false, CodeInvalidTokenSymbol, NewMintMsg(minter, "BARKIS", 10000)},
 
-		{false, CodeInvalidMintAmount, NewMintMsg(minter, "btc_123", 9000000000000000001)},
+		{false, CodeInvalidMintAmount, NewMintMsg(minter, "btc", 9000000000000000001)},
 	}
 
 	for index, tc := range cases {

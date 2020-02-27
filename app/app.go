@@ -292,6 +292,14 @@ func (app *BarkisApp) registerUpgrade() {
 		stakingParam.MaxValidators = 3; // maximum validator quantity
 		app.stakingKeeper.SetParams(ctx, stakingParam)
 	})
+
+	//------------------------------------------------------------------------------------------------------------------------------------
+	sdk.GlobalUpgradeMgr.RegisterUpgradeHeight(sdk.UpdateTokenSymbolRulesHeight , BarkisContext.UpgradeConfig.UpdateTokenSymbolRulesHeight)
+
+	sdk.GlobalUpgradeMgr.RegisterBeginBlockerFirst(sdk.UpdateTokenSymbolRulesHeight, func(ctx sdk.Context) {
+		app.assetKeeper.SetIssueFee(ctx, sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(2000000000)))) //2000barkis
+		app.assetKeeper.SetMintFee(ctx, sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(1000000000)))) //1000barkis
+	})
 }
 
 // application updates every begin block

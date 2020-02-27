@@ -2,11 +2,8 @@ package asset
 
 import (
 	"bytes"
-	"encoding/hex"
 	"fmt"
 	"strings"
-
-	"github.com/tendermint/tendermint/crypto/tmhash"
 
 	sdk "github.com/barkisnet/barkis/types"
 	"github.com/barkisnet/barkis/x/asset/internal/types"
@@ -40,11 +37,8 @@ func handleIssueMsg(ctx sdk.Context, k Keeper, msg IssueMsg) sdk.Result {
 	if k.IsTokenExist(ctx, strings.ToLower(msg.Symbol)) {
 		return types.ErrInvalidTokenSymbol(types.DefaultCodespace, fmt.Sprintf("duplicated token symbol: %s", strings.ToLower(msg.Symbol))).Result()
 	}
-	txHash := tmhash.Sum(ctx.TxBytes())
-	txHashStr := strings.ToLower(hex.EncodeToString(txHash))
-	suffix := txHashStr[:types.TokenSymbolSuffixLen]
 
-	token := types.NewToken(strings.ToLower(msg.Symbol)+types.TokenJoiner+suffix, msg.Name, msg.Decimal, msg.TotalSupply, msg.Mintable, msg.Description, msg.From)
+	token := types.NewToken(strings.ToLower(msg.Symbol), msg.Name, msg.Decimal, msg.TotalSupply, msg.Mintable, msg.Description, msg.From)
 	k.SetToken(ctx, token)
 
 	issueFee := k.GetIssueFee(ctx)
@@ -71,14 +65,14 @@ func handleIssueMsg(ctx sdk.Context, k Keeper, msg IssueMsg) sdk.Result {
 			sdk.NewAttribute(types.EventTypeIssueToken, mintedToken.String()),
 		),
 	)
-	return sdk.Result{Events: ctx.EventManager().Events(), Data: []byte(token.Symbol)}
+	return sdk.Result{Events: ctx.EventManager().Events()}
 }
 
 func handleMintMsg(ctx sdk.Context, k Keeper, msg MintMsg) sdk.Result {
-	if !k.IsTokenExist(ctx, strings.ToLower(msg.Symbol)) {
-		return types.ErrInvalidTokenSymbol(types.DefaultCodespace, fmt.Sprintf("token %s is not exist", strings.ToLower(msg.Symbol))).Result()
+	token := k.GetToken(ctx, msg.Symbol)
+	if token == nil {
+		return types.ErrInvalidTokenSymbol(types.DefaultCodespace, fmt.Sprintf("token %s is not exist", msg.Symbol)).Result()
 	}
-	token := k.GetToken(ctx, strings.ToLower(msg.Symbol))
 	if !token.Mintable {
 		return types.ErrNotMintableToken(types.DefaultCodespace, fmt.Sprintf("token %s is not mintable", token.Symbol)).Result()
 	}
