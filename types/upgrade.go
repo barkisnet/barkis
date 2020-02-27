@@ -3,9 +3,10 @@ package types
 import "fmt"
 
 const (
-	RewardUpgrade = "RewardUpgrade"
-	TokenIssueUpgrade = "TokenIssueUpgrade"
-	UpdateVotingPeriodHeight = "UpdateVotingPeriodHeight"
+	RewardUpgrade                = "RewardUpgrade"
+	TokenIssueUpgrade            = "TokenIssueUpgrade"
+	UpdateVotingPeriodHeight     = "UpdateVotingPeriodHeight"
+	UpdateTokenSymbolRulesHeight = "UpdateTokenSymbolRulesHeight"
 )
 
 var GlobalUpgradeMgr = NewUpgradeManager()
@@ -29,7 +30,7 @@ type UpgradeManager struct {
 
 func NewUpgradeManager() *UpgradeManager {
 	return &UpgradeManager{
-		Config:      UpgradeConfig{
+		Config: UpgradeConfig{
 			UpgradeHeight:      make(map[string]int64),
 			NewStoreHeight:     make(map[string]int64),
 			NewMsgHeight:       make(map[string]int64),
@@ -102,7 +103,7 @@ func (mgr *UpgradeManager) RegisterBeginBlockerLast(name string, beginBlocker fu
 // EndBlockers for upgrade
 func (mgr *UpgradeManager) EndBlockersFirst(ctx Context) {
 	if endBlockers, ok := mgr.Config.EndBlockersFirst[mgr.GetBlockHeight()]; ok {
-		for _,endBlocker := range endBlockers {
+		for _, endBlocker := range endBlockers {
 			if endBlocker == nil {
 				continue
 			}

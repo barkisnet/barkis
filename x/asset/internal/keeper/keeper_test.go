@@ -31,17 +31,34 @@ func TestSendKeeper(t *testing.T) {
 	iterator := keeper.ListToken(ctx)
 	require.False(t, iterator.Valid())
 
-	token := types.NewToken("btc_123", "bitcoin", 6, 21000000000000, false, "bitcoin on barkisnet", addr1)
+	token := types.NewToken("btc", "bitcoin", 6, 21000000000000, false, "bitcoin on barkisnet", addr1)
 	keeper.SetToken(ctx, token)
 
 	iterator = keeper.ListToken(ctx)
 	require.True(t, iterator.Valid())
 	gettedToken := keeper.DecodeToToken(iterator.Value())
-	require.Equal(t, "btc_123", gettedToken.Symbol)
+	require.Equal(t, "btc", gettedToken.Symbol)
 	require.Equal(t, "bitcoin", gettedToken.Name)
 	iterator.Next()
 	require.False(t, iterator.Valid())
 
-	require.True(t, keeper.IsTokenExist(ctx, "btc_123"))
-	require.False(t, keeper.IsTokenExist(ctx, "btc_124"))
+	require.True(t, keeper.IsTokenExist(ctx, "btc"))
+	require.False(t, keeper.IsTokenExist(ctx, "BTC"))
+
+	gettedToken = keeper.GetToken(ctx, "btc")
+	require.Equal(t, "btc", gettedToken.Symbol)
+	require.Equal(t, "bitcoin", gettedToken.Name)
+
+	gettedToken = keeper.GetToken(ctx, "BTC")
+	require.Nil(t, gettedToken)
+
+	token = types.NewToken("eth", "ethereum", 6, 100000000000000, true, "ethereum on barkisnet", addr1)
+	keeper.SetToken(ctx, token)
+	require.True(t, keeper.IsTokenExist(ctx, "eth"))
+
+	token = types.NewToken("eth", "ethereum", 6, 110000000000000, true, "ethereum on barkisnet", addr1)
+	keeper.UpdateToken(ctx, token)
+
+	gettedToken = keeper.GetToken(ctx, "eth")
+	require.Equal(t, int64(110000000000000), gettedToken.TotalSupply)
 }

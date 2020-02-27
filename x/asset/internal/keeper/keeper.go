@@ -35,7 +35,7 @@ func (k *Keeper) SetToken(ctx sdk.Context, token *types.Token) {
 	if store.Has(tokenKey) {
 		panic(fmt.Errorf("duplicated token symbol"))
 	}
-	store.Set(tokenKey, k.SerializeToken(token))
+	store.Set(tokenKey, k.EncodeToken(token))
 }
 
 func (k *Keeper) UpdateToken(ctx sdk.Context, token *types.Token) {
@@ -44,7 +44,7 @@ func (k *Keeper) UpdateToken(ctx sdk.Context, token *types.Token) {
 	if !store.Has(tokenKey) {
 		panic(fmt.Errorf("non-exist token"))
 	}
-	store.Set(tokenKey, k.SerializeToken(token))
+	store.Set(tokenKey, k.EncodeToken(token))
 }
 
 func (k *Keeper) GetToken(ctx sdk.Context, symbol string) *types.Token {
@@ -68,7 +68,7 @@ func (k *Keeper) IsTokenExist(ctx sdk.Context, symbol string) bool {
 	return store.Has(tokenKey)
 }
 
-func (k *Keeper) SerializeToken(token *types.Token) []byte {
+func (k *Keeper) EncodeToken(token *types.Token) []byte {
 	bz, err := k.cdc.MarshalBinaryLengthPrefixed(*token)
 	if err != nil {
 		panic(err)

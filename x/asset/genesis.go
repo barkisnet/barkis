@@ -14,11 +14,7 @@ type GenesisState struct {
 // NewGenesisState creates a new genesis state.
 func NewGenesisState() GenesisState {
 	return GenesisState{
-		Params: &types.Params{
-			MaxDecimal: 0,
-			IssueFee:   nil,
-			MintFee:    nil,
-		},
+		Params: types.DefaultParams(),
 		Tokens: nil,
 	}
 }

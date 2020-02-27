@@ -14,7 +14,6 @@ const (
 
 var (
 	isAlpha  = regexp.MustCompile(`^[a-z]+$`).MatchString
-	isTxHash = regexp.MustCompile(`^[a-f0-9]+$`).MatchString
 )
 
 type Token struct {
@@ -94,36 +93,15 @@ func ValidateToken(token *Token) error {
 	return nil
 }
 
-func validateOriginalTokenSymbol(symbol string) error {
+func validateTokenSymbol(symbol string) error {
 	if len(symbol) == 0 || len(symbol) > MaxTokenSymbolLength {
 		return fmt.Errorf("token symbol length shoud be in (0, %d]", MaxTokenSymbolLength)
 	}
-	if symbol == sdk.DefaultBondDenom || symbol == sdk.DefaultBondDenomName {
+	if strings.ToLower(symbol) == sdk.DefaultBondDenom || strings.ToLower(symbol) == sdk.DefaultBondDenomName {
 		return fmt.Errorf("token symbol should be identical to native token %s/%s", sdk.DefaultBondDenom, sdk.DefaultBondDenomName)
 	}
 	if !isAlpha(symbol) {
 		return fmt.Errorf("token symbol should only contains alphabet")
-	}
-	return nil
-}
-
-func validateTokenSymbol(symbol string) error {
-	symbolPaths := strings.Split(symbol, TokenJoiner)
-	if len(symbolPaths) != 2 {
-		return fmt.Errorf("valid token symbol should be XXX-YYY")
-	}
-
-	originalSymbol := symbolPaths[0]
-	if err := validateOriginalTokenSymbol(originalSymbol); err != nil {
-		return err
-	}
-
-	symbolSuffix := symbolPaths[1]
-	if len(symbolSuffix) != TokenSymbolSuffixLen {
-		return fmt.Errorf("token symbol suffix length should be %d", TokenSymbolSuffixLen)
-	}
-	if !isTxHash(symbolSuffix) {
-		return fmt.Errorf("token symbol suffix should be transaction hash")
 	}
 	return nil
 }

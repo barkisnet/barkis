@@ -2,8 +2,6 @@ package types
 
 import (
 	"fmt"
-	"strings"
-
 	sdk "github.com/barkisnet/barkis/types"
 )
 
@@ -62,7 +60,7 @@ func (msg IssueMsg) ValidateBasic() sdk.Error {
 		return ErrNoInvalidTokenName(DefaultCodespace, fmt.Sprintf("token name should be identical to native token %s/%s", sdk.DefaultBondDenom, sdk.DefaultBondDenomName))
 	}
 
-	if err := validateOriginalTokenSymbol(msg.Symbol); err != nil {
+	if err := validateTokenSymbol(msg.Symbol); err != nil {
 		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
 	}
 
@@ -104,10 +102,6 @@ func (msg MintMsg) GetSignBytes() []byte {
 func (msg MintMsg) ValidateBasic() sdk.Error {
 	if len(msg.From) != sdk.AddrLen {
 		return sdk.ErrInvalidAddress(fmt.Sprintf("sender address length should be %d", sdk.AddrLen))
-	}
-	symbolPaths := strings.Split(msg.Symbol, TokenJoiner)
-	if len(symbolPaths) != 2 {
-		return ErrInvalidTokenSymbol(DefaultCodespace, fmt.Sprintf("invalid symbol, token symbol should follow pattern XXX%sYYY", TokenJoiner))
 	}
 
 	if err := validateTokenSymbol(msg.Symbol); err != nil {

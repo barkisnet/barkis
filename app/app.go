@@ -292,6 +292,13 @@ func (app *BarkisApp) registerUpgrade() {
 		stakingParam.MaxValidators = 3; // maximum validator quantity
 		app.stakingKeeper.SetParams(ctx, stakingParam)
 	})
+
+	//------------------------------------------------------------------------------------------------------------------------------------
+	sdk.GlobalUpgradeMgr.RegisterUpgradeHeight(sdk.UpdateTokenSymbolRulesHeight , BarkisContext.UpgradeConfig.UpdateTokenSymbolRulesHeight)
+
+	sdk.GlobalUpgradeMgr.RegisterBeginBlockerFirst(sdk.UpdateTokenSymbolRulesHeight, func(ctx sdk.Context) {
+		app.assetKeeper.SetMaxDecimal(ctx, 12) // change max decimal from 10 to 12
+	})
 }
 
 // application updates every begin block
