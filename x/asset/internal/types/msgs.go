@@ -10,9 +10,8 @@ const (
 	IssueMsgType = "issueMsg"
 	MintMsgType  = "mintMsg"
 
-	TokenSymbolSuffixLen       = 3
 	MaxTokenNameLength         = 32
-	MaxTokenSymbolLength       = 10
+	MaxTokenSymbolLength       = 12
 	MaxTokenDescription        = 128
 	MaxTotalSupply       int64 = 9000000000000000000 // int64 max value: 9,223,372,036,854,775,807
 )

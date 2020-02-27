@@ -69,9 +69,9 @@ func handleIssueMsg(ctx sdk.Context, k Keeper, msg IssueMsg) sdk.Result {
 }
 
 func handleMintMsg(ctx sdk.Context, k Keeper, msg MintMsg) sdk.Result {
-	token := k.GetToken(ctx, strings.ToLower(msg.Symbol))
+	token := k.GetToken(ctx, msg.Symbol)
 	if token == nil {
-		return types.ErrInvalidTokenSymbol(types.DefaultCodespace, fmt.Sprintf("token %s is not exist", strings.ToLower(msg.Symbol))).Result()
+		return types.ErrInvalidTokenSymbol(types.DefaultCodespace, fmt.Sprintf("token %s is not exist", msg.Symbol)).Result()
 	}
 	if !token.Mintable {
 		return types.ErrNotMintableToken(types.DefaultCodespace, fmt.Sprintf("token %s is not mintable", token.Symbol)).Result()

@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	isAlpha  = regexp.MustCompile(`^[a-z]+$`).MatchString
+	isAlpha  = regexp.MustCompile(`^[A-Za-z]+$`).MatchString
 )
 
 type Token struct {

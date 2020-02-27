@@ -32,7 +32,6 @@ func TestSendKeeper(t *testing.T) {
 	require.Equal(t, types.CodeNotMintableToken, result.Code, result.Log)
 
 	issueMsg = types.NewIssueMsg(addr1, "ethereum", "eth", 100000000000000, true, 6, "ethereum on barkisnet")
-	ctx = ctx.WithTxBytes([]byte("123456789"))
 	result = handler(ctx, issueMsg)
 	require.Equal(t, sdk.CodeOK, result.Code, result.Log)
 
@@ -49,6 +48,26 @@ func TestSendKeeper(t *testing.T) {
 	result = handler(ctx, mintMsg)
 	require.Equal(t, sdk.CodeOK, result.Code, result.Log)
 
+	mintMsg = types.NewMintMsg(addr1, "ETH", 100000000000000)
+	result = handler(ctx, mintMsg)
+	require.Equal(t, types.CodeInvalidTokenSymbol, result.Code, result.Log)
+
 	expectTotalSupply := sdk.Coins{sdk.NewCoin("btc", sdk.NewInt(21000000000000)), sdk.NewCoin("eth", sdk.NewInt(200000000000000)), sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(20000000000))}
 	require.True(t, expectTotalSupply.IsEqual(supplyKeeper.GetSupply(ctx).GetTotal()), expectTotalSupply.String())
+
+	issueMsg = types.NewIssueMsg(addr1, "ethereum", "ETH", 100000000000000, true, 6, "ethereum on barkisnet")
+	result = handler(ctx, issueMsg)
+	require.Equal(t, types.CodeInvalidTokenSymbol, result.Code, result.Log)
+
+
+	issueMsg = types.NewIssueMsg(addr1, "EOS", "EOS", 100000000000000, true, 6, "EOS on barkisnet")
+	result = handler(ctx, issueMsg)
+	require.Equal(t, sdk.CodeOK, result.Code, result.Log)
+	require.True(t, sdk.NewInt(100000000000000).Equal(supplyKeeper.GetSupply(ctx).GetTotal().AmountOf("eos")))
+
+	mintMsg = types.NewMintMsg(addr1, "eos", 100000000000000)
+	result = handler(ctx, mintMsg)
+	require.Equal(t, sdk.CodeOK, result.Code, result.Log)
+
+	require.True(t, sdk.NewInt(200000000000000).Equal(supplyKeeper.GetSupply(ctx).GetTotal().AmountOf("eos")))
 }
