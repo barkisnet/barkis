@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	isAlpha  = regexp.MustCompile(`^[A-Za-z]+$`).MatchString
+	isLowerCaseAlpha  = regexp.MustCompile(`^[a-z]+$`).MatchString
 )
 
 type Token struct {
@@ -96,8 +96,8 @@ func validateTokenSymbol(symbol string) error {
 	if strings.ToLower(symbol) == sdk.DefaultBondDenom || strings.ToLower(symbol) == sdk.DefaultBondDenomName {
 		return fmt.Errorf("token symbol should be identical to native token %s/%s", sdk.DefaultBondDenom, sdk.DefaultBondDenomName)
 	}
-	if !isAlpha(symbol) {
-		return fmt.Errorf("token symbol should only contains alphabet")
+	if !isLowerCaseAlpha(symbol) {
+		return fmt.Errorf("token symbol should only contains lower case alphabet")
 	}
 	return nil
 }

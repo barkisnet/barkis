@@ -20,15 +20,15 @@ func TestIssueMsgValidation(t *testing.T) {
 		tx      IssueMsg
 	}{
 		{true, 0, NewIssueMsg(issuer, "bitcoin", "btc", 21000000000000, false, 6, "bitcoin on barkisnet")},
-		{false, CodeInvalidTokenSymbol, NewIssueMsg(issuer, "bitcoin", "Btc", 21000000000000, false, 6, "bitcoin on barkisnet")},
-		{false, CodeInvalidTokenSymbol, NewIssueMsg(issuer, "bitcoin", "BTC", 21000000000000, false, 6, "bitcoin on barkisnet")},
+		{true, 0, NewIssueMsg(issuer, "bitcoin", "Btc", 21000000000000, false, 6, "bitcoin on barkisnet")},
+		{true, 0, NewIssueMsg(issuer, "bitcoin", "BTC", 21000000000000, false, 6, "bitcoin on barkisnet")},
 		{false, sdk.CodeInvalidAddress, NewIssueMsg(emptyAddr, "bitcoin", "btc", 21000000000000, false, 6, "bitcoin on barkisnet")},
 
 		{false, CodeInvalidTokenSymbol, NewIssueMsg(issuer, "bitcoin", "ubarkis", 21000000000000, false, 6, "bitcoin on barkisnet")},
 		{false, CodeInvalidTokenSymbol, NewIssueMsg(issuer, "bitcoin", "barkis", 21000000000000, false, 6, "bitcoin on barkisnet")},
 		{false, CodeInvalidTokenSymbol, NewIssueMsg(issuer, "bitcoin", "bt1", 21000000000000, false, 6, "bitcoin on barkisnet")},
 		{false, CodeInvalidTokenSymbol, NewIssueMsg(issuer, "bitcoin", "btc_", 21000000000000, false, 6, "bitcoin on barkisnet")},
-		{false, CodeInvalidTokenSymbol, NewIssueMsg(issuer, "bitcoin", "btcbtcbtcbtc", 21000000000000, false, 6, "bitcoin on barkisnet")},
+		{false, CodeInvalidTokenSymbol, NewIssueMsg(issuer, "bitcoin", "btcbtcbtcbtcbtc", 21000000000000, false, 6, "bitcoin on barkisnet")},
 
 		{false, CodeInvalidTokenName, NewIssueMsg(issuer, "ubarkis", "btc", 21000000000000, false, 6, "bitcoin on barkisnet")},
 		{false, CodeInvalidTokenName, NewIssueMsg(issuer, "barkis", "btc", 21000000000000, false, 6, "bitcoin on barkisnet")},

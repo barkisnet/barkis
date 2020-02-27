@@ -3,6 +3,7 @@ package types
 import (
 	"fmt"
 	sdk "github.com/barkisnet/barkis/types"
+	"strings"
 )
 
 const (
@@ -59,7 +60,7 @@ func (msg IssueMsg) ValidateBasic() sdk.Error {
 		return ErrNoInvalidTokenName(DefaultCodespace, fmt.Sprintf("token name should be identical to native token %s/%s", sdk.DefaultBondDenom, sdk.DefaultBondDenomName))
 	}
 
-	if err := validateTokenSymbol(msg.Symbol); err != nil {
+	if err := validateTokenSymbol(strings.ToLower(msg.Symbol)); err != nil {
 		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
 	}
 
