@@ -8,10 +8,6 @@ import (
 	sdk "github.com/barkisnet/barkis/types"
 )
 
-const (
-	TokenJoiner = "_"
-)
-
 var (
 	isAlpha  = regexp.MustCompile(`^[a-z]+$`).MatchString
 )
