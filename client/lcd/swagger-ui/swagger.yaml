@@ -869,7 +869,7 @@ paths:
                 $ref: "#/definitions/Address"
               validator_address:
                 $ref: "#/definitions/ValidatorAddress"
-              delegation:
+              amount:
                 $ref: "#/definitions/Coin"
       tags:
         - Staking
@@ -957,9 +957,8 @@ paths:
                 $ref: "#/definitions/Address"
               validator_address:
                 $ref: "#/definitions/ValidatorAddress"
-              shares:
-                type: string
-                example: "100"
+              amount:
+                $ref: "#/definitions/Coin"
       tags:
         - Staking
       consumes:
@@ -1059,13 +1058,12 @@ paths:
                 $ref: "#/definitions/BaseReq"
               delegator_address:
                 $ref: "#/definitions/Address"
-              validator_src_addressess:
+              validator_src_address:
                 $ref: "#/definitions/ValidatorAddress"
               validator_dst_address:
                 $ref: "#/definitions/ValidatorAddress"
-              shares:
-                type: string
-                example: "100"
+              amount:
+                $ref: "#/definitions/Coin"
       tags:
         - Staking
       consumes:
@@ -1378,7 +1376,7 @@ paths:
             type: object
             properties:
               base_req:
-                $ref: "#/definitions/StdTx"
+                $ref: "#/definitions/BaseReq"
       responses:
         200:
           description: Tx was succesfully generated

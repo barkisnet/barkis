@@ -78,10 +78,21 @@ func withdrawDelegatorRewardsHandlerFn(cliCtx context.CLIContext, queryRoute str
 		}
 
 		// derive the from account address and name from the Keybase
-		fromAddress, fromName, err := context.GetFromFieldsFromAddr(req.BaseReq.From)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
-			return
+		var fromAddress sdk.AccAddress
+		var fromName string
+		if req.BaseReq.GenerateOnly {
+			fromAddress, err = sdk.AccAddressFromBech32(req.BaseReq.From)
+			if err != nil {
+				rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+				return
+			}
+			fromName=""
+		} else {
+			fromAddress, fromName, err = context.GetFromFieldsFromAddr(req.BaseReq.From)
+			if err != nil {
+				rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+				return
+			}
 		}
 
 		cliCtx = cliCtx.WithFromName(fromName).WithFromAddress(fromAddress).WithBroadcastMode(req.BaseReq.BroadcastMode)
@@ -121,10 +132,22 @@ func withdrawDelegationRewardsHandlerFn(cliCtx context.CLIContext) http.HandlerF
 		}
 
 		// derive the from account address and name from the Keybase
-		fromAddress, fromName, err := context.GetFromFieldsFromAddr(req.BaseReq.From)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
-			return
+		var fromAddress sdk.AccAddress
+		var fromName string
+		var err error
+		if req.BaseReq.GenerateOnly {
+			fromAddress, err = sdk.AccAddressFromBech32(req.BaseReq.From)
+			if err != nil {
+				rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+				return
+			}
+			fromName=""
+		} else {
+			fromAddress, fromName, err = context.GetFromFieldsFromAddr(req.BaseReq.From)
+			if err != nil {
+				rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+				return
+			}
 		}
 
 		cliCtx = cliCtx.WithFromName(fromName).WithFromAddress(fromAddress).WithBroadcastMode(req.BaseReq.BroadcastMode)
@@ -159,10 +182,23 @@ func setDelegatorWithdrawalAddrHandlerFn(cliCtx context.CLIContext) http.Handler
 		}
 
 		// derive the from account address and name from the Keybase
-		fromAddress, fromName, err := context.GetFromFieldsFromAddr(req.BaseReq.From)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
-			return
+		// derive the from account address and name from the Keybase
+		var fromAddress sdk.AccAddress
+		var fromName string
+		var err error
+		if req.BaseReq.GenerateOnly {
+			fromAddress, err = sdk.AccAddressFromBech32(req.BaseReq.From)
+			if err != nil {
+				rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+				return
+			}
+			fromName=""
+		} else {
+			fromAddress, fromName, err = context.GetFromFieldsFromAddr(req.BaseReq.From)
+			if err != nil {
+				rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+				return
+			}
 		}
 
 		cliCtx = cliCtx.WithFromName(fromName).WithFromAddress(fromAddress).WithBroadcastMode(req.BaseReq.BroadcastMode)
@@ -198,10 +234,21 @@ func withdrawValidatorRewardsHandlerFn(cliCtx context.CLIContext) http.HandlerFu
 		}
 
 		// derive the from account address and name from the Keybase
-		fromAddress, fromName, err := context.GetFromFieldsFromAddr(req.BaseReq.From)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
-			return
+		var fromAddress sdk.AccAddress
+		var fromName string
+		if req.BaseReq.GenerateOnly {
+			fromAddress, err = sdk.AccAddressFromBech32(req.BaseReq.From)
+			if err != nil {
+				rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+				return
+			}
+			fromName=""
+		} else {
+			fromAddress, fromName, err = context.GetFromFieldsFromAddr(req.BaseReq.From)
+			if err != nil {
+				rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+				return
+			}
 		}
 
 		cliCtx = cliCtx.WithFromName(fromName).WithFromAddress(fromAddress).WithBroadcastMode(req.BaseReq.BroadcastMode)

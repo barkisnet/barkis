@@ -86,10 +86,21 @@ func postDelegationsHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 		}
 
 		// derive the from account address and name from the Keybase
-		fromAddress, fromName, err := context.GetFromFieldsFromAddr(req.BaseReq.From)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
-			return
+		var fromAddress sdk.AccAddress
+		var fromName string
+		if req.BaseReq.GenerateOnly {
+			fromAddress, err = sdk.AccAddressFromBech32(req.BaseReq.From)
+			if err != nil {
+				rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+				return
+			}
+			fromName=""
+		} else {
+			fromAddress, fromName, err = context.GetFromFieldsFromAddr(req.BaseReq.From)
+			if err != nil {
+				rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+				return
+			}
 		}
 
 		cliCtx = cliCtx.WithFromName(fromName).WithFromAddress(fromAddress).WithBroadcastMode(req.BaseReq.BroadcastMode)
@@ -128,10 +139,21 @@ func postRedelegationsHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 		}
 
 		// derive the from account address and name from the Keybase
-		fromAddress, fromName, err := context.GetFromFieldsFromAddr(req.BaseReq.From)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
-			return
+		var fromAddress sdk.AccAddress
+		var fromName string
+		if req.BaseReq.GenerateOnly {
+			fromAddress, err = sdk.AccAddressFromBech32(req.BaseReq.From)
+			if err != nil {
+				rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+				return
+			}
+			fromName=""
+		} else {
+			fromAddress, fromName, err = context.GetFromFieldsFromAddr(req.BaseReq.From)
+			if err != nil {
+				rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+				return
+			}
 		}
 
 		cliCtx = cliCtx.WithFromName(fromName).WithFromAddress(fromAddress).WithBroadcastMode(req.BaseReq.BroadcastMode)
@@ -170,10 +192,21 @@ func postUnbondingDelegationsHandlerFn(cliCtx context.CLIContext) http.HandlerFu
 		}
 
 		// derive the from account address and name from the Keybase
-		fromAddress, fromName, err := context.GetFromFieldsFromAddr(req.BaseReq.From)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
-			return
+		var fromAddress sdk.AccAddress
+		var fromName string
+		if req.BaseReq.GenerateOnly {
+			fromAddress, err = sdk.AccAddressFromBech32(req.BaseReq.From)
+			if err != nil {
+				rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+				return
+			}
+			fromName=""
+		} else {
+			fromAddress, fromName, err = context.GetFromFieldsFromAddr(req.BaseReq.From)
+			if err != nil {
+				rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+				return
+			}
 		}
 
 		cliCtx = cliCtx.WithFromName(fromName).WithFromAddress(fromAddress).WithBroadcastMode(req.BaseReq.BroadcastMode)
