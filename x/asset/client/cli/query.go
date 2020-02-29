@@ -150,12 +150,12 @@ func GetDelayedTransferCmd(queryRoute string, cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 
-			var token types.Token
-			if err := cdc.UnmarshalJSON(resp, &token); err != nil {
+			var delayedTransfer types.DelayedTransfer
+			if err := cdc.UnmarshalJSON(resp, &delayedTransfer); err != nil {
 				return err
 			}
 
-			return cliCtx.PrintOutput(&token)
+			return cliCtx.PrintOutput(&delayedTransfer)
 		},
 	}
 
@@ -202,7 +202,7 @@ func ListDelayedTransferCmd(queryRoute string, cdc *codec.Codec) *cobra.Command 
 
 func ListDelayedTransferFromCmd(queryRoute string, cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "list-delayed-transfer [from]",
+		Use:   "list-delayed-transfer-from [from]",
 		Short: "List delayed transfer from the specified address",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -243,7 +243,7 @@ func ListDelayedTransferFromCmd(queryRoute string, cdc *codec.Codec) *cobra.Comm
 
 func ListDelayedTransferToCmd(queryRoute string, cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "list-delayed-transfer [to]",
+		Use:   "list-delayed-transfer-to [to]",
 		Short: "List delayed transfer to the specified address",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
