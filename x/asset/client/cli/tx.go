@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"math"
+	"strconv"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -97,5 +98,40 @@ func MintTokenCmd(cdc *codec.Codec) *cobra.Command {
 	}
 	cmd.Flags().String(flagSymbol, "", "token symbol")
 	cmd.Flags().Int64(flagAmount, 0, "mint amount")
+	return cmd
+}
+
+// DelayedTransferCmd will create a mint token tx and sign it with the given key.
+func DelayedTransferCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "delayed-transfer [from_key_or_address] [to_address] [amount] [delayed_time]",
+		Short: "Create and sign a delayed transfer tx",
+		Args:  cobra.ExactArgs(4),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
+			cliCtx := context.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
+
+			to, err := sdk.AccAddressFromBech32(args[1])
+			if err != nil {
+				return err
+			}
+
+			// parse coins trying to be sent
+			coins, err := sdk.ParseCoins(args[2])
+			if err != nil {
+				return err
+			}
+
+			delayedTime, err := strconv.Atoi(args[3])
+			if err != nil {
+				return err
+			}
+
+			// build and sign the transaction, then broadcast to Tendermint
+			msg := types.NewDelayedTransferMsg(cliCtx.GetFromAddress(), to, coins, int64(delayedTime))
+			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
+		},
+	}
+
 	return cmd
 }

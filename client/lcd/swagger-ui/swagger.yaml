@@ -790,6 +790,142 @@ paths:
                   $ref: "#/definitions/Coin"
         500:
           description: Internal Server Error
+  /asset/delayed-transfer:
+    post:
+      summary: create delayed transfer transaction
+      tags:
+        - Asset
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: account
+          description: The sender and tx information
+          required: true
+          schema:
+            type: object
+            properties:
+              base_req:
+                $ref: "#/definitions/BaseReq"
+              to:
+                type: string
+                exmaple: barkis1ka54cl8ep6shtxajr5mvp6f7evj2zvf90qt544
+              symbol:
+                type: string
+                example: btc
+              amount:
+                type: array
+                items:
+                  $ref: "#/definitions/Coin"
+              delayed_time:
+                type: number
+                example: 86400
+      responses:
+        202:
+          description: Tx was succesfully generated
+          schema:
+            $ref: "#/definitions/StdTx"
+        400:
+          description: Invalid request
+        500:
+          description: Server internal error
+  /asset/get-delayed-transfer/{sequence}:
+    get:
+      summary: Get delayed transfer by sequence
+      tags:
+        - Asset
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Delayed Transfer
+          schema:
+            $ref: "#/definitions/DelayedTransfer"
+        500:
+          description: Server internal error
+  /asset/list-delayed-transfer:
+    get:
+      summary: List all unmatured delayed transfer
+      tags:
+        - Asset
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: page
+          description: The page number.
+          type: integer
+          x-example: 1
+        - in: query
+          name: limit
+          description: The maximum number of items per page.
+          type: integer
+          x-example: 10
+      responses:
+        200:
+          description: Delayed transfer list
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/DelayedTransfer"
+        500:
+          description: Server internal error
+  /asset/list-delayed-transfer-from/{from}:
+    get:
+      summary: List all unmatured delayed transfer from specified address
+      tags:
+        - Asset
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: page
+          description: The page number.
+          type: integer
+          x-example: 1
+        - in: query
+          name: limit
+          description: The maximum number of items per page.
+          type: integer
+          x-example: 10
+      responses:
+        200:
+          description: Delayed transfer list
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/DelayedTransfer"
+        500:
+          description: Server internal error
+  /asset/list-delayed-transfer-to/{to}:
+    get:
+      summary: List all unmatured delayed transfer to specified address
+      tags:
+        - Asset
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: page
+          description: The page number.
+          type: integer
+          x-example: 1
+        - in: query
+          name: limit
+          description: The maximum number of items per page.
+          type: integer
+          x-example: 10
+      responses:
+        200:
+          description: Delayed transfer list
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/DelayedTransfer"
+        500:
+          description: Server internal error
   /auth/accounts/{address}:
     get:
       summary: Get the account information on blockchain
@@ -2947,6 +3083,23 @@ definitions:
         example: ""
       value:
         type: object
+  DelayedTransfer:
+    type: object
+    properties:
+      from:
+        type: string
+        example: "barkis1ka54cl8ep6shtxajr5mvp6f7evj2zvf90qt544"
+      to:
+        type: string
+        example: "barkis1ka54cl8ep6shtxajr5mvp6f7evj2zvf90qt544"
+      amount:
+        type: array
+        items:
+          $ref: "#/definitions/Coin"
+      matured_time:
+        type: number
+      sequence:
+        type: number
   Supply:
     type: object
     properties:

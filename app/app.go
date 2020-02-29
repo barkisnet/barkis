@@ -303,7 +303,7 @@ func (app *BarkisApp) registerUpgrade() {
 
 	//------------------------------------------------------------------------------------------------------------------------------------
 	sdk.GlobalUpgradeMgr.RegisterUpgradeHeight(sdk.DelayTransferUpgrade, BarkisContext.UpgradeConfig.TokenIssueHeight)
-	sdk.GlobalUpgradeMgr.RegisterNewMsg(sdk.DelayTransferUpgrade, asset.DelayTransferMsg{}.Type())
+	sdk.GlobalUpgradeMgr.RegisterNewMsg(sdk.DelayTransferUpgrade, asset.DelayedTransferMsg{}.Type())
 }
 
 // application updates every begin block

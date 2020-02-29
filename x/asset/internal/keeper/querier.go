@@ -1,7 +1,9 @@
 package keeper
 
 import (
+	"encoding/binary"
 	"fmt"
+	"strconv"
 
 	"github.com/barkisnet/barkis/client"
 	"github.com/barkisnet/barkis/codec"
@@ -25,6 +27,15 @@ func NewQuerier(k Keeper) sdk.Querier {
 			return queryToken(ctx, path[1:], req, k)
 		case assetTypes.ListToken:
 			return listToken(ctx, path[1:], req, k)
+		case assetTypes.GetDelayedTranfer:
+			return queryDelayedTransfer(ctx, path[1:], req, k)
+		case assetTypes.ListDelayedTranfer:
+			return  listDelayedTransfer(ctx, path[1:], req, k)
+		case assetTypes.ListDelayedTranferFrom:
+			return  listDelayedTransferFrom(ctx, path[1:], req, k)
+		case assetTypes.ListDelayedTranferTo:
+			return  listDelayedTransferTo(ctx, path[1:], req, k)
+
 		default:
 			return nil, sdk.ErrUnknownRequest("unknown asset query endpoint")
 		}
@@ -71,7 +82,7 @@ func listToken(ctx sdk.Context, path []string, req abci.RequestQuery, k Keeper) 
 	defer iter.Close()
 	var tokens []*assetTypes.Token
 	for ; iter.Valid(); iter.Next() {
-		token := k.DecodeToToken(iter.Value())
+		token := k.DecodeToken(iter.Value())
 		tokens = append(tokens, token)
 	}
 
@@ -81,6 +92,142 @@ func listToken(ctx sdk.Context, path []string, req abci.RequestQuery, k Keeper) 
 		queryResult = []*assetTypes.Token{}
 	} else {
 		queryResult = tokens[start:end]
+	}
+
+	res, err := codec.MarshalJSONIndent(types.ModuleCdc, queryResult)
+	if err != nil {
+		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("failed to JSON marshal result: %s", err.Error()))
+	}
+
+	return res, nil
+}
+
+func queryDelayedTransfer(ctx sdk.Context, path []string, req abci.RequestQuery, k Keeper) ([]byte, sdk.Error) {
+	if len(path) < 1 {
+		return nil, sdk.ErrUnknownRequest("wrong query request")
+	}
+	sequence, err := strconv.Atoi(path[0])
+	if err != nil {
+		return nil, sdk.ErrInternal(fmt.Sprintf("invalid parameter: %s", err.Error()))
+	}
+
+	delayedTransfer := k.GetDelayedTransfer(ctx, int64(sequence))
+	if delayedTransfer == nil {
+		return nil, sdk.ErrUnknownRequest(fmt.Sprintf("delayedTransfer with sequence %s is not exist", sequence))
+	}
+	bz, err := codec.MarshalJSONIndent(k.cdc, *delayedTransfer)
+	if err != nil {
+		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("could not marshal result to JSON", err.Error()))
+	}
+	return bz, nil
+}
+
+func listDelayedTransfer(ctx sdk.Context, path []string, req abci.RequestQuery, k Keeper) ([]byte, sdk.Error) {
+	var params assetTypes.QueryDelayedTranferParams
+
+	err := types.ModuleCdc.UnmarshalJSON(req.Data, &params)
+	if err != nil {
+		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
+	}
+
+	iter := k.ListDelayedTransfer(ctx)
+	defer iter.Close()
+	var delayedTransferList []*assetTypes.DelayedTransfer
+	for ; iter.Valid(); iter.Next() {
+		sequenceBytes := iter.Value()
+		sequence := int64(binary.BigEndian.Uint64(sequenceBytes))
+		delayedTransfer := k.GetDelayedTransfer(ctx, sequence)
+		delayedTransferList = append(delayedTransferList, delayedTransfer)
+	}
+
+	var queryResult []*assetTypes.DelayedTransfer
+	start, end := client.Paginate(len(delayedTransferList), params.Page, params.Limit, assetTypes.DefaultQueryLimit)
+	if start < 0 || end < 0 {
+		queryResult = []*assetTypes.DelayedTransfer{}
+	} else {
+		queryResult = delayedTransferList[start:end]
+	}
+
+	res, err := codec.MarshalJSONIndent(types.ModuleCdc, queryResult)
+	if err != nil {
+		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("failed to JSON marshal result: %s", err.Error()))
+	}
+
+	return res, nil
+}
+
+func listDelayedTransferFrom(ctx sdk.Context, path []string, req abci.RequestQuery, k Keeper) ([]byte, sdk.Error) {
+	var params assetTypes.QueryDelayedTranferParams
+
+	err := types.ModuleCdc.UnmarshalJSON(req.Data, &params)
+	if err != nil {
+		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
+	}
+
+	if len(path) < 1 {
+		return nil, sdk.ErrUnknownRequest("wrong query request")
+	}
+
+	from, err := sdk.AccAddressFromBech32(path[0])
+	if err != nil {
+		return nil, sdk.ErrInvalidAddress(err.Error())
+	}
+
+	iter := k.ListDelayedTransferFrom(ctx, from)
+	defer iter.Close()
+	var delayedTransferList []*assetTypes.DelayedTransfer
+	for ; iter.Valid(); iter.Next() {
+		sequenceBytes := iter.Value()
+		sequence := int64(binary.BigEndian.Uint64(sequenceBytes))
+		delayedTransfer := k.GetDelayedTransfer(ctx, sequence)
+		delayedTransferList = append(delayedTransferList, delayedTransfer)
+	}
+
+	var queryResult []*assetTypes.DelayedTransfer
+	start, end := client.Paginate(len(delayedTransferList), params.Page, params.Limit, assetTypes.DefaultQueryLimit)
+	if start < 0 || end < 0 {
+		queryResult = []*assetTypes.DelayedTransfer{}
+	} else {
+		queryResult = delayedTransferList[start:end]
+	}
+
+	res, err := codec.MarshalJSONIndent(types.ModuleCdc, queryResult)
+	if err != nil {
+		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("failed to JSON marshal result: %s", err.Error()))
+	}
+
+	return res, nil
+}
+
+func listDelayedTransferTo(ctx sdk.Context, path []string, req abci.RequestQuery, k Keeper) ([]byte, sdk.Error) {
+	var params assetTypes.QueryDelayedTranferParams
+
+	err := types.ModuleCdc.UnmarshalJSON(req.Data, &params)
+	if err != nil {
+		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
+	}
+
+	to, err := sdk.AccAddressFromBech32(path[0])
+	if err != nil {
+		return nil, sdk.ErrInvalidAddress(err.Error())
+	}
+
+	iter := k.ListDelayedTransferTo(ctx, to)
+	defer iter.Close()
+	var delayedTransferList []*assetTypes.DelayedTransfer
+	for ; iter.Valid(); iter.Next() {
+		sequenceBytes := iter.Value()
+		sequence := int64(binary.BigEndian.Uint64(sequenceBytes))
+		delayedTransfer := k.GetDelayedTransfer(ctx, sequence)
+		delayedTransferList = append(delayedTransferList, delayedTransfer)
+	}
+
+	var queryResult []*assetTypes.DelayedTransfer
+	start, end := client.Paginate(len(delayedTransferList), params.Page, params.Limit, assetTypes.DefaultQueryLimit)
+	if start < 0 || end < 0 {
+		queryResult = []*assetTypes.DelayedTransfer{}
+	} else {
+		queryResult = delayedTransferList[start:end]
 	}
 
 	res, err := codec.MarshalJSONIndent(types.ModuleCdc, queryResult)

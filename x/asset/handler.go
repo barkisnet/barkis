@@ -2,8 +2,11 @@ package asset
 
 import (
 	"bytes"
+	"encoding/binary"
 	"fmt"
 	"strings"
+
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	sdk "github.com/barkisnet/barkis/types"
 	"github.com/barkisnet/barkis/x/asset/internal/types"
@@ -22,11 +25,47 @@ func NewHandler(k Keeper) sdk.Handler {
 		case MintMsg:
 			return handleMintMsg(ctx, k, msg)
 
+		case DelayedTransferMsg:
+			return handleDelayedTransferMsg(ctx, k, msg)
+
 		default:
 			errMsg := fmt.Sprintf("unrecognized bank message type: %T", msg)
 			return sdk.ErrUnknownRequest(errMsg).Result()
 		}
 	}
+}
+
+// Called every block, handler matured delayed transfer
+func EndBlocker(ctx sdk.Context, k Keeper) []abci.ValidatorUpdate {
+	iterator := k.ListDelayedTransferMaturedTime(ctx)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		key := iterator.Key()
+		if len(key) != 17 {
+			continue
+		}
+
+		matureTime := int64(binary.BigEndian.Uint64(key[1:9]))
+		if matureTime > ctx.BlockTime().Unix() {
+			break
+		}
+
+		sequenceBytes := iterator.Value()
+		sequence := int64(binary.BigEndian.Uint64(sequenceBytes))
+
+		delayedTransfer := k.GetDelayedTransfer(ctx, sequence)
+		err := k.SupplyKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, delayedTransfer.To, delayedTransfer.Amount)
+		if err != nil {
+			ctx.Logger().Error("failed to process matured delayed transfer", "from", delayedTransfer.From.String(), "to", delayedTransfer.To.String(),
+				"amount", delayedTransfer.Amount.String(), "maturedTime", delayedTransfer.MaturedTime)
+			continue
+		}
+
+		k.DeleteDelayedTransfer(ctx, delayedTransfer)
+	}
+
+	return nil
 }
 
 func handleIssueMsg(ctx sdk.Context, k Keeper, msg IssueMsg) sdk.Result {
@@ -38,7 +77,7 @@ func handleIssueMsg(ctx sdk.Context, k Keeper, msg IssueMsg) sdk.Result {
 		return types.ErrInvalidTokenSymbol(types.DefaultCodespace, fmt.Sprintf("duplicated token symbol: %s", strings.ToLower(msg.Symbol))).Result()
 	}
 
-	token := types.NewToken(strings.ToLower(msg.Symbol), msg.Name, msg.Decimal, msg.TotalSupply, msg.Mintable, msg.Description, msg.From)
+	token := NewToken(strings.ToLower(msg.Symbol), msg.Name, msg.Decimal, msg.TotalSupply, msg.Mintable, msg.Description, msg.From)
 	k.SetToken(ctx, token)
 
 	issueFee := k.GetIssueFee(ctx)
@@ -108,6 +147,26 @@ func handleMintMsg(ctx sdk.Context, k Keeper, msg MintMsg) sdk.Result {
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(types.EventTypeMintToken, mintedToken.String()),
+		),
+	)
+	return sdk.Result{Events: ctx.EventManager().Events()}
+}
+
+func handleDelayedTransferMsg(ctx sdk.Context, k Keeper, msg DelayedTransferMsg) sdk.Result {
+	err := k.SupplyKeeper.SendCoinsFromAccountToModule(ctx, msg.From, ModuleName, msg.Amount)
+	if err != nil {
+		return err.Result()
+	}
+
+	maturedTime := ctx.BlockTime().Unix() + msg.DelayedPeriod
+	sequence := k.GetSequence(ctx)
+	delayedTransfer := NewDelayedTransfer(msg.From, msg.To, msg.Amount, maturedTime, sequence)
+	k.InsertDelayedTransfer(ctx, delayedTransfer)
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(types.EventTypeDelayedTransfer, msg.Amount.String()),
 		),
 	)
 	return sdk.Result{Events: ctx.EventManager().Events()}

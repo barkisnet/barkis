@@ -20,6 +20,9 @@ var (
 	NewQuerier    = keeper.NewQuerier
 	NewParams     = types.NewParams
 
+	NewToken           = types.NewToken
+	NewDelayedTransfer = types.NewDelayedTransfer
+
 	// variable aliases
 	ModuleCdc = types.ModuleCdc
 	StoreKey  = types.StoreKey
@@ -28,7 +31,7 @@ var (
 type (
 	Keeper = keeper.Keeper
 
-	IssueMsg         = types.IssueMsg
-	MintMsg          = types.MintMsg
-	DelayTransferMsg = types.DelayTransferMsg
+	IssueMsg           = types.IssueMsg
+	MintMsg            = types.MintMsg
+	DelayedTransferMsg = types.DelayedTransferMsg
 )

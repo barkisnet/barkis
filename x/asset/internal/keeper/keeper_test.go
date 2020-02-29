@@ -36,7 +36,7 @@ func TestSendKeeper(t *testing.T) {
 
 	iterator = keeper.ListToken(ctx)
 	require.True(t, iterator.Valid())
-	gettedToken := keeper.DecodeToToken(iterator.Value())
+	gettedToken := keeper.DecodeToken(iterator.Value())
 	require.Equal(t, "btc", gettedToken.Symbol)
 	require.Equal(t, "bitcoin", gettedToken.Name)
 	iterator.Next()
