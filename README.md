@@ -1,6 +1,6 @@
 # Barkis
 
-Barkisnet establishes a next-generation distributed application based on [Tendermint](https://github.com/tendermint/tendermint) and [Cosmos-sdk](https://github.com/cosmos/cosmos-sdk).
+Barkisnet establishes a next-generation distributed application based on blockchain technology.
 
 **Note**: Requires [Go 1.12+](https://golang.org/dl/)
 
@@ -12,7 +12,7 @@ Barkisnet establishes a next-generation distributed application based on [Tender
     git clone https://github.com/barkisnet/barkis.git
     ```
 
-2. Build binaries
+2. Build binarie
 
     ```shell script
     make build
