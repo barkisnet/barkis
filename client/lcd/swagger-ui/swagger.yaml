@@ -878,7 +878,7 @@ paths:
           description: Server internal error
   /asset/list-delayed-transfer-from/{from}:
     get:
-      summary: List all unmatured delayed transfer from specified address
+      summary: List all unmatured delayed transfer from the specified address
       tags:
         - Asset
       produces:
@@ -910,7 +910,7 @@ paths:
           description: Server internal error
   /asset/list-delayed-transfer-to/{to}:
     get:
-      summary: List all unmatured delayed transfer to specified address
+      summary: List all unmatured delayed transfer to the specified address
       tags:
         - Asset
       produces:
