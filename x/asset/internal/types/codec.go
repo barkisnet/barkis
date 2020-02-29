@@ -9,6 +9,7 @@ func RegisterCodec(cdc *codec.Codec) {
 	//todo refactor name
 	cdc.RegisterConcrete(IssueMsg{}, "cosmos-sdk/IssueMsg", nil)
 	cdc.RegisterConcrete(MintMsg{}, "cosmos-sdk/MintMsg", nil)
+	cdc.RegisterConcrete(DelayedTransferMsg{}, "cosmos-sdk/DelayedTransferMsg", nil)
 }
 
 // module codec

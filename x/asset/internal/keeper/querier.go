@@ -28,7 +28,7 @@ func NewQuerier(k Keeper) sdk.Querier {
 		case assetTypes.ListToken:
 			return listToken(ctx, path[1:], req, k)
 		case assetTypes.GetDelayedTranfer:
-			return queryDelayedTransfer(ctx, path[1:], req, k)
+			return getDelayedTransfer(ctx, path[1:], req, k)
 		case assetTypes.ListDelayedTranfer:
 			return  listDelayedTransfer(ctx, path[1:], req, k)
 		case assetTypes.ListDelayedTranferFrom:
@@ -102,7 +102,7 @@ func listToken(ctx sdk.Context, path []string, req abci.RequestQuery, k Keeper) 
 	return res, nil
 }
 
-func queryDelayedTransfer(ctx sdk.Context, path []string, req abci.RequestQuery, k Keeper) ([]byte, sdk.Error) {
+func getDelayedTransfer(ctx sdk.Context, path []string, req abci.RequestQuery, k Keeper) ([]byte, sdk.Error) {
 	if len(path) < 1 {
 		return nil, sdk.ErrUnknownRequest("wrong query request")
 	}
@@ -113,7 +113,7 @@ func queryDelayedTransfer(ctx sdk.Context, path []string, req abci.RequestQuery,
 
 	delayedTransfer := k.GetDelayedTransfer(ctx, int64(sequence))
 	if delayedTransfer == nil {
-		return nil, sdk.ErrUnknownRequest(fmt.Sprintf("delayedTransfer with sequence %s is not exist", sequence))
+		return nil, sdk.ErrUnknownRequest(fmt.Sprintf("delayedTransfer with sequence %d is not exist", sequence))
 	}
 	bz, err := codec.MarshalJSONIndent(k.cdc, *delayedTransfer)
 	if err != nil {
@@ -134,9 +134,7 @@ func listDelayedTransfer(ctx sdk.Context, path []string, req abci.RequestQuery, 
 	defer iter.Close()
 	var delayedTransferList []*assetTypes.DelayedTransfer
 	for ; iter.Valid(); iter.Next() {
-		sequenceBytes := iter.Value()
-		sequence := int64(binary.BigEndian.Uint64(sequenceBytes))
-		delayedTransfer := k.GetDelayedTransfer(ctx, sequence)
+		delayedTransfer := k.DecodeDelayedTransfer(iter.Value())
 		delayedTransferList = append(delayedTransferList, delayedTransfer)
 	}
 

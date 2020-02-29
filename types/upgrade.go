@@ -7,7 +7,7 @@ const (
 	TokenIssueUpgrade            = "TokenIssueUpgrade"
 	UpdateVotingPeriodHeight     = "UpdateVotingPeriodHeight"
 	UpdateTokenSymbolRulesHeight = "UpdateTokenSymbolRulesHeight"
-	DelayTransferUpgrade         = "DelayTransferUpgrade"
+	DelayedTransferUpgrade       = "DelayedTransferUpgrade"
 )
 
 var GlobalUpgradeMgr = NewUpgradeManager()

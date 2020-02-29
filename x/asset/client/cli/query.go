@@ -32,6 +32,10 @@ func GetQueryCmd(queryRoute string, cdc *codec.Codec) *cobra.Command {
 		QueryParamsCmd(queryRoute, cdc),
 		GetTokenCmd(queryRoute, cdc),
 		ListTokenCmd(queryRoute, cdc),
+		GetDelayedTransferCmd(queryRoute, cdc),
+		ListDelayedTransferCmd(queryRoute, cdc),
+		ListDelayedTransferFromCmd(queryRoute, cdc),
+		ListDelayedTransferToCmd(queryRoute, cdc),
 	)...)
 
 	return distQueryCmd

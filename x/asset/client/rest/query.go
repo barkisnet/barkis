@@ -118,13 +118,13 @@ func getDelayedTransferHandlerFn(cliCtx context.CLIContext, queryRoute string) h
 			return
 		}
 
-		var token types.Token
-		if err := cliCtx.Codec.UnmarshalJSON(resp, &token); err != nil {
+		var delayedTransfer types.DelayedTransfer
+		if err := cliCtx.Codec.UnmarshalJSON(resp, &delayedTransfer); err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
 		}
 
-		rest.PostProcessResponse(w, cliCtx, token)
+		rest.PostProcessResponse(w, cliCtx, delayedTransfer)
 	}
 }
 

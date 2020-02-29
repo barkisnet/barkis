@@ -811,17 +811,14 @@ paths:
                 $ref: "#/definitions/BaseReq"
               to:
                 type: string
-                exmaple: barkis1ka54cl8ep6shtxajr5mvp6f7evj2zvf90qt544
-              symbol:
-                type: string
-                example: btc
+                example: "barkis1ka54cl8ep6shtxajr5mvp6f7evj2zvf90qt544"
               amount:
                 type: array
                 items:
                   $ref: "#/definitions/Coin"
               delayed_time:
-                type: number
-                example: 86400
+                type: string
+                example: "86400"
       responses:
         202:
           description: Tx was succesfully generated
@@ -838,6 +835,13 @@ paths:
         - Asset
       produces:
         - application/json
+      parameters:
+        - in: path
+          name: sequence
+          description: delayed transfer sequence
+          required: true
+          type: number
+          x-example: 0
       responses:
         200:
           description: Delayed Transfer
@@ -880,6 +884,11 @@ paths:
       produces:
         - application/json
       parameters:
+        - in: path
+          name: from
+          description: from address
+          type: string
+          x-example: barkis1ka54cl8ep6shtxajr5mvp6f7evj2zvf90qt544
         - in: query
           name: page
           description: The page number.
@@ -907,6 +916,11 @@ paths:
       produces:
         - application/json
       parameters:
+        - in: path
+          name: to
+          description: to address
+          type: string
+          x-example: barkis1ka54cl8ep6shtxajr5mvp6f7evj2zvf90qt544
         - in: query
           name: page
           description: The page number.

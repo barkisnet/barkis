@@ -39,6 +39,7 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 	txCmd.AddCommand(client.PostCommands(
 		IssueTokenCmd(cdc),
 		MintTokenCmd(cdc),
+		DelayedTransferCmd(cdc),
 	)...)
 	return txCmd
 }

@@ -208,7 +208,7 @@ func NewBarkisApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	// CanWithdrawInvariant invariant.
 	app.mm.SetOrderBeginBlockers(mint.ModuleName, distr.ModuleName, slashing.ModuleName)
 
-	app.mm.SetOrderEndBlockers(crisis.ModuleName, gov.ModuleName, staking.ModuleName)
+	app.mm.SetOrderEndBlockers(crisis.ModuleName, gov.ModuleName, staking.ModuleName, asset.ModuleName)
 
 	// NOTE: The genutils module must occur after staking so that pools are
 	// properly initialized with tokens from genesis accounts.
@@ -302,8 +302,8 @@ func (app *BarkisApp) registerUpgrade() {
 	})
 
 	//------------------------------------------------------------------------------------------------------------------------------------
-	sdk.GlobalUpgradeMgr.RegisterUpgradeHeight(sdk.DelayTransferUpgrade, BarkisContext.UpgradeConfig.TokenIssueHeight)
-	sdk.GlobalUpgradeMgr.RegisterNewMsg(sdk.DelayTransferUpgrade, asset.DelayedTransferMsg{}.Type())
+	sdk.GlobalUpgradeMgr.RegisterUpgradeHeight(sdk.DelayedTransferUpgrade, BarkisContext.UpgradeConfig.TokenIssueHeight)
+	sdk.GlobalUpgradeMgr.RegisterNewMsg(sdk.DelayedTransferUpgrade, asset.DelayedTransferMsg{}.Type())
 }
 
 // application updates every begin block
