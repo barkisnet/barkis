@@ -37,7 +37,7 @@ func ExportGenesis(ctx sdk.Context, keeper Keeper) GenesisState {
 
 	var tokens []*types.Token
 	for ; iter.Valid(); iter.Next() {
-		token := keeper.DecodeToToken(iter.Value())
+		token := keeper.DecodeToken(iter.Value())
 		tokens = append(tokens, token)
 	}
 

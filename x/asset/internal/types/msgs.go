@@ -2,14 +2,15 @@ package types
 
 import (
 	"fmt"
-	sdk "github.com/barkisnet/barkis/types"
 	"strings"
+
+	sdk "github.com/barkisnet/barkis/types"
 )
 
 const (
-	//todo refactor name
-	IssueMsgType = "issueMsg"
-	MintMsgType  = "mintMsg"
+	IssueMsgType           = "issueMsg"
+	MintMsgType            = "mintMsg"
+	DelayedTransferMsgType = "delayedTransferMsg"
 
 	MaxTokenNameLength         = 32
 	MaxTokenSymbolLength       = 12
@@ -110,6 +111,48 @@ func (msg MintMsg) ValidateBasic() sdk.Error {
 
 	if msg.Amount <= 0 || msg.Amount > MaxTotalSupply {
 		return ErrInvalidMintAmount(DefaultCodespace, fmt.Sprintf("mint amount should be in (0, %d]", MaxTotalSupply))
+	}
+	return nil
+}
+
+type DelayedTransferMsg struct {
+	From          sdk.AccAddress `json:"from" yaml:"from"`
+	To            sdk.AccAddress `json:"to" yaml:"to"`
+	Amount        sdk.Coins      `json:"amount" yaml:"amount"`
+	DelayedPeriod int64          `json:"delayed_period" yaml:"delayed_period"`
+}
+
+func NewDelayedTransferMsg(from, to sdk.AccAddress, amount sdk.Coins, delayedPeriod int64) DelayedTransferMsg {
+	return DelayedTransferMsg{
+		From:          from,
+		To:            to,
+		Amount:        amount,
+		DelayedPeriod: delayedPeriod,
+	}
+}
+
+func (msg DelayedTransferMsg) Route() string                { return RouterKey }
+func (msg DelayedTransferMsg) Type() string                 { return DelayedTransferMsgType }
+func (msg DelayedTransferMsg) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.From} }
+func (msg DelayedTransferMsg) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
+}
+func (msg DelayedTransferMsg) ValidateBasic() sdk.Error {
+	if len(msg.From) != sdk.AddrLen {
+		return sdk.ErrInvalidAddress(fmt.Sprintf("sender address length should be %d", sdk.AddrLen))
+	}
+	if len(msg.To) != sdk.AddrLen {
+		return sdk.ErrInvalidAddress(fmt.Sprintf("sender address length should be %d", sdk.AddrLen))
+	}
+	if !msg.Amount.IsValid() {
+		return sdk.ErrInvalidCoins("transfer amount is invalid: " + msg.Amount.String())
+	}
+	if !msg.Amount.IsAllPositive() {
+		return sdk.ErrInsufficientCoins("transfer amount must be positive")
+	}
+	if msg.DelayedPeriod <= 0 {
+		return ErrInvalidDelayPeriod(DefaultCodespace, "delayed period must be positive")
 	}
 	return nil
 }

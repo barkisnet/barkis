@@ -1,7 +1,9 @@
 package keeper
 
 import (
+	"encoding/binary"
 	"fmt"
+
 	"github.com/barkisnet/barkis/codec"
 	sdk "github.com/barkisnet/barkis/types"
 	"github.com/barkisnet/barkis/x/asset/internal/types"
@@ -54,7 +56,7 @@ func (k *Keeper) GetToken(ctx sdk.Context, symbol string) *types.Token {
 	if bz == nil {
 		return nil
 	}
-	return k.DecodeToToken(bz)
+	return k.DecodeToken(bz)
 }
 
 func (k *Keeper) ListToken(ctx sdk.Context) sdk.Iterator {
@@ -76,11 +78,116 @@ func (k *Keeper) EncodeToken(token *types.Token) []byte {
 	return bz
 }
 
-func (k *Keeper) DecodeToToken(bz []byte) *types.Token {
+func (k *Keeper) DecodeToken(bz []byte) *types.Token {
 	var token types.Token
 	err := k.cdc.UnmarshalBinaryLengthPrefixed(bz, &token)
 	if err != nil {
 		panic(err)
 	}
 	return &token
+}
+
+func (k *Keeper) GetSequence(ctx sdk.Context) int64 {
+	kvStore := ctx.KVStore(k.storeKey)
+	bz := kvStore.Get(types.SequenceKey)
+	if bz == nil {
+		return 0
+	}
+	return int64(binary.BigEndian.Uint64(bz))
+}
+
+func (k *Keeper) IncSequence(ctx sdk.Context) {
+	sequence := k.GetSequence(ctx)
+	sequence++
+	sequenceBytes := make([]byte, 8)
+	binary.BigEndian.PutUint64(sequenceBytes, uint64(sequence))
+
+	kvStore := ctx.KVStore(k.storeKey)
+	kvStore.Set(types.SequenceKey, sequenceBytes)
+}
+
+func (k *Keeper) InsertDelayedTransfer(ctx sdk.Context, delayedTransfer *types.DelayedTransfer) {
+	store := ctx.KVStore(k.storeKey)
+	delayedTransferKey := types.BuildDelayedTransferKey(delayedTransfer.Sequence)
+	if store.Has(delayedTransferKey) {
+		panic(fmt.Errorf("duplicated delayedTransfer sequence"))
+	}
+	store.Set(delayedTransferKey, k.EncodeDelayedTransfer(delayedTransfer))
+
+	sequenceBytes := make([]byte, 8)
+	binary.BigEndian.PutUint64(sequenceBytes, uint64(delayedTransfer.Sequence))
+
+	delayedTransferMatureTimeKey := types.BuildDelayedTransferMatureTimeKey(delayedTransfer.MaturedTime, delayedTransfer.Sequence)
+	store.Set(delayedTransferMatureTimeKey, sequenceBytes)
+
+	delayedTransferFromKey := types.BuildDelayedTransferFromKey(delayedTransfer.From, delayedTransfer.Sequence)
+	store.Set(delayedTransferFromKey, sequenceBytes)
+
+	delayedTransferToKey := types.BuildDelayedTransferToKey(delayedTransfer.To, delayedTransfer.Sequence)
+	store.Set(delayedTransferToKey, sequenceBytes)
+
+	k.IncSequence(ctx)
+}
+
+func (k *Keeper) DeleteDelayedTransfer(ctx sdk.Context, delayedTransfer *types.DelayedTransfer) {
+	store := ctx.KVStore(k.storeKey)
+
+	delayedTransferKey := types.BuildDelayedTransferKey(delayedTransfer.Sequence)
+	store.Delete(delayedTransferKey)
+
+	delayedTransferMatureTimeKey := types.BuildDelayedTransferMatureTimeKey(delayedTransfer.MaturedTime, delayedTransfer.Sequence)
+	store.Delete(delayedTransferMatureTimeKey)
+
+	delayedTransferFromKey := types.BuildDelayedTransferFromKey(delayedTransfer.From, delayedTransfer.Sequence)
+	store.Delete(delayedTransferFromKey)
+
+	delayedTransferToKey := types.BuildDelayedTransferToKey(delayedTransfer.To, delayedTransfer.Sequence)
+	store.Delete(delayedTransferToKey)
+}
+
+func (k *Keeper) GetDelayedTransfer(ctx sdk.Context, sequence int64) *types.DelayedTransfer {
+	store := ctx.KVStore(k.storeKey)
+	delayedTransferKey := types.BuildDelayedTransferKey(sequence)
+	bz := store.Get(delayedTransferKey)
+	if bz == nil {
+		return nil
+	}
+	return k.DecodeDelayedTransfer(bz)
+}
+
+func (k *Keeper) EncodeDelayedTransfer(delayedTransfer *types.DelayedTransfer) []byte {
+	bz, err := k.cdc.MarshalBinaryLengthPrefixed(*delayedTransfer)
+	if err != nil {
+		panic(err)
+	}
+	return bz
+}
+
+func (k *Keeper) DecodeDelayedTransfer(bz []byte) *types.DelayedTransfer {
+	var delayedTransfer types.DelayedTransfer
+	err := k.cdc.UnmarshalBinaryLengthPrefixed(bz, &delayedTransfer)
+	if err != nil {
+		panic(err)
+	}
+	return &delayedTransfer
+}
+
+func (k *Keeper) ListDelayedTransfer(ctx sdk.Context) sdk.Iterator {
+	store := ctx.KVStore(k.storeKey)
+	return sdk.KVStorePrefixIterator(store, types.DelayedTransferPrefix)
+}
+
+func (k *Keeper) ListDelayedTransferMaturedTime(ctx sdk.Context) sdk.Iterator {
+	store := ctx.KVStore(k.storeKey)
+	return sdk.KVStorePrefixIterator(store, types.DelayedTransferMatureTimePrefix)
+}
+
+func (k *Keeper) ListDelayedTransferFrom(ctx sdk.Context, addr sdk.AccAddress) sdk.Iterator {
+	store := ctx.KVStore(k.storeKey)
+	return sdk.KVStorePrefixIterator(store, append(types.DelayedTransferFromPrefix, []byte(addr)...))
+}
+
+func (k *Keeper) ListDelayedTransferTo(ctx sdk.Context, addr sdk.AccAddress) sdk.Iterator {
+	store := ctx.KVStore(k.storeKey)
+	return sdk.KVStorePrefixIterator(store, append(types.DelayedTransferToPrefix, []byte(addr)...))
 }

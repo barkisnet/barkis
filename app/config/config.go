@@ -93,6 +93,7 @@ type UpgradeConfig struct {
 	TokenIssueHeight             int64 `mapstructure:"TokenIssueHeight"`
 	UpdateVotingPeriodHeight     int64 `mapstructure:"UpdateVotingPeriodHeight"`
 	UpdateTokenSymbolRulesHeight int64 `mapstructure:"UpdateTokenSymbolRulesHeight"`
+	DelayedTransferUpgradeHeight int64 `mapstructure:"DelayedTransferUpgradeHeight"`
 }
 
 // SetMinGasPrices sets the validator's minimum gas prices.
@@ -134,6 +135,7 @@ func DefaultAppConfig() *AppConfig {
 			TokenIssueHeight:             math.MaxInt64,
 			UpdateVotingPeriodHeight:     math.MaxInt64,
 			UpdateTokenSymbolRulesHeight: math.MaxInt64,
+			DelayedTransferUpgradeHeight: math.MaxInt64,
 		},
 	}
 }
