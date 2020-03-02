@@ -36,7 +36,7 @@ UpdateVotingPeriodHeight = {{ .UpgradeConfig.UpdateVotingPeriodHeight }}
 UpdateTokenSymbolRulesHeight = {{ .UpgradeConfig.UpdateTokenSymbolRulesHeight }}
 
 # Upgrade to support delayed transfer
-DelayedTransferUpgrade = {{ .UpgradeConfig.DelayedTransferUpgrade }}
+DelayedTransferUpgradeHeight = {{ .UpgradeConfig.DelayedTransferUpgradeHeight }}
 `
 
 var configTemplate *template.Template
