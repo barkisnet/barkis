@@ -68,11 +68,11 @@ func ValidateToken(token *Token) error {
 		return fmt.Errorf("token name length should be less than %d", MaxTokenNameLength)
 	}
 
-	if len(token.Description) > MaxTokenDescription {
-		return fmt.Errorf("token description length should be less than %d", MaxTokenDescription)
+	if len(token.Description) > MaxTokenDesLenLimit {
+		return fmt.Errorf("token description length should be less than %d", MaxTokenDesLenLimit)
 	}
-	if len(token.Description) > MaxTokenDescription {
-		return fmt.Errorf("token description length should be less than %d", MaxTokenDescription)
+	if len(token.Description) > MaxTokenDesLenLimit {
+		return fmt.Errorf("token description length should be less than %d", MaxTokenDesLenLimit)
 	}
 
 	if err := validateTokenSymbol(token.Symbol); err != nil {
@@ -90,8 +90,8 @@ func ValidateToken(token *Token) error {
 }
 
 func validateTokenSymbol(symbol string) error {
-	if len(symbol) == 0 || len(symbol) > MaxTokenSymbolLength {
-		return fmt.Errorf("token symbol length shoud be in (0, %d]", MaxTokenSymbolLength)
+	if len(symbol) > MaxTokenSymbolLength || len(symbol) < MinTokenSymbolLength {
+		return fmt.Errorf("token symbol length shoud be in [%d, %d]", MinTokenSymbolLength, MaxTokenSymbolLength)
 	}
 	if strings.ToLower(symbol) == sdk.DefaultBondDenom || strings.ToLower(symbol) == sdk.DefaultBondDenomName {
 		return fmt.Errorf("token symbol should be identical to native token %s/%s", sdk.DefaultBondDenom, sdk.DefaultBondDenomName)

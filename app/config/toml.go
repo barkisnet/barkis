@@ -34,6 +34,9 @@ UpdateVotingPeriodHeight = {{ .UpgradeConfig.UpdateVotingPeriodHeight }}
 
 # Upgrade to update token symbol rules
 UpdateTokenSymbolRulesHeight = {{ .UpgradeConfig.UpdateTokenSymbolRulesHeight }}
+
+# Upgrade to change token description length limitation
+TokenDesLenLimitUpgradeHeight = {{ .UpgradeConfig.TokenDesLenLimitUpgradeHeight }}
 `
 
 var configTemplate *template.Template

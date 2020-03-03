@@ -6,11 +6,13 @@ import (
 )
 
 const (
-	DefaultCodespace  = types.DefaultCodespace
-	ModuleName        = types.ModuleName
-	RouterKey         = types.RouterKey
-	QuerierRoute      = types.QuerierRoute
-	DefaultParamspace = keeper.DefaultParamspace
+	DefaultCodespace            = types.DefaultCodespace
+	CodeInvalidTokenDescription = types.CodeInvalidTokenDescription
+	NewMaxTokenDesLenLimit      = types.NewMaxTokenDesLenLimit
+	ModuleName                  = types.ModuleName
+	RouterKey                   = types.RouterKey
+	QuerierRoute                = types.QuerierRoute
+	DefaultParamspace           = keeper.DefaultParamspace
 )
 
 var (
@@ -19,6 +21,8 @@ var (
 	NewKeeper     = keeper.NewKeeper
 	NewQuerier    = keeper.NewQuerier
 	NewParams     = types.NewParams
+
+	ErrInvalidTokenDescription = types.ErrInvalidTokenDescription
 
 	// variable aliases
 	ModuleCdc = types.ModuleCdc

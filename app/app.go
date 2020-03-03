@@ -300,6 +300,9 @@ func (app *BarkisApp) registerUpgrade() {
 		app.assetKeeper.SetIssueFee(ctx, sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(2000000000)))) //2000barkis
 		app.assetKeeper.SetMintFee(ctx, sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(1000000000)))) //1000barkis
 	})
+
+	//------------------------------------------------------------------------------------------------------------------------------------
+	sdk.GlobalUpgradeMgr.RegisterUpgradeHeight(sdk.TokenDesLenLimitUpgradeHeight, BarkisContext.UpgradeConfig.TokenDesLenLimitUpgradeHeight)
 }
 
 // application updates every begin block

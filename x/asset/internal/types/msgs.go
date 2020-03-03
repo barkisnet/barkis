@@ -11,10 +11,12 @@ const (
 	IssueMsgType = "issueMsg"
 	MintMsgType  = "mintMsg"
 
-	MaxTokenNameLength         = 32
-	MaxTokenSymbolLength       = 12
-	MaxTokenDescription        = 128
-	MaxTotalSupply       int64 = 9000000000000000000 // int64 max value: 9,223,372,036,854,775,807
+	MaxTokenNameLength           = 32
+	MaxTokenSymbolLength         = 12
+	MinTokenSymbolLength         = 3
+	MaxTokenDesLenLimit          = 128
+	NewMaxTokenDesLenLimit       = 1024
+	MaxTotalSupply         int64 = 9000000000000000000 // int64 max value: 9,223,372,036,854,775,807
 )
 
 var _ sdk.Msg = IssueMsg{}
@@ -71,8 +73,8 @@ func (msg IssueMsg) ValidateBasic() sdk.Error {
 	if msg.Decimal < 0 {
 		return ErrInvalidDecimal(DefaultCodespace, fmt.Sprintf("token decimal %d is negative", msg.Decimal))
 	}
-	if len(msg.Description) > MaxTokenDescription {
-		return ErrInvalidTokenDescription(DefaultCodespace, fmt.Sprintf("token description length %d should be less than %d", len(msg.Description), MaxTokenDescription))
+	if len(msg.Description) > MaxTokenDesLenLimit {
+		return ErrInvalidTokenDescription(DefaultCodespace, fmt.Sprintf("token description length %d should be less than %d", len(msg.Description), MaxTokenDesLenLimit))
 	}
 
 	return nil
