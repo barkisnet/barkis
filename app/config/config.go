@@ -89,10 +89,11 @@ type BaseConfig struct {
 }
 
 type UpgradeConfig struct {
-	RewardUpgrade                int64 `mapstructure:"RewardUpgrade"`
-	TokenIssueHeight             int64 `mapstructure:"TokenIssueHeight"`
-	UpdateVotingPeriodHeight     int64 `mapstructure:"UpdateVotingPeriodHeight"`
-	UpdateTokenSymbolRulesHeight int64 `mapstructure:"UpdateTokenSymbolRulesHeight"`
+	RewardUpgrade                 int64 `mapstructure:"RewardUpgrade"`
+	TokenIssueHeight              int64 `mapstructure:"TokenIssueHeight"`
+	UpdateVotingPeriodHeight      int64 `mapstructure:"UpdateVotingPeriodHeight"`
+	UpdateTokenSymbolRulesHeight  int64 `mapstructure:"UpdateTokenSymbolRulesHeight"`
+	TokenDesLenLimitUpgradeHeight int64 `mapstructure:"TokenDesLenLimitUpgradeHeight"`
 }
 
 // SetMinGasPrices sets the validator's minimum gas prices.
@@ -130,10 +131,11 @@ func DefaultAppConfig() *AppConfig {
 			HaltHeight:   0,
 		},
 		UpgradeConfig: UpgradeConfig{
-			RewardUpgrade:                math.MaxInt64,
-			TokenIssueHeight:             math.MaxInt64,
-			UpdateVotingPeriodHeight:     math.MaxInt64,
-			UpdateTokenSymbolRulesHeight: math.MaxInt64,
+			RewardUpgrade:                 math.MaxInt64,
+			TokenIssueHeight:              math.MaxInt64,
+			UpdateVotingPeriodHeight:      math.MaxInt64,
+			UpdateTokenSymbolRulesHeight:  math.MaxInt64,
+			TokenDesLenLimitUpgradeHeight: math.MaxInt64,
 		},
 	}
 }
