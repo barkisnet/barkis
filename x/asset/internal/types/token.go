@@ -90,8 +90,14 @@ func ValidateToken(token *Token) error {
 }
 
 func validateTokenSymbol(symbol string) error {
-	if len(symbol) > MaxTokenSymbolLength || len(symbol) < MinTokenSymbolLength {
-		return fmt.Errorf("token symbol length shoud be in [%d, %d]", MinTokenSymbolLength, MaxTokenSymbolLength)
+	if sdk.GlobalUpgradeMgr.IsUpgradeApplied(sdk.TokenDesLenLimitUpgradeHeight) {
+		if len(symbol) > MaxTokenSymbolLength || len(symbol) < MinTokenSymbolLength {
+			return fmt.Errorf("token symbol length shoud be in [%d, %d]", MinTokenSymbolLength, MaxTokenSymbolLength)
+		}
+	} else {
+		if len(symbol) == 0 || len(symbol) > MaxTokenSymbolLength {
+			return fmt.Errorf("token symbol length shoud be in (0, %d]", MaxTokenSymbolLength)
+		}
 	}
 	if strings.ToLower(symbol) == sdk.DefaultBondDenom || strings.ToLower(symbol) == sdk.DefaultBondDenomName {
 		return fmt.Errorf("token symbol should be identical to native token %s/%s", sdk.DefaultBondDenom, sdk.DefaultBondDenomName)
