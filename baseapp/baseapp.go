@@ -21,7 +21,6 @@ import (
 	"github.com/barkisnet/barkis/codec"
 	"github.com/barkisnet/barkis/store"
 	sdk "github.com/barkisnet/barkis/types"
-	"github.com/barkisnet/barkis/x/asset"
 )
 
 // Key to store the consensus params in the main store.
@@ -716,18 +715,6 @@ func validateBasicTxMsgs(msgs []sdk.Msg) sdk.Error {
 	for _, msg := range msgs {
 		// Validate the Msg.
 		err := msg.ValidateBasic()
-		if err != nil && err.Codespace() == asset.DefaultCodespace && err.Code() == asset.CodeInvalidTokenDescription {
-			if sdk.GlobalUpgradeMgr.IsUpgradeApplied(sdk.TokenDesLenLimitUpgradeHeight) {
-				issueMsg, ok := msg.(asset.IssueMsg)
-				if ok {
-					return err
-				}
-				if len(issueMsg.Description) > asset.NewMaxTokenDesLenLimit {
-					return asset.ErrInvalidTokenDescription(asset.DefaultCodespace,
-						fmt.Sprintf("token description length %d should be less than %d", len(issueMsg.Description), asset.NewMaxTokenDesLenLimit))
-				}
-			}
-		}
 		if err != nil {
 			return err
 		}

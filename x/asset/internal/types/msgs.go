@@ -73,8 +73,12 @@ func (msg IssueMsg) ValidateBasic() sdk.Error {
 	if msg.Decimal < 0 {
 		return ErrInvalidDecimal(DefaultCodespace, fmt.Sprintf("token decimal %d is negative", msg.Decimal))
 	}
-	if len(msg.Description) > MaxTokenDesLenLimit {
-		return ErrInvalidTokenDescription(DefaultCodespace, fmt.Sprintf("token description length %d should be less than %d", len(msg.Description), MaxTokenDesLenLimit))
+	desLenLimitation := MaxTokenDesLenLimit
+	if sdk.GlobalUpgradeMgr.IsUpgradeApplied(sdk.TokenDesLenLimitUpgradeHeight) {
+		desLenLimitation = NewMaxTokenDesLenLimit
+	}
+	if len(msg.Description) > desLenLimitation {
+		return ErrInvalidTokenDescription(DefaultCodespace, fmt.Sprintf("token description length %d should be less than %d", len(msg.Description), desLenLimitation))
 	}
 
 	return nil
