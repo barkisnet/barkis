@@ -5,6 +5,8 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/barkisnet/barkis/crypto/keyring"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
@@ -20,6 +22,9 @@ const (
 	DefaultGasLimit      = 200000
 	GasFlagAuto          = "auto"
 
+	// DefaultKeyringBackend
+	DefaultKeyringBackend = keyring.BackendOS
+
 	// BroadcastBlock defines a tx broadcasting mode where the client waits for
 	// the tx to be committed in a block.
 	BroadcastBlock = "block"
@@ -30,31 +35,36 @@ const (
 	// immediately.
 	BroadcastAsync = "async"
 
-	FlagHome               = tmcli.HomeFlag
-	FlagUseLedger          = "ledger"
-	FlagChainID            = "chain-id"
-	FlagNode               = "node"
-	FlagHeight             = "height"
-	FlagGasAdjustment      = "gas-adjustment"
-	FlagTrustNode          = "trust-node"
-	FlagFrom               = "from"
-	FlagName               = "name"
-	FlagAccountNumber      = "account-number"
-	FlagSequence           = "sequence"
-	FlagMemo               = "memo"
-	FlagFees               = "fees"
-	FlagGasPrices          = "gas-prices"
-	FlagBroadcastMode      = "broadcast-mode"
-	FlagDryRun             = "dry-run"
-	FlagDry            	   = "dry"
-	FlagGenerateOnly       = "generate-only"
-	FlagIndentResponse     = "indent"
-	FlagListenAddr         = "laddr"
-	FlagMaxOpenConnections = "max-open"
-	FlagRPCReadTimeout     = "read-timeout"
-	FlagRPCWriteTimeout    = "write-timeout"
-	FlagOutputDocument     = "output-document" // inspired by wget -O
-	FlagSkipConfirmation   = "yes"
+	FlagHome             = tmcli.HomeFlag
+	FlagUseLedger        = "ledger"
+	FlagChainID          = "chain-id"
+	FlagNode             = "node"
+	FlagHeight           = "height"
+	FlagGasAdjustment    = "gas-adjustment"
+	FlagFrom             = "from"
+	FlagName             = "name"
+	FlagAccountNumber    = "account-number"
+	FlagSequence         = "sequence"
+	FlagMemo             = "memo"
+	FlagFees             = "fees"
+	FlagGas              = "gas"
+	FlagGasPrices        = "gas-prices"
+	FlagBroadcastMode    = "broadcast-mode"
+	FlagDryRun           = "dry-run"
+	FlagGenerateOnly     = "generate-only"
+	FlagOffline          = "offline"
+	FlagOutputDocument   = "output-document" // inspired by wget -O
+	FlagSkipConfirmation = "yes"
+	FlagProve            = "prove"
+	FlagKeyringBackend   = "keyring-backend"
+	FlagPage             = "page"
+	FlagLimit            = "limit"
+	FlagSignMode         = "sign-mode"
+	FlagPageKey          = "page-key"
+	FlagOffset           = "offset"
+	FlagCountTotal       = "count-total"
+	FlagTimeoutHeight    = "timeout-height"
+	FlagKeyAlgorithm     = "algo"
 )
 
 // LineBreak can be included in a command list to provide a blank line

@@ -318,7 +318,7 @@ func printCreate(cmd *cobra.Command, info keyring.Info, showMnemonic bool, mnemo
 			out.Mnemonic = mnemonic
 		}
 
-		jsonString, err := KeysCdc.MarshalJSON(out)
+		jsonString, err := cdc.MarshalJSON(out)
 		if err != nil {
 			return err
 		}
