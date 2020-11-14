@@ -1,20 +1,15 @@
 package context
 
 import (
-	"bytes"
 	"fmt"
 	"io"
 	"os"
-	"path/filepath"
 
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 	yaml "gopkg.in/yaml.v2"
 
 	"github.com/tendermint/tendermint/libs/cli"
-	"github.com/tendermint/tendermint/libs/log"
-	tmlite "github.com/tendermint/tendermint/lite"
-	tmliteProxy "github.com/tendermint/tendermint/lite/proxy"
 	rpcclient "github.com/tendermint/tendermint/rpc/client"
 
 	"github.com/barkisnet/barkis/client/flags"
@@ -25,7 +20,6 @@ import (
 )
 
 var (
-	verifier     tmlite.Verifier
 	verifierHome string
 )
 
@@ -43,7 +37,6 @@ type CLIContext struct {
 	TrustNode     bool
 	UseLedger     bool
 	BroadcastMode string
-	Verifier      tmlite.Verifier
 	VerifierHome  string
 	Simulate      bool
 	Dry           bool
@@ -71,7 +64,7 @@ func NewCLIContextWithFrom(from string) CLIContext {
 	if !genOnly {
 		nodeURI = viper.GetString(flags.FlagNode)
 		if nodeURI != "" {
-			rpc = rpcclient.NewHTTP(nodeURI, "/websocket")
+			rpc = rpcclient.New(nodeURI, "/websocket")
 		}
 	}
 
@@ -105,52 +98,6 @@ func NewCLIContextWithFrom(from string) CLIContext {
 // NewCLIContext returns a new initialized CLIContext with parameters from the
 // command line using Viper.
 func NewCLIContext() CLIContext { return NewCLIContextWithFrom(viper.GetString(flags.FlagFrom)) }
-
-func createVerifier() tmlite.Verifier {
-	trustNodeDefined := viper.IsSet(flags.FlagTrustNode)
-	if !trustNodeDefined {
-		return nil
-	}
-
-	trustNode := viper.GetBool(flags.FlagTrustNode)
-	if trustNode {
-		return nil
-	}
-
-	chainID := viper.GetString(flags.FlagChainID)
-	home := viper.GetString(flags.FlagHome)
-	nodeURI := viper.GetString(flags.FlagNode)
-
-	var errMsg bytes.Buffer
-	if chainID == "" {
-		errMsg.WriteString("--chain-id ")
-	}
-	if home == "" {
-		errMsg.WriteString("--home ")
-	}
-	if nodeURI == "" {
-		errMsg.WriteString("--node ")
-	}
-	if errMsg.Len() != 0 {
-		fmt.Printf("Must specify these options: %s when --trust-node is false\n", errMsg.String())
-		os.Exit(1)
-	}
-
-	node := rpcclient.NewHTTP(nodeURI, "/websocket")
-	cacheSize := 10 // TODO: determine appropriate cache size
-	verifier, err := tmliteProxy.NewVerifier(
-		chainID, filepath.Join(home, ".lite_verifier"),
-		node, log.NewNopLogger(), cacheSize,
-	)
-
-	if err != nil {
-		fmt.Printf("Create verifier failed: %s\n", err.Error())
-		fmt.Printf("Please check network connection and verify the address of the node to connect to\n")
-		os.Exit(1)
-	}
-
-	return verifier
-}
 
 // WithCodec returns a copy of the context with an updated codec.
 func (ctx CLIContext) WithCodec(cdc *codec.Codec) CLIContext {

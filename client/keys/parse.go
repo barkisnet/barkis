@@ -10,9 +10,9 @@ import (
 	"github.com/spf13/viper"
 	"gopkg.in/yaml.v2"
 
-	"github.com/tendermint/tendermint/libs/bech32"
 	"github.com/tendermint/tendermint/libs/cli"
 
+	"github.com/barkisnet/barkis/types/bech32"
 	"github.com/barkisnet/barkis/client/flags"
 	sdk "github.com/barkisnet/barkis/types"
 )

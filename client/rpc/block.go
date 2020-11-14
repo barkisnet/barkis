@@ -14,7 +14,6 @@ import (
 	"github.com/barkisnet/barkis/codec"
 	"github.com/barkisnet/barkis/types/rest"
 
-	tmliteProxy "github.com/tendermint/tendermint/lite/proxy"
 )
 
 //BlockCommand returns the verified block data for a given heights
