@@ -2,6 +2,8 @@ package server
 
 import (
 	"fmt"
+	"os"
+	"runtime/pprof"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -24,6 +26,7 @@ const (
 	flagAddress        = "address"
 	flagTraceStore     = "trace-store"
 	flagPruning        = "pruning"
+	flagCPUProfile     = "cpu-profile"
 	FlagMinGasPrices   = "minimum-gas-prices"
 	FlagHaltHeight     = "halt-height"
 )
@@ -57,6 +60,7 @@ func StartCmd(ctx *config.ServerContext, appCreator AppCreator) *cobra.Command {
 		"Minimum gas prices to accept for transactions; Any fee in a tx must meet this minimum (e.g. 0.01photino;0.0001stake)",
 	)
 	cmd.Flags().Uint64(FlagHaltHeight, 0, "Height at which to gracefully halt the chain and shutdown the node")
+	cmd.Flags().String(flagCPUProfile, "", "Enable CPU profiling and write to the provided file")
 
 	// add support for all Tendermint-specific command line options
 	tcmd.AddNodeFlags(cmd)
@@ -142,19 +146,42 @@ func startInProcess(ctx *config.ServerContext, appCreator AppCreator) (*node.Nod
 		return nil, err
 	}
 
-	err = tmNode.Start()
-	if err != nil {
+	if err := tmNode.Start(); err != nil {
 		return nil, err
+	}
+
+	var cpuProfileCleanup func()
+
+	if cpuProfile := viper.GetString(flagCPUProfile); cpuProfile != "" {
+		f, err := os.Create(cpuProfile)
+		if err != nil {
+			return nil, err
+		}
+
+		ctx.Logger.Info("starting CPU profiler", "profile", cpuProfile)
+		if err := pprof.StartCPUProfile(f); err != nil {
+			return nil, err
+		}
+
+		cpuProfileCleanup = func() {
+			ctx.Logger.Info("stopping CPU profiler", "profile", cpuProfile)
+			pprof.StopCPUProfile()
+			f.Close()
+		}
 	}
 
 	TrapSignal(func() {
 		if tmNode.IsRunning() {
 			_ = tmNode.Stop()
 		}
+
+		if cpuProfileCleanup != nil {
+			cpuProfileCleanup()
+		}
+
+		ctx.Logger.Info("exiting...")
 	})
 
 	// run forever (the node will not be returned)
 	select {}
 }
-
-// DONTCOVER
