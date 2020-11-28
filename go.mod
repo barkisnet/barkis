@@ -9,7 +9,7 @@ require (
 	github.com/cosmos/go-bip39 v0.0.0-20180819234021-555e2067c45d
 	github.com/cosmos/ledger-cosmos-go v0.10.3
 	github.com/go-kit/kit v0.9.0 // indirect
-	github.com/gogo/protobuf v1.2.1
+	github.com/gogo/protobuf v1.3.0
 	github.com/golang/mock v1.3.1
 	github.com/gorilla/mux v1.7.3
 	github.com/magiconair/properties v1.8.1 // indirect
@@ -34,8 +34,8 @@ require (
 	github.com/tendermint/crypto v0.0.0-20180820045704-3764759f34a5
 	github.com/tendermint/go-amino v0.15.0
 	github.com/tendermint/iavl v0.12.4
-	github.com/tendermint/tendermint v0.32.2
-	github.com/tendermint/tm-db v0.1.1
+	github.com/tendermint/tendermint v0.32.7
+	github.com/tendermint/tm-db v0.2.0
 	golang.org/x/net v0.0.0-20190827160401-ba9fcec4b297 // indirect
 	golang.org/x/sys v0.0.0-20190804053845-51ab0e2deafa // indirect
 	golang.org/x/text v0.3.2 // indirect
