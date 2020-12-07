@@ -672,6 +672,36 @@ func GetValPubKeyBech32(pubkey string) (pk crypto.PubKey, err error) {
 	return pk, nil
 }
 
+// GetPubKeyFromBech32 returns a PublicKey from a bech32-encoded PublicKey with
+// a given key type.
+func GetPubKeyFromBech32(pkt Bech32PubKeyType, pubkeyStr string) (crypto.PubKey, error) {
+	var bech32Prefix string
+
+	switch pkt {
+	case Bech32PubKeyTypeAccPub:
+		bech32Prefix = GetConfig().GetBech32AccountPubPrefix()
+
+	case Bech32PubKeyTypeValPub:
+		bech32Prefix = GetConfig().GetBech32ValidatorPubPrefix()
+
+	case Bech32PubKeyTypeConsPub:
+		bech32Prefix = GetConfig().GetBech32ConsensusPubPrefix()
+
+	}
+
+	bz, err := GetFromBech32(pubkeyStr, bech32Prefix)
+	if err != nil {
+		return nil, err
+	}
+
+	pk, err := cryptocodec.PubKeyFromBytes(bz)
+	if err != nil {
+		return nil, err
+	}
+
+	return pk, nil
+}
+
 // MustGetValPubKeyBech32 returns the result of GetValPubKeyBech32 panicing on
 // failure.
 func MustGetValPubKeyBech32(pubkey string) (pk crypto.PubKey) {

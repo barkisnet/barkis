@@ -2,7 +2,12 @@ package types
 
 import (
 	"sync"
+
+	"github.com/barkisnet/barkis/version"
 )
+
+// DefaultKeyringServiceName defines a default service name for the keyring.
+const DefaultKeyringServiceName = "cosmos"
 
 // Config is the structure that holds the SDK configuration parameters.
 // This could be used to initialize certain configuration parameters for the SDK.
@@ -154,4 +159,11 @@ func (config *Config) GetCoinType() uint32 {
 // Get the FullFundraiserPath (BIP44Prefix) on the config
 func (config *Config) GetFullFundraiserPath() string {
 	return config.fullFundraiserPath
+}
+
+func KeyringServiceName() string {
+	if len(version.Name) == 0 {
+		return DefaultKeyringServiceName
+	}
+	return version.Name
 }

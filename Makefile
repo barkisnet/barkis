@@ -86,8 +86,8 @@ ifeq ($(OS),Windows_NT)
 	go build -mod=readonly $(BUILD_FLAGS) -o build/barkisd.exe ./cmd/barkisd
 	go build -mod=readonly $(BUILD_FLAGS) -o build/barkiscli.exe ./cmd/barkiscli
 else
-	go build -mod=readonly $(BUILD_FLAGS) -o build/barkisd ./cmd/barkisd
-	go build -mod=readonly $(BUILD_FLAGS) -o build/barkiscli ./cmd/barkiscli
+	go build $(BUILD_FLAGS) -o build/barkisd ./cmd/barkisd
+	go build $(BUILD_FLAGS) -o build/barkiscli ./cmd/barkiscli
 endif
 
 build-linux: go.sum

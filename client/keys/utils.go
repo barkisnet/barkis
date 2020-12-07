@@ -14,7 +14,7 @@ import (
 	"github.com/barkisnet/barkis/client/flags"
 	"github.com/barkisnet/barkis/client/input"
 	"github.com/barkisnet/barkis/codec"
-	"github.com/barkisnet/barkis/crypto/keys"
+	"github.com/barkisnet/barkis/crypto/keyring"
 	sdk "github.com/barkisnet/barkis/types"
 )
 
@@ -27,11 +27,11 @@ const (
 	defaultKeyDBName = "keys"
 )
 
-type bechKeyOutFn func(keyInfo keys.Info) (keys.KeyOutput, error)
+type bechKeyOutFn func(keyInfo keyring.Info) (keyring.KeyOutput, error)
 
 // GetKeyInfo returns key info for a given name. An error is returned if the
 // keybase cannot be retrieved or getting the info fails.
-func GetKeyInfo(name string) (keys.Info, error) {
+func GetKeyInfo(name string) (keyring.Info, error) {
 	keybase, err := NewKeyBaseFromHomeFlag()
 	if err != nil {
 		return nil, err
@@ -79,24 +79,24 @@ func ReadPassphraseFromStdin(name string) (string, error) {
 }
 
 // NewKeyBaseFromHomeFlag initializes a Keybase based on the configuration.
-func NewKeyBaseFromHomeFlag() (keys.Keybase, error) {
+func NewKeyBaseFromHomeFlag() (keyring.Keyring, error) {
 	rootDir := viper.GetString(flags.FlagHome)
 	return NewKeyBaseFromDir(rootDir)
 }
 
 // NewKeyBaseFromDir initializes a keybase at a particular dir.
-func NewKeyBaseFromDir(rootDir string) (keys.Keybase, error) {
+func NewKeyBaseFromDir(rootDir string) (keyring.Keyring, error) {
 	return getLazyKeyBaseFromDir(rootDir)
 }
 
 // NewInMemoryKeyBase returns a storage-less keybase.
-func NewInMemoryKeyBase() keys.Keybase { return keys.NewInMemory() }
+func NewInMemoryKeyBase() keyring.Keyring { return keyring.NewInMemory() }
 
-func getLazyKeyBaseFromDir(rootDir string) (keys.Keybase, error) {
-	return keys.New(defaultKeyDBName, filepath.Join(rootDir, "keys")), nil
+func getLazyKeyBaseFromDir(rootDir string) (keyring.Keyring, error) {
+	return keyring.New(defaultKeyDBName, filepath.Join(rootDir, "keys")), nil
 }
 
-func printKeyInfo(keyInfo keys.Info, bechKeyOut bechKeyOutFn) {
+func printKeyInfo(keyInfo keyring.Info, bechKeyOut bechKeyOutFn) {
 	ko, err := bechKeyOut(keyInfo)
 	if err != nil {
 		panic(err)

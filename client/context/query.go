@@ -6,16 +6,10 @@ import (
 
 	"github.com/pkg/errors"
 
-	abci "github.com/tendermint/tendermint/abci/types"
-	"github.com/tendermint/tendermint/crypto/merkle"
-	cmn "github.com/tendermint/tendermint/libs/common"
-	tmliteErr "github.com/tendermint/tendermint/lite/errors"
-	tmliteProxy "github.com/tendermint/tendermint/lite/proxy"
-	rpcclient "github.com/tendermint/tendermint/rpc/client"
-	tmtypes "github.com/tendermint/tendermint/types"
-
 	"github.com/barkisnet/barkis/store/rootmulti"
 	sdk "github.com/barkisnet/barkis/types"
+	bytes "github.com/tendermint/tendermint/libs/bytes"
+	rpcclient "github.com/tendermint/tendermint/rpc/client"
 )
 
 // GetNode returns an RPC client. If the context's client is not defined, an
@@ -45,7 +39,7 @@ func (ctx CLIContext) QueryWithData(path string, data []byte) ([]byte, int64, er
 // QueryStore performs a query to a Tendermint node with the provided key and
 // store name. It returns the result and height of the query upon success
 // or an error if the query fails.
-func (ctx CLIContext) QueryStore(key cmn.HexBytes, storeName string) ([]byte, int64, error) {
+func (ctx CLIContext) QueryStore(key bytes.HexBytes, storeName string) ([]byte, int64, error) {
 	return ctx.queryStore(key, storeName, "key")
 }
 
@@ -77,7 +71,7 @@ func (ctx CLIContext) GetFromName() string {
 // or an error if the query fails. In addition, it will verify the returned
 // proof if TrustNode is disabled. If proof verification fails or the query
 // height is invalid, an error will be returned.
-func (ctx CLIContext) query(path string, key cmn.HexBytes) (res []byte, height int64, err error) {
+func (ctx CLIContext) query(path string, key bytes.HexBytes) (res []byte, height int64, err error) {
 	node, err := ctx.GetNode()
 	if err != nil {
 		return res, height, err
@@ -102,76 +96,76 @@ func (ctx CLIContext) query(path string, key cmn.HexBytes) (res []byte, height i
 		return res, height, errors.New(resp.Log)
 	}
 
-	// data from trusted node or subspace query doesn't need verification
-	if ctx.TrustNode || !isQueryStoreWithProof(path) {
-		return resp.Value, resp.Height, nil
-	}
-
-	err = ctx.verifyProof(path, resp)
-	if err != nil {
-		return res, height, err
-	}
+	//// data from trusted node or subspace query doesn't need verification
+	//if ctx.TrustNode || !isQueryStoreWithProof(path) {
+	//	return resp.Value, resp.Height, nil
+	//}
+	//
+	//err = ctx.verifyProof(path, resp)
+	//if err != nil {
+	//	return res, height, err
+	//}
 
 	return resp.Value, resp.Height, nil
 }
-
-// Verify verifies the consensus proof at given height.
-func (ctx CLIContext) Verify(height int64) (tmtypes.SignedHeader, error) {
-	check, err := tmliteProxy.GetCertifiedCommit(height, ctx.Client, ctx.Verifier)
-	switch {
-	case tmliteErr.IsErrCommitNotFound(err):
-		return tmtypes.SignedHeader{}, ErrVerifyCommit(height)
-	case err != nil:
-		return tmtypes.SignedHeader{}, err
-	}
-
-	return check, nil
-}
-
-// verifyProof perform response proof verification.
-func (ctx CLIContext) verifyProof(queryPath string, resp abci.ResponseQuery) error {
-	if ctx.Verifier == nil {
-		return fmt.Errorf("missing valid certifier to verify data from distrusted node")
-	}
-
-	// the AppHash for height H is in header H+1
-	commit, err := ctx.Verify(resp.Height + 1)
-	if err != nil {
-		return err
-	}
-
-	// TODO: Instead of reconstructing, stash on CLIContext field?
-	prt := rootmulti.DefaultProofRuntime()
-
-	// TODO: Better convention for path?
-	storeName, err := parseQueryStorePath(queryPath)
-	if err != nil {
-		return err
-	}
-
-	kp := merkle.KeyPath{}
-	kp = kp.AppendKey([]byte(storeName), merkle.KeyEncodingURL)
-	kp = kp.AppendKey(resp.Key, merkle.KeyEncodingURL)
-
-	if resp.Value == nil {
-		err = prt.VerifyAbsence(resp.Proof, commit.Header.AppHash, kp.String())
-		if err != nil {
-			return errors.Wrap(err, "failed to prove merkle proof")
-		}
-		return nil
-	}
-	err = prt.VerifyValue(resp.Proof, commit.Header.AppHash, kp.String(), resp.Value)
-	if err != nil {
-		return errors.Wrap(err, "failed to prove merkle proof")
-	}
-
-	return nil
-}
+//
+//// Verify verifies the consensus proof at given height.
+//func (ctx CLIContext) Verify(height int64) (tmtypes.SignedHeader, error) {
+//	check, err := tmliteProxy.GetCertifiedCommit(height, ctx.Client, ctx.Verifier)
+//	switch {
+//	case tmliteErr.IsErrCommitNotFound(err):
+//		return tmtypes.SignedHeader{}, ErrVerifyCommit(height)
+//	case err != nil:
+//		return tmtypes.SignedHeader{}, err
+//	}
+//
+//	return check, nil
+//}
+//
+//// verifyProof perform response proof verification.
+//func (ctx CLIContext) verifyProof(queryPath string, resp abci.ResponseQuery) error {
+//	if ctx.Verifier == nil {
+//		return fmt.Errorf("missing valid certifier to verify data from distrusted node")
+//	}
+//
+//	// the AppHash for height H is in header H+1
+//	commit, err := ctx.Verify(resp.Height + 1)
+//	if err != nil {
+//		return err
+//	}
+//
+//	// TODO: Instead of reconstructing, stash on CLIContext field?
+//	prt := rootmulti.DefaultProofRuntime()
+//
+//	// TODO: Better convention for path?
+//	storeName, err := parseQueryStorePath(queryPath)
+//	if err != nil {
+//		return err
+//	}
+//
+//	kp := merkle.KeyPath{}
+//	kp = kp.AppendKey([]byte(storeName), merkle.KeyEncodingURL)
+//	kp = kp.AppendKey(resp.Key, merkle.KeyEncodingURL)
+//
+//	if resp.Value == nil {
+//		err = prt.VerifyAbsence(resp.Proof, commit.Header.AppHash, kp.String())
+//		if err != nil {
+//			return errors.Wrap(err, "failed to prove merkle proof")
+//		}
+//		return nil
+//	}
+//	err = prt.VerifyValue(resp.Proof, commit.Header.AppHash, kp.String(), resp.Value)
+//	if err != nil {
+//		return errors.Wrap(err, "failed to prove merkle proof")
+//	}
+//
+//	return nil
+//}
 
 // queryStore performs a query to a Tendermint node with the provided a store
 // name and path. It returns the result and height of the query upon success
 // or an error if the query fails.
-func (ctx CLIContext) queryStore(key cmn.HexBytes, storeName, endPath string) ([]byte, int64, error) {
+func (ctx CLIContext) queryStore(key bytes.HexBytes, storeName, endPath string) ([]byte, int64, error) {
 	path := fmt.Sprintf("/store/%s/%s", storeName, endPath)
 	return ctx.query(path, key)
 }
