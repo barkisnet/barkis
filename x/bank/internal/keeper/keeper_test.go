@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	abci "github.com/tendermint/tendermint/abci/types"
+	common "github.com/tendermint/tendermint/libs/common"
 	tmtime "github.com/tendermint/tendermint/types/time"
 
 	sdk "github.com/barkisnet/barkis/types"
@@ -330,4 +331,92 @@ func TestUndelegateCoins(t *testing.T) {
 	macc = input.ak.GetAccount(ctx, addrModule)
 	require.Equal(t, origCoins, vacc.GetCoins())
 	require.True(t, macc.GetCoins().Empty())
+}
+
+func TestMsgMultiSendEvents(t *testing.T) {
+	app := setupTestInput()
+
+	app.k.SetSendEnabled(app.ctx, true)
+
+	addr := sdk.AccAddress([]byte("addr1"))
+	addr2 := sdk.AccAddress([]byte("addr2"))
+	addr3 := sdk.AccAddress([]byte("addr3"))
+	addr4 := sdk.AccAddress([]byte("addr4"))
+	acc := app.ak.NewAccountWithAddress(app.ctx, addr)
+	acc2 := app.ak.NewAccountWithAddress(app.ctx, addr2)
+
+	app.ak.SetAccount(app.ctx, acc)
+	app.ak.SetAccount(app.ctx, acc2)
+	newCoins := sdk.NewCoins(sdk.NewInt64Coin("foocoin", 50))
+	newCoins2 := sdk.NewCoins(sdk.NewInt64Coin("barcoin", 100))
+	inputs := []types.Input{
+		{Address: addr, Coins: newCoins},
+		{Address: addr2, Coins: newCoins2},
+	}
+	outputs := []types.Output{
+		{Address: addr3, Coins: newCoins},
+		{Address: addr4, Coins: newCoins2},
+	}
+	err := app.k.InputOutputCoins(app.ctx, inputs, outputs)
+	require.Error(t, err)
+	events := app.ctx.EventManager().Events()
+	require.Equal(t, 0, len(events))
+
+	// Set addr's coins but not addr2's coins
+	app.k.SetCoins(app.ctx, addr, sdk.NewCoins(sdk.NewInt64Coin("foocoin", 50)))
+
+	err = app.k.InputOutputCoins(app.ctx, inputs, outputs)
+	require.Error(t, err)
+	events = app.ctx.EventManager().Events()
+	require.Equal(t, 1, len(events))
+	event1 := sdk.Event{
+		Type:       sdk.EventTypeMessage,
+		Attributes: []common.KVPair{},
+	}
+	event1.Attributes = append(
+		event1.Attributes,
+		common.KVPair{Key: []byte(types.AttributeKeySender), Value: []byte(addr.String())})
+	require.Equal(t, event1, events[0])
+
+	// Set addr's coins and addr2's coins
+	app.k.SetCoins(app.ctx, addr, sdk.NewCoins(sdk.NewInt64Coin("foocoin", 50)))
+	newCoins = sdk.NewCoins(sdk.NewInt64Coin("foocoin", 50))
+	app.k.SetCoins(app.ctx, addr2, sdk.NewCoins(sdk.NewInt64Coin("barcoin", 100)))
+	newCoins2 = sdk.NewCoins(sdk.NewInt64Coin("barcoin", 100))
+
+	err = app.k.InputOutputCoins(app.ctx, inputs, outputs)
+	require.NoError(t, err)
+	events = app.ctx.EventManager().Events()
+	require.Equal(t, 5, len(events))
+	event2 := sdk.Event{
+		Type:       sdk.EventTypeMessage,
+		Attributes: []common.KVPair{},
+	}
+	event2.Attributes = append(
+		event2.Attributes,
+		common.KVPair{Key: []byte(types.AttributeKeySender), Value: []byte(addr2.String())})
+	event3 := sdk.Event{
+		Type:       types.EventTypeTransfer,
+		Attributes: []common.KVPair{},
+	}
+	event3.Attributes = append(
+		event3.Attributes,
+		common.KVPair{Key: []byte(types.AttributeKeyRecipient), Value: []byte(addr3.String())})
+	event3.Attributes = append(
+		event3.Attributes,
+		common.KVPair{Key: []byte(sdk.AttributeKeyAmount), Value: []byte(newCoins.String())})
+	event4 := sdk.Event{
+		Type:       types.EventTypeTransfer,
+		Attributes: []common.KVPair{},
+	}
+	event4.Attributes = append(
+		event4.Attributes,
+		common.KVPair{Key: []byte(types.AttributeKeyRecipient), Value: []byte(addr4.String())})
+	event4.Attributes = append(
+		event4.Attributes,
+		common.KVPair{Key: []byte(sdk.AttributeKeyAmount), Value: []byte(newCoins2.String())})
+	require.Equal(t, event1, events[1])
+	require.Equal(t, event2, events[2])
+	require.Equal(t, event3, events[3])
+	require.Equal(t, event4, events[4])
 }
