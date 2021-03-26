@@ -1,9 +1,9 @@
 # Join the mainnet
 
 ::: tip 
-See the [launch repo](https://github.com/cosmos/launch) for
+See the [launch repo](https://github.com/barkis/launch) for
 information on the mainnet, including the correct version
-of the Cosmos-SDK to use and details about the genesis file.
+of the Barkis to use and details about the genesis file.
 :::
 
 ::: warning
@@ -41,7 +41,7 @@ You can edit the `~/.barkisd/config/barkisd.toml` file in order to enable the an
 
 # The minimum gas prices a validator is willing to accept for processing a
 # transaction. A transaction's fees must meet the minimum of any denomination
-# specified in this config (e.g. 10uatom).
+# specified in this config (e.g. 10ubarkis).
 
 minimum-gas-prices = ""
 ```
@@ -56,10 +56,10 @@ Fetch the testnet's `genesis.json` file into `barkisd`'s config directory.
 
 ```bash
 mkdir -p $HOME/.barkisd/config
-curl https://raw.githubusercontent.com/cosmos/launch/master/genesis.json > $HOME/.barkisd/config/genesis.json
+curl https://raw.githubusercontent.com/barkis/launch/master/genesis.json > $HOME/.barkisd/config/genesis.json
 ```
 
-Note we use the `latest` directory in the [launch repo](https://github.com/cosmos/launch) which contains details for the mainnet like the latest version and the genesis file. 
+Note we use the `latest` directory in the [launch repo](https://github.com/barkis/launch) which contains details for the mainnet like the latest version and the genesis file. 
 
 ::: tip
 If you want to connect to the public testnet instead, click [here](./join-testnet.md)
@@ -73,21 +73,21 @@ barkisd start
 
 ### Add Seed Nodes
 
-Your node needs to know how to find peers. You'll need to add healthy seed nodes to `$HOME/.barkisd/config/config.toml`. The [`launch`](https://github.com/cosmos/launch) repo contains links to some seed nodes.
+Your node needs to know how to find peers. You'll need to add healthy seed nodes to `$HOME/.barkisd/config/config.toml`. The [`launch`](https://github.com/barkis/launch) repo contains links to some seed nodes.
 
-If those seeds aren't working, you can find more seeds and persistent peers on a Cosmos Hub explorer (a list can be found on the [launch page](https://cosmos.network/launch)). 
+If those seeds aren't working, you can find more seeds and persistent peers on a BarkisNet explorer (a list can be found on the [launch page](https://barkis.network/launch)). 
 
-You can also ask for peers on the [Validators Riot Room](https://riot.im/app/#/room/#cosmos-validators:matrix.org)
+You can also ask for peers on the [Validators Riot Room](https://riot.im/app/#/room/#barkis-validators:matrix.org)
 
 For more information on seeds and peers, you can [read this](https://github.com/tendermint/tendermint/blob/develop/docs/tendermint-core/using-tendermint.md#peers).
 
 ## A Note on Gas and Fees
 
 ::: warning
-On Cosmos Hub mainnet, the accepted denom is `uatom`, where `1atom = 1.000.000uatom`
+On BarkisNet mainnet, the accepted denom is `ubarkis`, where `1barkis = 1.000.000ubarkis`
 :::
 
-Transactions on the Cosmos Hub network need to include a transaction fee in order to be processed. This fee pays for the gas required to run the transaction. The formula is the following:
+Transactions on the BarkisNet need to include a transaction fee in order to be processed. This fee pays for the gas required to run the transaction. The formula is the following:
 
 ```
 fees = ceil(gas * gasPrices)
@@ -100,14 +100,14 @@ The `gasPrice` is the price of each unit of `gas`. Each validator sets a `min-ga
 The transaction `fees` are the product of `gas` and `gasPrice`. As a user, you have to input 2 out of 3. The higher the `gasPrice`/`fees`, the higher the chance that your transaction will get included in a block. 
 
 ::: tip
-For mainnet, the recommended `gas-prices` is `0.025uatom`. 
+For mainnet, the recommended `gas-prices` is `0.025ubarkis`. 
 ::: 
 
 ## Set `minimum-gas-prices`
 
 Your full-node keeps unconfirmed transactions in its mempool. In order to protect it from spam, it is better to set a `minimum-gas-prices` that the transaction must meet in order to be accepted in your node's mempool. This parameter can be set in the following file `~/.barkisd/config/barkisd.toml`.
 
-The initial recommended `min-gas-prices` is `0.025uatom`, but you might want to change it later. 
+The initial recommended `min-gas-prices` is `0.025ubarkis`, but you might want to change it later. 
 
 ## Run a Full Node
 
@@ -123,7 +123,7 @@ Check that everything is running smoothly:
 barkiscli status
 ```
 
-View the status of the network with the [Cosmos Explorer](https://cosmos.network/launch). 
+View the status of the network with the [Barkis Explorer](https://barkis.network/launch). 
 
 ## Export State
 
@@ -151,7 +151,7 @@ barkisd export --height [height] --for-zero-height > [filename].json
 
 Help to prevent a catastrophe by running invariants on each block on your full
 node. In essence, by running invariants you ensure that the state of mainnet is
-the correct expected state. One vital invariant check is that no atoms are
+the correct expected state. One vital invariant check is that no BKS are
 being created or destroyed outside of expected protocol, however there are many
 other invariant checks each unique to their respective module. Because invariant checks 
 are computationally expensive, they are not enabled by default. To run a node with 
@@ -179,4 +179,4 @@ deducted as the blockchain will halt (aka. this is a free transaction).
 
 ## Upgrade to Validator Node
 
-You now have an active full node. What's the next step? You can upgrade your full node to become a Cosmos Validator. The top 100 validators have the ability to propose new blocks to the Cosmos Hub. Continue onto [the Validator Setup](./validators/validator-setup.md).
+You now have an active full node. What's the next step? You can upgrade your full node to become a barkis Validator. The top 100 validators have the ability to propose new blocks to the BarkisNet. Continue onto [the Validator Setup](./validators/validator-setup.md).
