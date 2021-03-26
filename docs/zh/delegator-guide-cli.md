@@ -1,7 +1,7 @@
 # 委托人指南 (CLI)
 
 
-本文介绍了如何使用Cosmos Hub的命令行交互（CLI）程序实现通证委托的相关知识和操作步骤。 
+本文介绍了如何使用Barkis的命令行交互（CLI）程序实现通证委托的相关知识和操作步骤。 
 
 同时，本文也介绍了如何管理账户，如何从筹款人那里恢复账户，以及如何使用一个硬件钱包的相关知识。 
 
@@ -10,7 +10,7 @@
 **重要提示**：请务必按照下面的操作步骤谨慎操作，过程中发生任何错误都有可能导致您永远失去所拥有的通证。因此，请在开始操作之前先仔细阅读全文，如果有任何问题可以联系我们获得支持。 
 
 
-另请注意，您即将要与Cosmos Hub进行交互，Cosmos Hub仍然是一个试验型的区块链技术软件。虽然Cosmos Hub区块链是应用现有最新技术开发并经过审核的，但我们仍然可能会在运行时遇到问题，需要不断更新和修复漏洞。此外，使用区块链技术仍然要求有很高的技术能力，并且有可能遇到我们无法预知和控制的风险。使用Cosmos Hub前，您需要充分了解与加密软件相关的潜在风险（请参考[Cosmos跨链贡献条款](https://github.com/cosmos/cosmos/blob/master/fundraiser/Interchain%20Cosmos%20Contribution%20Terms%20-%20FINAL.pdf)中关于风险的部分条款），并且我们跨链基金会和(或)Tendermint团队对于因为使用本产品而可能产生的损失不承担任何责任。使用Cosmos Hub需要遵守Apache 2.0开源软件授权条款，用户需要自己承担所有责任，所使用的软件按“现状”提供且不提供任何形式的保障或条件。 
+另请注意，您即将要与Barkis进行交互，Barkis仍然是一个试验型的区块链技术软件。虽然Barkis区块链是应用现有最新技术开发并经过审核的，但我们仍然可能会在运行时遇到问题，需要不断更新和修复漏洞。此外，使用区块链技术仍然要求有很高的技术能力，并且有可能遇到我们无法预知和控制的风险。使用Barkis前，您需要充分了解与加密软件相关的潜在风险,我们基金会和(或)Tendermint团队对于因为使用本产品而可能产生的损失不承担任何责任。使用Barkis需要遵守Apache 2.0开源软件授权条款，用户需要自己承担所有责任，所使用的软件按“现状”提供且不提供任何形式的保障或条件。 
 :::
 
 
@@ -19,17 +19,17 @@
 ## 目录
     
 - [安装 `barkiscli`](#安装-barkiscli)
-- [Cosmos账户](#Cosmos账户)
+- [Barkis账户](#Barkis账户)
     + [通过募资人恢复一个账户](#通过募资人恢复一个账户)
     + [创建一个账户](#创建一个账户)
-- [访问Cosmos Hub网络](#访问Cosmos-Hub网络)
+- [访问Barkis网络](#访问Barkis网络)
     + [运行您自己的全节点](#运行您自己的全节点)
     + [连接到一个远程全节点](#连接到一个远程全节点)
 - [设置`barkiscli`](#设置-barkiscli)
 - [状态查询](#状态查询)
 - [发起交易](#发起交易)
     + [关于gas费和手续费](#关于gas费和手续费)
-    + [抵押Atom通证 & 提取奖励](#抵押atom通证--提取奖励)
+    + [抵押BKS通证 & 提取奖励](#抵押BKS通证--提取奖励)
     + [参与链上治理](#参与链上治理)
     + [从一台离线电脑上签署交易](#从一台离线电脑上签署交易)
 
@@ -46,7 +46,7 @@
 [**下载已编译代码**]暂不提供
 
 
-[**通过源代码安装**](https://cosmos.network/docs/barkis/installation.html)
+[**通过源代码安装**](https://barkisnet/docs/barkis/installation.html)
 
 ::: tip 提示 
 
@@ -56,9 +56,9 @@
 - **Linux**: `Ctrl` + `Alt` + `T`
 :::
 
-## Cosmos账户
+## Barkis账户
 
-每个Cosmos账户的核心基础是一个包含12或24个词的助记词组，通过这个助记词可以生成无数个Cosmos账户，例如，一组私钥/公钥对。这被称为一个硬件钱包（跟多硬件钱包相关说明请参见[BIP32](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki)）  
+每个Barkis账户的核心基础是一个包含12或24个词的助记词组，通过这个助记词可以生成无数个Barkis账户，例如，一组私钥/公钥对。这被称为一个硬件钱包（跟多硬件钱包相关说明请参见[BIP32](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki)）  
 
 ```
         账户 0                            账户 1                              账户 2
@@ -102,7 +102,7 @@
 :::
 
 
-Cosmos地址是一个以可读词开头的字符串(比如`cosmos10snjt8dmpr5my0h76xj48ty80uzwhraqalu4eg`) 如果有人想给你转账通证，他们就往这个地址转账。根据给定地址来推算私钥是不可行的。
+Barkis地址是一个以可读词开头的字符串(比如`barkis10snjt8dmpr5my0h76xj48ty80uzwhraqalu4eg`) 如果有人想给你转账通证，他们就往这个地址转账。根据给定地址来推算私钥是不可行的。
 
 ### 通过募资人恢复一个账户
 
@@ -112,16 +112,16 @@ Cosmos地址是一个以可读词开头的字符串(比如`cosmos10snjt8dmpr5my0
 :::
 
 
-如果您是众筹的参与者，你应该有一个助记词。新产生的助记词用24个词，但是12个词的助记词组也兼容所有Cosmos工具。 
+如果您是众筹的参与者，你应该有一个助记词。新产生的助记词用24个词，但是12个词的助记词组也兼容所有Barkis工具。 
 
 #### 通过硬件钱包设备进行操作
 
 
-一个数字钱包设备的核心是通过一个助记词在多个区块链上创建账户（包括Cosmos hub）。通常，您会在初始化您的数字钱包设备时创建一个新的助记词,也可以通过已有的助记词进行导入。让我们一起来看如何将您在参与众筹时获得的助记词设定为一个数字钱包设备的seed。
+一个数字钱包设备的核心是通过一个助记词在多个区块链上创建账户（包括BarkisNet）。通常，您会在初始化您的数字钱包设备时创建一个新的助记词,也可以通过已有的助记词进行导入。让我们一起来看如何将您在参与众筹时获得的助记词设定为一个数字钱包设备的seed。
 
 ::: 警告
 
-*注意：**最好使用一个新的钱包设备**来恢复您的Cosmos账户。确实，每个数字钱包设备只能有一个助记词。 当然，您可以通过 `设置`>`设备`>`重置所有` 将一个已经有助记词的（用过的）数字钱包重新初始化。**但请注意，这样会清空您设备中现有的助记词，如果您没有做好备份的话，有可能会丢失您的资产***
+*注意：**最好使用一个新的钱包设备**来恢复您的Barkis账户。确实，每个数字钱包设备只能有一个助记词。 当然，您可以通过 `设置`>`设备`>`重置所有` 将一个已经有助记词的（用过的）数字钱包重新初始化。**但请注意，这样会清空您设备中现有的助记词，如果您没有做好备份的话，有可能会丢失您的资产***
 :::
 
 
@@ -158,7 +158,7 @@ barkiscli keys add <yourKeyName> --recover
 首先，您需要输入一个密码来对您硬盘上账户`0`的私钥进行加密。每次您发出一笔交易时都将需要输入这个密码。如果您丢失了密码，您可以通过助记词来恢复您的私钥。 
 
 
--`<yourKeyName>` 是账户名称，用来指代用助记词生成私钥/公钥对的Cosmos账户。在您发起交易时，这个账户名称被用来识别您的账户。 
+-`<yourKeyName>` 是账户名称，用来指代用助记词生成私钥/公钥对的Barkis账户。在您发起交易时，这个账户名称被用来识别您的账户。 
   
 
 - 您可以通过增加 `--account` 标志来指定您账户生成的路径 (`0`, `1`, `2`, ...)， `0` 是缺省值。
@@ -175,13 +175,13 @@ barkiscli keys add <yourKeyName> --recover
 **建议仅使用您新买的钱包设备或者您足够信任的设备**
 :::
 
-当您初始化钱包设备时，设备会产生一个24个词的助记词组。这个助记词组和Cosmos是兼容的，我们可以通过这个助记词组创建Cosmos账户。所以，您需要做的是确认您的钱包设备兼容`barkiscli`，通过下面的步骤可以帮助您确认您的设备是否兼容：
+当您初始化钱包设备时，设备会产生一个24个词的助记词组。这个助记词组和Barkis是兼容的，我们可以通过这个助记词组创建Barkis账户。所以，您需要做的是确认您的钱包设备兼容`barkiscli`，通过下面的步骤可以帮助您确认您的设备是否兼容：
 
    
-1. 下载[Ledger Live应用](https://www.ledger.com/pages/ledger-live). 
+1. 下载[Ledger Live应用]
 2. 通过USB将钱包与计算机连接，并且将钱包固件升级到最新版本。 
-3. 到Ledger Live钱包的应用商店下载”Cosmos“应用（这可能需要花些时间）。**下载”Cosmos“应用程序需要在Ledger Live钱包`Settings`选项中激活`Dev Mode`**
-4. 在你的钱包设备上操作Cosmos APP。
+3. 到Ledger Live钱包的应用商店下载”Barkis“应用（这可能需要花些时间）。**下载”Barkis“应用程序需要在Ledger Live钱包`Settings`选项中激活`Dev Mode`**
+4. 在你的钱包设备上操作Barkis APP。
 
 
 然后，通过以下命令创建账户：
@@ -193,7 +193,7 @@ barkiscli keys add <yourAccountName> --ledger
 ::: 注意： 该命令仅在硬件钱包已导入并在解锁状态时才有效:::
 
 
-- `<yourKeyName>` 是账户名称，用来指代用助记词生成私钥/公钥对的Cosmos账户。在您发起交易时，这个账户名称被用来识别您的账户。 
+- `<yourKeyName>` 是账户名称，用来指代用助记词生成私钥/公钥对的Barkis账户。在您发起交易时，这个账户名称被用来识别您的账户。 
   
 
 - 您可以通过增加 `--account` 标志来指定您账户生成的路径 (`0`, `1`, `2`, ...)， `0` 是缺省值。
@@ -233,21 +233,21 @@ rm ~/.bash_history
 barkiscli keys add <yourKeyName> --recover --account 1
 ```
 
-- - `<yourKeyName>` 是账户名称，用来指代用助记词生成私钥/公钥对的Cosmos账户。在您发起交易时，这个账户名称用来识别您的账户。 
+- - `<yourKeyName>` 是账户名称，用来指代用助记词生成私钥/公钥对的Barkis账户。在您发起交易时，这个账户名称用来识别您的账户。 
   
 - 您可以通过增加 `--account` 标志来指定您账户生成的路径 (`0`, `1`, `2`, ...)， `0` 是缺省值。
 
 
 这条命令需要您输入一个密码。改变账号就代表生成了一个新的账户。  
 
-## 访问Cosmos Hub网络
+## 访问BarkisNet网络
 
 
-为了查询网络状态和发起交易，你需要通过自建一个全节点，或者连接到其他人的全节点访问Cosmos Hub网络
+为了查询网络状态和发起交易，你需要通过自建一个全节点，或者连接到其他人的全节点访问Barkis网络
 
 ::: 警告
 
-**注意： 请不要与任何人分享您的助记词，您是唯一需要知道这些助记词的人。如果任何人通过邮件或者其他社交媒体向您要求您提供您的助记词，那就需要警惕了。 请记住，Cosmos/Tendermint团队，或跨链基金会永远不会通过邮件要求您提供您的账户密码或助记词。**
+**注意： 请不要与任何人分享您的助记词，您是唯一需要知道这些助记词的人。如果任何人通过邮件或者其他社交媒体向您要求您提供您的助记词，那就需要警惕了。 请记住，Barkis团队，或基金会永远不会通过邮件要求您提供您的账户密码或助记词。**
 ::: 
 
 ### 运行您自己的全节点
@@ -256,7 +256,7 @@ barkiscli keys add <yourKeyName> --recover --account 1
 这是最安全的途径，但需要相当多的资源。您需要有较大的带宽和至少1TB的磁盘容量来运行一个全节点。  
 
 
- `barkis`的安装教程在[这里](https://cosmos.network/docs/barkis/installation.html)， 如何运行一个全节点指导在[这里](https://cosmos.network/docs/barkis/join-testnet.html)
+ `barkis`的安装教程在[这里](https://barkis.network/docs/barkis/installation.html)， 如何运行一个全节点指导在[这里](https://barkis.network/docs/barkis/join-testnet.html)
 
 ### 连接到一个远程全节点
 
@@ -270,7 +270,7 @@ barkiscli keys add <yourKeyName> --recover --account 1
 
 ::: 提示
 
-**在开始设置 `barkiscli`前，请确认你已经可以[访问Cosmos Hub网络](#访问cosmos-hub网络)**
+**在开始设置 `barkiscli`前，请确认你已经可以[访问Barkis网络](#访问Barkis网络)**
 :::
 
 ::: 警告
@@ -278,7 +278,7 @@ barkiscli keys add <yourKeyName> --recover --account 1
 **请确认您使用的`barkiscli`是最新的稳定版本**
 :::
 
-无论您是否在自己运行一个节点，`barkiscli` 都可以帮您实现与Cosmos Hub网络的交互。让我们来完成对它的配置。 
+无论您是否在自己运行一个节点，`barkiscli` 都可以帮您实现与Barkis网络的交互。让我们来完成对它的配置。 
 
 
 您需要用下面的命令行完成对`barkiscli`的配置：
@@ -320,7 +320,7 @@ barkiscli config chain-id gos-6
 ## 状态查询
 
 ::: 提示
-** 准备抵押ATOM通证和取回奖励前，需要先完成 [`barkiscli` 配置](#设置-barkiscli)**
+** 准备抵押BKS通证和取回奖励前，需要先完成 [`barkiscli` 配置](#设置-barkiscli)**
 :::
 
 
@@ -336,17 +336,17 @@ barkiscli query account
 barkiscli query staking validators
 
 
-// 查询指定地址的验证人的信息(e.g. cosmosvaloper1n5pepvmgsfd3p2tqqgvt505jvymmstf6s9gw27)
+// 查询指定地址的验证人的信息(e.g. barkisvaloper1n5pepvmgsfd3p2tqqgvt505jvymmstf6s9gw27)
 barkiscli query staking validator <validatorAddress>
 
 
-//查询指定地址的验证人相关的所有委托信息 (e.g. cosmos10snjt8dmpr5my0h76xj48ty80uzwhraqalu4eg)
+//查询指定地址的验证人相关的所有委托信息 (e.g. barkis10snjt8dmpr5my0h76xj48ty80uzwhraqalu4eg)
 barkiscli query staking delegations <delegatorAddress>
 
-// 查询从一个指定地址的委托人(e.g. cosmos10snjt8dmpr5my0h76xj48ty80uzwhraqalu4eg)和一个指定地址的验证人(e.g. cosmosvaloper1n5pepvmgsfd3p2tqqgvt505jvymmstf6s9gw27) 之间的委托交易
+// 查询从一个指定地址的委托人(e.g. barkis10snjt8dmpr5my0h76xj48ty80uzwhraqalu4eg)和一个指定地址的验证人(e.g. barkisvaloper1n5pepvmgsfd3p2tqqgvt505jvymmstf6s9gw27) 之间的委托交易
 barkiscli query staking delegation <delegatorAddress> <validatorAddress>
 
-// 查询一个指定地址的委托人(e.g. cosmos10snjt8dmpr5my0h76xj48ty80uzwhraqalu4eg)所能获得的奖励情况
+// 查询一个指定地址的委托人(e.g. barkis10snjt8dmpr5my0h76xj48ty80uzwhraqalu4eg)所能获得的奖励情况
 barkiscli query distribution rewards <delegatorAddress> 
 
 // 查询所有现在正等待抵押的提案
@@ -372,7 +372,7 @@ barkiscli query
 ### 关于gas费和手续费
 
 
-Cosmos Hub网络上的交易在被执行时需要支付手续费。这个手续费是用于支付执行交易所需的gas。计算公式如下： 
+Barkis网络上的交易在被执行时需要支付手续费。这个手续费是用于支付执行交易所需的gas。计算公式如下： 
 ```
 fees = gas * gasPrices
 ```
@@ -383,14 +383,14 @@ fees = gas * gasPrices
 
 交易的`fees` 是`gas` 和 `gasPrice`的乘积。作为一个用户，你需要输入3个参数中至少2个， `gasPrice`/`fees`的值越大，您的交易就越有机会被打包执行。 
 
-### 抵押Atom通证 & 提取奖励
+### 抵押BKS通证 & 提取奖励
 
 ::: 提示
 **在您抵押通证或取回奖励之前，您需要完成[`barkiscli` 设置](#设置-barkiscli) 和 [创建账户](#创建一个账户)**
 :::
 
 ::: 警告
-**在抵押通证前，请仔细阅读[委托者常见问题](https://cosmos.network/resources/delegators) 并且理解其中的风险和责任**
+**在抵押通证前，请仔细阅读[委托者常见问题](https://barkis.network/resources/delegators) 并且理解其中的风险和责任**
 :::
 
 ::: 警告
@@ -398,21 +398,21 @@ fees = gas * gasPrices
 ::: 
 
 ```bash
-// 向指定验证人绑定一定数量的Atom通证
-// 参数设定样例: <validatorAddress>=cosmosvaloper18thamkhnj9wz8pa4nhnp9rldprgant57pk2m8s, <amountToBound>=10000000000uatom, <gasPrice>=1000uatom
+// 向指定验证人绑定一定数量的BKS通证
+// 参数设定样例: <validatorAddress>=barkisvaloper18thamkhnj9wz8pa4nhnp9rldprgant57pk2m8s, <amountToBound>=10000000000ubarkis, <gasPrice>=1000ubarkis
 
 barkiscli tx staking delegate <validatorAddress> <amountToBond> --from <delegatorKeyName> --gas auto --gas-prices <gasPrice>
 
 
 // 提取所有的奖励
-// 参数设定样例: <gasPrice>=1000uatom
+// 参数设定样例: <gasPrice>=1000ubarkis
 
 barkiscli tx distribution withdraw-all-rewards --from <delegatorKeyName> --gas auto --gas-prices <gasPrice>
 
 
-// 向指定验证人申请解绑一定数量的Atom通证
+// 向指定验证人申请解绑一定数量的BKS通证
 // 解绑的通证需要3周后才能完全解绑并可以交易，
-// 参数设定样例: <validatorAddress>=cosmosvaloper18thamkhnj9wz8pa4nhnp9rldprgant57pk2m8s, <amountToUnbound>=10000000000uatom, <gasPrice>=1000uatom
+// 参数设定样例: <validatorAddress>=barkisvaloper18thamkhnj9wz8pa4nhnp9rldprgant57pk2m8s, <amountToUnbound>=10000000000ubarkis, <gasPrice>=1000ubarkis
 
 barkiscli tx staking unbond <validatorAddress> <amountToUnbond> --from <delegatorKeyName> --gas auto --gas-prices <gasPrice>
 ```
@@ -424,7 +424,7 @@ barkiscli tx staking unbond <validatorAddress> <amountToUnbond> --from <delegato
 确认您的交易已经发出，可以用以下查询：
 
 ```bash
-// 您的账户余额在您抵押Atom通证或者取回奖励后会发生变化
+// 您的账户余额在您抵押BKS通证或者取回奖励后会发生变化
 barkiscli query account
 
 // 您在抵押后应该能查到委托交易
@@ -442,13 +442,13 @@ barkiscli query tx <txHash>
 
 #### 链上治理入门
 
-Cosmos Hub有一个内建的治理系统，该系统允许抵押通证的持有人参与提案投票。系统现在支持3种提案类型：
+Barkis有一个内建的治理系统，该系统允许抵押通证的持有人参与提案投票。系统现在支持3种提案类型：
 
 - `Text Proposals`: 这是最基本的一种提案类型，通常用于获得大家对某个网络治理意见的观点。 
 - `Parameter Proposals`: 这种提案通常用于改变网络参数的设定。 
 - `Software Upgrade Proposal`: 这个提案用于升级Hub的软件。 
 
-任何Atom通证的持有人都能够提交一个提案。为了让一个提案获准公开投票，提议人必须要抵押一定量的通证 `deposit`，且抵押值必须大于 `minDeposit` 参数设定值. 提案的抵押不需要提案人一次全部交付。如果早期提案人交付的 `deposit` 不足，那么提案进入 `deposit_period` 状态。 此后，任何通证持有人可以通过 `depositTx` 交易增加对提案的抵押。 
+任何BKS通证的持有人都能够提交一个提案。为了让一个提案获准公开投票，提议人必须要抵押一定量的通证 `deposit`，且抵押值必须大于 `minDeposit` 参数设定值. 提案的抵押不需要提案人一次全部交付。如果早期提案人交付的 `deposit` 不足，那么提案进入 `deposit_period` 状态。 此后，任何通证持有人可以通过 `depositTx` 交易增加对提案的抵押。 
 
 当`deposit` 达到 `minDeposit`，提案进入2周的 `voting_period` 。 任何**抵押了通证**的持有人都可以参与对这个提案的投票。投票的选项有`Yes`, `No`, `NoWithVeto` 和 `Abstain`。投票的权重取决于投票人所抵押的通证数量。如果通证持有人不投票，那么委托人将继承其委托的验证人的投票选项。当然，委托人也可以自己投出与所委托验证人不同的票。  
 
@@ -458,7 +458,7 @@ Cosmos Hub有一个内建的治理系统，该系统允许抵押通证的持有�
 #### 实践练习
 
 ::: 提示
-**在您能够抵押通证或者提取奖励以前，您需要了解[通证抵押](#抵押atom通证--提取奖励)**
+**在您能够抵押通证或者提取奖励以前，您需要了解[通证抵押](#抵押BKS通证--提取奖励)**
 :::
 
 ::: 警告
@@ -469,14 +469,14 @@ Cosmos Hub有一个内建的治理系统，该系统允许抵押通证的持有�
 ```bash
 // 提交一个提案
 // <type>=text/parameter_change/software_upgrade
-// ex value for flag: <gasPrice>=100uatom
+// ex value for flag: <gasPrice>=100ubarkis
 
-barkiscli tx gov submit-proposal --title "Test Proposal" --description "My awesome proposal" --type <type> --deposit=10000000uatom --gas auto --gas-prices <gasPrice> --from <delegatorKeyName>
+barkiscli tx gov submit-proposal --title "Test Proposal" --description "My awesome proposal" --type <type> --deposit=10000000ubarkis --gas auto --gas-prices <gasPrice> --from <delegatorKeyName>
 
 // 增加对提案的抵押
 // Retrieve proposalID from $barkiscli query gov proposals --status deposit_period
 // 通过 $barkiscli query gov proposals --status deposit_period 命令获得 `proposalID` 
-// 参数设定样例: <deposit>=1000000uatom
+// 参数设定样例: <deposit>=1000000ubarkis
 
 barkiscli tx gov deposit <proposalID> <deposit> --gas auto --gas-prices <gasPrice> --from <delegatorKeyName>
 
@@ -494,8 +494,8 @@ barkiscli tx gov vote <proposalID> <option> --gas auto --gas-prices <gasPrice> -
 如果你没有数字钱包设备，而且希望和一台存有私钥的没有联网的电脑进行交互，你可以使用如下过程。首先，在**联网的电脑上**生成一个没有签名的交易，然后通过下列命令操作（下面以抵押交易为例）：
 
 ```bash
-// 抵押Atom通证
-// 参数设定样例: <amountToBound>=10000000000uatom, <bech32AddressOfValidator>=cosmosvaloper18thamkhnj9wz8pa4nhnp9rldprgant57pk2m8s, <gasPrice>=1000uatom
+// 抵押BKS通证
+// 参数设定样例: <amountToBound>=10000000000ubarkis, <bech32AddressOfValidator>=barkisvaloper18thamkhnj9wz8pa4nhnp9rldprgant57pk2m8s, <gasPrice>=1000ubarkis
 
 barkiscli tx staking delegate <validatorAddress> <amountToBond> --from <delegatorKeyName> --gas auto --gas-prices <gasPrice> --generate-only > unsignedTX.json
 ```
