@@ -1,7 +1,7 @@
 # 在主网上运行一个验证人
 
 ::: 提示
-加入主网所需的信息(`genesis.json`和种子节点)在[`lauch` repo](https://github.com/cosmos/launch/tree/master/latest)中可以找到。
+加入主网所需的信息(`genesis.json`和种子节点)在[`lauch` repo](https://github.com/barkis/launch/tree/master/latest)中可以找到。
 :::
 
 在启动你验证人节点前，确定你已经完成了[启动全节点](../join-mainnet.md)教程。
@@ -11,14 +11,14 @@
 [验证人](overview.md)负责通过投票来向区块链提交新区块。如果验证人不可访问或者对多个相同高度的区块签名，将会遭受到削减处罚。如果变得不可用或者在同一高度上签名，则会被削减。请阅读有关Sentry节点架构的信息，以保护您的节点免受DDOS攻击并确保高可用性。请阅读[哨兵节点网络架构]()来保护你的节点免于DDOS攻击并保证高的可访问性。
 
 ::: 警告
-如果你想要成为Cosmos Hub主网的验证人，你应该[安全研究](security.md)。
+如果你想要成为BarkisNet主网的验证人，你应该[安全研究](security.md)。
 :::
 
 如果你已经[启动了一个全节点](../join-mainnet.md)，可以跳过下一节的内容。
 
 ## 创建你的验证人
 
-你的`cosmosvalconspub`可以用于通过抵押token来创建一个新的验证人。你可以通过运行下面的命令来查看你的验证人公钥：
+你的`barkisvalconspub`可以用于通过抵押token来创建一个新的验证人。你可以通过运行下面的命令来查看你的验证人公钥：
 
 ```bash
 barkisd tendermint show-validator
@@ -58,12 +58,12 @@ barkiscli tx staking create-validator \
 ## 以初始验证人的形式加入到genesis文件
 
 ::: 警告
-这一节内容只针对想要在Cosmos Hub主网启动前就作为初始验证人身份的节点。如果主网已经启动，请跳过这一节。
+这一节内容只针对想要在BarkisNet主网启动前就作为初始验证人身份的节点。如果主网已经启动，请跳过这一节。
 :::
 
 如果你想作为初始验证人被写入到genesis.json文件，你需要证明你在创世状态中有一些权益代币，创建一个（或多个）交易以将股权与你的验证人地址联系起来，并将此交易包含在genesis文件中。
 
-你的`cosmosvalconspub`可以用于通过抵押token来创建一个新的验证人。运行如下命令来获取你的验证人节点公钥：
+你的`barkisvalconspub`可以用于通过抵押token来创建一个新的验证人。运行如下命令来获取你的验证人节点公钥：
 
 ```bash
 barkisd tendermint show-validator
@@ -93,7 +93,7 @@ barkisd gentx \
 在指定佣金相关的参数时，`commission-max-change-rate`用于标识`commission-rate`每日变动的最大百分点数。比如从1%到2%按比率是增长了100%，但只增加了1个百分点。
 :::
 
-你可以提交你的`gentx`到[launch repository](https://github.com/cosmos/launch). 这些`gentx`将会组成最终的genesis.json.
+你可以提交你的`gentx`到[launch repository](https://github.com/barkis/launch). 这些`gentx`将会组成最终的genesis.json.
 
 ## 编辑验证人的描述信息
 
@@ -106,7 +106,7 @@ barkisd gentx \
 ```bash
 barkiscli tx staking edit-validator
   --moniker="choose a moniker" \
-  --website="https://cosmos.network" \
+  --website="https://barkis.network" \
   --identity=6A0D65E29A4CBC8E \
   --details="To infinity and beyond!" \
   --chain-id=<chain_id> \
@@ -127,7 +127,7 @@ barkiscli tx staking edit-validator
 通过该命令查看验证人的描述信息:
 
 ```bash
-barkiscli query staking validator <account_cosmos>
+barkiscli query staking validator <account_barkis>
 ```
 
 ## 跟踪验证人的签名信息
@@ -157,7 +157,7 @@ barkiscli tx slashing unjail \
 barkiscli query tendermint-validator-set | grep "$(barkisd tendermint show-validator)"
 ```
 
-你必须要在[区块浏览器](https://explorecosmos.network/validators)中看见你的验证人节点信息。你可以在`~/.barkisd/config/priv_validator.json`文件中找到`bech32`编码格式的`address`。
+你必须要在[区块浏览器](http://explorer.bksnet.io/validators)中看见你的验证人节点信息。你可以在`~/.barkisd/config/priv_validator.json`文件中找到`bech32`编码格式的`address`。
 
 ::: warning 注意
 为了能进入验证人集合，你的权重必须超过第100名的验证人。
@@ -193,7 +193,7 @@ Linux可以打开的默认文件数（每个进程）是1024。已知`barkisd`�
 ```toml
 # /etc/systemd/system/barkisd.service
 [Unit]
-Description=Cosmos Barkis Node
+Description= Barkis Node
 After=network.target
 
 [Service]
