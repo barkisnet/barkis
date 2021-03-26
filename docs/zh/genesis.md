@@ -1,6 +1,6 @@
 # 创世（Genesis）文件
 
-本文档解释了 Cosmos Hub 主网的 genesis 文件是如何构建的。 它还解释了如何为自己的`barkis` testnet 创建一个 genesis 文件。
+本文档解释了 BarkisNet 主网的 genesis 文件是如何构建的。 它还解释了如何为自己的`barkis` testnet 创建一个 genesis 文件。
 
 请注意，您可以通过运行以下命令为您自己的 testnet 生成默认的 genesis 文件：
 
@@ -27,7 +27,7 @@ genesis 文件中定义的状态包含所有必要的信息，如初始令牌分
 `chain_id`是您的链的唯一标识符。 它有助于区分使用相同版本的软件的不同链。
 
 ```json
-"chain_id": "cosmoshub-1",
+"chain_id": "barkisnet-1",
 ```
 
 ## 共识参数
@@ -68,7 +68,7 @@ genesis 文件中定义的状态包含所有必要的信息，如初始令牌分
 在本节中，定义了初始分配的 Token。 可以通过直接编辑 genesis 文件手动添加帐户，但也可以使用以下命令：
 
 ```bash
-// Example: barkisd add-genesis-account cosmos1qs8tnw2t8l6amtzvdemnnsq9dzk0ag0z37gh3h 10000000uatom
+// Example: barkisd add-genesis-account barkis1qs8tnw2t8l6amtzvdemnnsq9dzk0ag0z37gh3h 10000000ubarkis
 
 barkisd add-genesis-account <account-address> <amount><denom>
 ```
@@ -78,10 +78,10 @@ barkisd add-genesis-account <account-address> <amount><denom>
 ```json
 "accounts": [
       {
-        "address": "cosmos1qs8tnw2t8l6amtzvdemnnsq9dzk0ag0z37gh3h",
+        "address": "barkis1qs8tnw2t8l6amtzvdemnnsq9dzk0ag0z37gh3h",
         "coins": [
           {
-            "denom": "uatom",
+            "denom": "ubarkis",
             "amount": "10000000"
           }
         ],
@@ -89,7 +89,7 @@ barkisd add-genesis-account <account-address> <amount><denom>
         "account_number": "0",
         "original_vesting": [
           {
-            "denom": "uatom",
+            "denom": "ubarkis",
             "amount": "26306000000"
           }
         ],
@@ -135,7 +135,7 @@ barkisd add-genesis-account <account-address> <amount><denom>
         "unbonding_time": "1814400000000000",
         "max_validators": 100,
         "max_entries": 7,
-        "bond_denom": "uatom"
+        "bond_denom": "ubarkis"
       },
       "last_total_power": "0",
       "last_validator_powers": null,
@@ -150,7 +150,7 @@ barkisd add-genesis-account <account-address> <amount><denom>
 让我们来分别解读这些参数：
 
 - `pool`
-  - `not_bonded_tokens`: 在创世文件中没有绑定（即委托）的 token 数量。 通常情况下，它与权益 token （本例中是 `uatom`）的总供应量相等。
+  - `not_bonded_tokens`: 在创世文件中没有绑定（即委托）的 token 数量。 通常情况下，它与权益 token （本例中是 `ubarkis`）的总供应量相等。
   - `bonded_tokens`: 在创世文件中绑定的 token 数量，通常是0。
 - `params`
   - `unbonding_time`: 以**纳秒**为单位的解绑延迟时间。
@@ -176,7 +176,7 @@ barkisd add-genesis-account <account-address> <amount><denom>
         "annual_provisions": "0.000000000000000000"
       },
       "params": {
-        "mint_denom": "uatom",
+        "mint_denom": "ubarkis",
         "inflation_rate_change": "0.130000000000000000",
         "inflation_max": "0.200000000000000000",
         "inflation_min": "0.070000000000000000",
@@ -192,7 +192,7 @@ barkisd add-genesis-account <account-address> <amount><denom>
   - `inflation`：总 token 供应量的年化通胀百分比，每周更新。值 “0.070000000000000000” 意味着目标是每年通货膨胀率为“7％”，每周重新计算一次。
   - `annual_provisions`: 每块重新计算。初始值是 `0.000000000000000000`。
 - `params`
-  - `mint_denom`: 增发权益代币面值，此处是 `uatom`。
+  - `mint_denom`: 增发权益代币面值，此处是 `ubarkis`。
   - `inflation_rate_change`: 通胀每年最大变化。 
   - `inflation_max`: 最高通胀水平。
   - `inflation_min`: 最低通胀水平。
@@ -253,7 +253,7 @@ barkisd add-genesis-account <account-address> <amount><denom>
       "deposit_params": {
         "min_deposit": [
           {
-            "denom": "uatom",
+            "denom": "ubarkis",
             "amount": "512000000"
           }
         ],
