@@ -1,6 +1,6 @@
 # Ledger Nano Support
 
-Using a hardware wallet to store your keys greatly improves the security of your crypto assets. The Ledger device acts as an enclave of the seed and private keys, and the process of signing transaction takes place within it. No private information ever leaves the Ledger device. The following is a short tutorial on using the Barkis Ledger app with the Barkis CLI or the [Lunie.io](https://lunie.io/#/) web wallet.
+Using a hardware wallet to store your keys greatly improves the security of your crypto assets. The Ledger device acts as an enclave of the seed and private keys, and the process of signing transaction takes place within it. No private information ever leaves the Ledger device. The following is a short tutorial on using the Barkis Ledger app with the Barkis CLI.
 
 At the core of a Ledger device there is a mnemonic seed phrase that is used to generate private keys. This phrase is generated when you initialize you Ledger. The mnemonic is compatible with Barkis and can be used to seed new accounts.
 
@@ -10,7 +10,7 @@ Do not lose or share your 24 words with anyone. To prevent theft or loss of fund
 
 ## Barkis CLI + Ledger Nano
 
-The tool used to generate addresses and transactions on the BarkisNet is `barkiscli`. Here is how to get started. If using a CLI tool is unfamiliar to you, scroll down and follow instructions for using the Lunie.io web wallet instead.
+The tool used to generate addresses and transactions on the BarkisNet is `barkiscli`. Here is how to get started. 
 
 ### Before you Begin
 
