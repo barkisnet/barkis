@@ -2,7 +2,7 @@
 
 ## Barkis CLI
 
-`barkiscli` is the tool that enables you to interact with the node that runs on the Cosmos Hub network, whether you run it yourself or not. Let us set it up properly. In order to install it, follow the [installation procedure](./installation.md).
+`barkiscli` is the tool that enables you to interact with the node that runs on the BarkisNet, whether you run it yourself or not. Let us set it up properly. In order to install it, follow the [installation procedure](./installation.md).
 
 ### Setting up barkiscli 
 
@@ -228,7 +228,7 @@ You can simulate a transaction without actually broadcasting it by appending the
 `--dry-run` flag to the command line:
 
 ```bash
-barkiscli tx send <sender_key_name_or_address> <destination_cosmosaccaddr> 10faucetToken \
+barkiscli tx send <sender_key_name_or_address> <destination_barkisaccaddr> 10faucetToken \
   --chain-id=<chain_id> \
   --dry-run
 ```
