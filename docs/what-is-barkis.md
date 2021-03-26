@@ -17,6 +17,4 @@
 - `x/ibc`: Inter-blockchain transfers.
 - `x/params`: Handles app-level parameters.
 
->About the BarkisNet: The BarkisNet is the first Hub to be launched in the BarkisNet. The role of a Hub is to facilitate transfers between blockchains. If a blockchain connects to a Hub via IBC, it automatically gains access to all the other blockchains that are connected to it. The BarkisNet is a public Proof-of-Stake chain. Its staking token is called the Atom.
-
 Next, learn how to [install Barkis](./installation.md).
