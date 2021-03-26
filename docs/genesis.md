@@ -1,6 +1,6 @@
 # Genesis File
 
-This document explains how the genesis file of the Cosmos Hub mainnet is structured. It also explains how you can build a genesis file for your own `barkis` testnet.
+This document explains how the genesis file of the BarkisNet mainnet is structured. It also explains how you can build a genesis file for your own `barkis` testnet.
 
 Note that you can generate a default genesis file for your own testnet by running the following command:
 
@@ -27,7 +27,7 @@ The `genesis_time` is defined at the top of the genesis file. It is a `UTC` time
 The `chain_id` is a unique identifier for your chain. It helps differentiate between different chains using the same version of the software.
 
 ```json
-"chain_id": "cosmoshub-2",
+"chain_id": "barkisnet-2",
 ```
 
 ## Consensus Parameters
@@ -68,7 +68,7 @@ The application state defines the initial state of the state-machine.
 In this section, initial allocation of tokens is defined. It is possible to add accounts manually by directly editing the genesis file, but it is also possible to use the following command:
 
 ```bash
-// Example: barkisd add-genesis-account cosmos1qs8tnw2t8l6amtzvdemnnsq9dzk0ag0z37gh3h 10000000uatom
+// Example: barkisd add-genesis-account barkis1qs8tnw2t8l6amtzvdemnnsq9dzk0ag0z37gh3h 10000000ubarkis
 
 barkisd add-genesis-account <account-address> <amount><denom>
 ```
@@ -78,10 +78,10 @@ This command creates an item in the `accounts` list, under the `app_state` secti
 ```json
 "accounts": [
       {
-        "address": "cosmos1qs8tnw2t8l6amtzvdemnnsq9dzk0ag0z37gh3h",
+        "address": "barkis1qs8tnw2t8l6amtzvdemnnsq9dzk0ag0z37gh3h",
         "coins": [
           {
-            "denom": "uatom",
+            "denom": "ubarkis",
             "amount": "10000000"
           }
         ],
@@ -89,7 +89,7 @@ This command creates an item in the `accounts` list, under the `app_state` secti
         "account_number": "0",
         "original_vesting": [
           {
-            "denom": "uatom",
+            "denom": "ubarkis",
             "amount": "26306000000"
           }
         ],
@@ -135,7 +135,7 @@ The `staking` module handles the bulk of the Proof-of-Stake logic of the state-m
         "unbonding_time": "1814400000000000",
         "max_validators": 100,
         "max_entries": 7,
-        "bond_denom": "uatom"
+        "bond_denom": "ubarkis"
       },
       "last_total_power": "0",
       "last_validator_powers": null,
@@ -150,7 +150,7 @@ The `staking` module handles the bulk of the Proof-of-Stake logic of the state-m
 Let us break down the parameters:
 
 - `pool`
-    + `not_bonded_tokens`: Defines the amount of tokens not bonded (i.e. delegated) in genesis. Generally, it equals the total supply of the staking token (`uatom` in this example).
+    + `not_bonded_tokens`: Defines the amount of tokens not bonded (i.e. delegated) in genesis. Generally, it equals the total supply of the staking token (`ubarkis` in this example).
     + `bonded_tokens`: Amount of bonded tokens in genesis. Generally `0`.
 - `params`
     + `unbonding_time`: Time in **nanosecond** it takes for tokens to complete unbonding. 
@@ -176,7 +176,7 @@ The `mint` module governs the logic of inflating the supply of token. The `mint`
         "annual_provisions": "0.000000000000000000"
       },
       "params": {
-        "mint_denom": "uatom",
+        "mint_denom": "ubarkis",
         "inflation_rate_change": "0.130000000000000000",
         "inflation_max": "0.200000000000000000",
         "inflation_min": "0.070000000000000000",
@@ -253,7 +253,7 @@ The `gov` module handles all governance-related transactions. The initial state 
       "deposit_params": {
         "min_deposit": [
           {
-            "denom": "uatom",
+            "denom": "ubarkis",
             "amount": "512000000"
           }
         ],
