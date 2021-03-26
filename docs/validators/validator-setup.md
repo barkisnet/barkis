@@ -1,7 +1,7 @@
-# Run a Validator on the Cosmos Hub Mainnet
+# Run a Validator on the BarkisNet Mainnet
 
 ::: tip
-Information on how to join the mainnet (`genesis.json` file and seeds) is held [in our `launch` repo](https://github.com/cosmos/launch/tree/master/latest). 
+Information on how to join the mainnet (`genesis.json` file and seeds) is held [in our `launch` repo](https://github.com/barkis/launch/tree/master/latest). 
 :::
 
 Before setting up your validator node, make sure you've already gone through the [Full Node Setup](../join-mainnet.md) guide.
@@ -20,7 +20,7 @@ You may want to skip the next section if you have already [set up a full-node](.
 
 ## Create Your Validator
 
-Your `cosmosvalconspub` can be used to create a new validator by staking tokens. You can find your validator pubkey by running:
+Your `barkisvalconspub` can be used to create a new validator by staking tokens. You can find your validator pubkey by running:
 
 ```bash
 barkisd tendermint show-validator
@@ -60,13 +60,13 @@ You can confirm that you are in the validator set by using a third party explore
 ## Participate in Genesis as a Validator
 
 ::: warning
-The genesis ceremony for the Cosmos Hub mainnet is closed. Please skip to the next section.
+The genesis ceremony for the BarkisNet mainnet is closed. Please skip to the next section.
 :::
 
 If you want to participate in genesis as a validator, you need to justify that
 you have some stake at genesis, create one (or multiple) transactions to bond this stake to your validator address, and include this transaction in the genesis file.
 
-Your `cosmosvalconspub` can be used to create a new validator by staking tokens. You can find your validator pubkey by running:
+Your `barkisvalconspub` can be used to create a new validator by staking tokens. You can find your validator pubkey by running:
 
 ```bash
 barkisd tendermint show-validator
@@ -96,7 +96,7 @@ barkisd gentx \
 When specifying commission parameters, the `commission-max-change-rate` is used to measure % _point_ change over the `commission-rate`. E.g. 1% to 2% is a 100% rate increase, but only 1 percentage point.
 :::
 
-You can then submit your `gentx` on the [launch repository](https://github.com/cosmos/launch). These `gentx` will be used to form the final genesis file. 
+You can then submit your `gentx` on the [launch repository](https://github.com/barkis/launch). These `gentx` will be used to form the final genesis file. 
 
 ## Edit Validator Description
 
@@ -109,7 +109,7 @@ The `--identity` can be used as to verify identity with systems like Keybase or 
 ```bash
 barkiscli tx staking edit-validator
   --moniker="choose a moniker" \
-  --website="https://cosmos.network" \
+  --website="https://barkis.network" \
   --identity=6A0D65E29A4CBC8E \
   --details="To infinity and beyond!" \
   --chain-id=<chain_id> \
@@ -131,7 +131,7 @@ __Note__: The `commission-rate` value must adhere to the following invariants:
 View the validator's information with this command:
 
 ```bash
-barkiscli query staking validator <account_cosmos>
+barkiscli query staking validator <account_barkis>
 ```
 
 ## Track Validator Signing Information
@@ -161,7 +161,7 @@ Your validator is active if the following command returns anything:
 barkiscli query tendermint-validator-set | grep "$(barkisd tendermint show-validator)"
 ```
 
-You should now see your validator in one of the Cosmos Hub explorers. You are looking for the `bech32` encoded `address` in the `~/.barkisd/config/priv_validator.json` file.
+You should now see your validator in one of the BarkisNet explorers. You are looking for the `bech32` encoded `address` in the `~/.barkisd/config/priv_validator.json` file.
 
 ::: warning Note
 To be in the validator set, you need to have more total voting power than the 100th validator.
@@ -205,7 +205,7 @@ The default number of files Linux can open (per-process) is `1024`. `barkisd` is
 ```toml
 # /etc/systemd/system/barkisd.service
 [Unit]
-Description=Cosmos Barkis Node
+Description=Barkis Node
 After=network.target
 
 [Service]
