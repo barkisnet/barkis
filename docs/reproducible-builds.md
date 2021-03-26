@@ -22,7 +22,7 @@ export PATH=/usr/local/opt/coreutils/libexec/gnubin/:$PATH
 
 ## Build and sign
 
-Clone cosmos-sdk:
+Clone barkis:
 
 ```
 git clone https://github.com/barkisnet/barkis.git
