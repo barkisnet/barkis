@@ -1,11 +1,11 @@
 # What is Barkis?
 
-`barkis` is the name of the Cosmos SDK application for the Cosmos Hub. It comes with 2 main entrypoints:
+`barkis` is the name of the barkis application for the BarkisNet. It comes with 2 main entrypoints:
 
 - `barkisd`: The Barkis Daemon, runs a full-node of the `barkis` application.
 - `barkiscli`: The Barkis command-line interface, which enables interaction with a Barkis full-node.
 
-`barkis` is built on the Cosmos SDK using the following modules:
+`barkis` is built on the barkis using the following modules:
 
 - `x/auth`: Accounts and signatures.
 - `x/bank`: Token transfers.
@@ -17,6 +17,6 @@
 - `x/ibc`: Inter-blockchain transfers.
 - `x/params`: Handles app-level parameters.
 
->About the Cosmos Hub: The Cosmos Hub is the first Hub to be launched in the Cosmos Network. The role of a Hub is to facilitate transfers between blockchains. If a blockchain connects to a Hub via IBC, it automatically gains access to all the other blockchains that are connected to it. The Cosmos Hub is a public Proof-of-Stake chain. Its staking token is called the Atom.
+>About the BarkisNet: The BarkisNet is the first Hub to be launched in the BarkisNet. The role of a Hub is to facilitate transfers between blockchains. If a blockchain connects to a Hub via IBC, it automatically gains access to all the other blockchains that are connected to it. The BarkisNet is a public Proof-of-Stake chain. Its staking token is called the Atom.
 
 Next, learn how to [install Barkis](./installation.md).
