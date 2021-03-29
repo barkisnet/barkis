@@ -175,9 +175,7 @@ func TestCoinSendAccAuto(t *testing.T) {
 	initialBalance := acc.GetCoins()
 
 	// send a transfer tx without specifying account number and sequence
-	res, body, _ := doTransferWithGasAccAuto(
-		t, port, seed, name1, memo, pw, addr, "200000", 1.0, false, true, fees,
-	)
+	res, body, _ := doTransferWithGasAccAuto(t, port, seed, name1, memo, pw, addr, "200000", 1.0, false, true, fees)
 	require.Equal(t, http.StatusOK, res.StatusCode, body)
 
 	// query sender
