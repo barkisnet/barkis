@@ -223,9 +223,7 @@ func TestCoinSendGenerateSignAndBroadcast(t *testing.T) {
 	acc := getAccount(t, port, addr)
 
 	// simulate tx
-	res, body, _ := doTransferWithGas(
-		t, port, seed, name1, memo, "", addr, client.GasFlagAuto, 1.0, true, false, fees,
-	)
+	res, body, _ := doTransferWithGas(t, port, seed, name1, memo, "", addr, client.GasFlagAuto, 1.0, true, false, fees)
 	require.Equal(t, http.StatusOK, res.StatusCode, body)
 
 	var gasEstResp rest.GasEstimateResponse
