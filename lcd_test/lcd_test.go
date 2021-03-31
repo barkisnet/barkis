@@ -136,9 +136,7 @@ func TestCoinSend(t *testing.T) {
 	require.Equal(t, http.StatusOK, res.StatusCode, body)
 
 	// run simulation and test success with estimated gas
-	res, body, _ = doTransferWithGas(
-		t, port, seed, name1, memo, pw, addr, "10000", 1.0, true, false, fees,
-	)
+	res, body, _ = doTransferWithGas(t, port, seed, name1, memo, pw, addr, "10000", 1.0, true, false, fees)
 	require.Equal(t, http.StatusOK, res.StatusCode, body)
 
 	var gasEstResp rest.GasEstimateResponse
@@ -409,7 +407,7 @@ func TestBonding(t *testing.T) {
 
 	require.Equal(t, uint32(0), resultTx.Code)
 
-	// query tx
+	// query delegation
 	txResult := getTransactions(t, port,
 		fmt.Sprintf("message.action=delegate&message.sender=%s", addr),
 		fmt.Sprintf("delegate.validator=%s", operAddrs[0]),
@@ -462,7 +460,7 @@ func TestBonding(t *testing.T) {
 	)
 	expectedBalance = coins[0]
 
-	// query tx
+	// query unbind
 	txResult = getTransactions(t, port,
 		fmt.Sprintf("message.action=begin_unbonding&message.sender=%s", addr),
 		fmt.Sprintf("unbond.validator=%s", operAddrs[0]),
