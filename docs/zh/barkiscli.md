@@ -2,7 +2,7 @@
 
 ## Barkis CLI
 
-`barkiscli`是一个工具，使您能够与 Cosmos Hub 网络中的节点进行交互，无论您是否自己运行它。 让我们恰当的设置它。 要安装它，请按照[安装步骤](./ installation.md)进行安装。
+`barkiscli`是一个工具，使您能够与 Barkisnet 网络中的节点进行交互，无论您是否自己运行它。 让我们恰当的设置它。 要安装它，请按照[安装步骤](./ installation.md)进行安装。
 
 ### 配置 barkiscli
 
@@ -35,7 +35,7 @@ barkiscli config trust-node true
 最后，设置我们想要与之交互链的`chain-id`：
 
 ```bash
-barkiscli config chain-id cosmoshub-2
+barkiscli config chain-id Barkisnet Mainnet
 ```
 
 ### Key
@@ -44,21 +44,21 @@ barkiscli config chain-id cosmoshub-2
 
 有如下类型的key：
 
-+ `cosmos` 
++ `barkis` 
 	+ 从通过`barkiscli keys add`生成的账户私钥中产生
 	+ 用于接收资金
-	+ 例如 `cosmos15h6vd5f0wqps26zjlwrc6chah08ryu4hzzdwhc`
-+ `cosmosvaloper`
+	+ 例如 `barkis15h6vd5f0wqps26zjlwrc6chah08ryu4hzzdwhc`
++ `barkisvaloper`
 	+ 用于关联一个验证人和其操作者
 	+ 用于发起staking操作命令
-	+ 例如 `cosmosvaloper1carzvgq3e6y3z5kz5y6gxp3wpy3qdrv928vyah`
-+ `cosmospub`
+	+ 例如 `barkisvaloper1carzvgq3e6y3z5kz5y6gxp3wpy3qdrv928vyah`
++ `barkispub`
 	+ 从通过`barkiscli keys add`生成的账户私钥中产生
-	+ 例如 `cosmospub1zcjduc3q7fu03jnlu2xpl75s2nkt7krm6grh4cc5aqth73v0zwmea25wj2hsqhlqzm`
-+ `cosmosvalconspub`
+	+ 例如 `barkispub1zcjduc3q7fu03jnlu2xpl75s2nkt7krm6grh4cc5aqth73v0zwmea25wj2hsqhlqzm`
++ `barkisvalconspub`
 	+ 在使用`barkisd init`创建节点时生成
 	+ 使用`barkisd tendermint show-validator`获得该值
-	+ 例如 `cosmosvalconspub1zcjduepq0ms2738680y72v44tfyqm3c9ppduku8fs6sr73fx7m666sjztznqzp2emf`
+	+ 例如 `barkisvalconspub1zcjduepq0ms2738680y72v44tfyqm3c9ppduku8fs6sr73fx7m666sjztznqzp2emf`
 
 #### 生成 Key
 
@@ -147,32 +147,28 @@ barkiscli keys show --multisig-threshold K name1 name2 name3 [...]
 比如：
 
 ```bash
-barkiscli tx send ... --fees=50000uatom
+barkiscli tx send ... --fees=50000ubarkis
 ```
 
 或：
 
 ```bash
-barkiscli tx send ... --gas-prices=0.025uatom
+barkiscli tx send ... --gas-prices=0.025ubarkis
 ```
 
 
 ### 账户
-
-#### 获取 Token
-
-获取token的最佳方式是通过[Cosmos测试网水龙头](https://faucetcosmos.network)。如果水龙头对你不生效，尝试在[#cosmos-validator](https://riot.im/app/#/room/#cosmos-validators:matrix.org)上向人索要。水龙头需要你打算用于抵押股权的`cosmos`开头的地址。
 
 #### 查询账户余额
 
 在你的地址收到token后，你可以通过以下命令查看账户的余额：
 
 ```bash
-barkiscli query account <account_cosmos>
+barkiscli query account <account_barkis>
 ```
 
 ::: warning Note
-当你查询余额为零的帐户时，你将收到以下错误：`No account with address <account_cosmos> was found in the state.` 如果你在节点与区块链完全同步之前就查询，也会发生这种情况。这些都很正常。
+当你查询余额为零的帐户时，你将收到以下错误：`No account with address <account_barkis> was found in the state.` 如果你在节点与区块链完全同步之前就查询，也会发生这种情况。这些都很正常。
 :::
 
 #### 发送 Token
@@ -180,7 +176,7 @@ barkiscli query account <account_cosmos>
 你可以通过如下命令从一个账户发送资金到另一个账户：
 
 ```bash
-barkiscli tx send <destination_cosmos> 10faucetToken \
+barkiscli tx send <destination_barkis> 10ubarkis \
   --chain-id=<chain_id> \
   --from=<key_name> 
 ```
@@ -196,20 +192,20 @@ barkiscli tx send <destination_cosmos> 10faucetToken \
 现在，查看源账户和目标账户的更新后的余额：
 
 ```bash
-barkiscli query account <account_cosmos>
-barkiscli query account <destination_cosmos>
+barkiscli query account <account_barkis>
+barkiscli query account <destination_barkis>
 ```
 
 你还可以使用`--block`标识查询在特定高度区块下你的余额：
 
 ```bash
-barkiscli query account <account_cosmos> --block=<block_height>
+barkiscli query account <account_barkis> --block=<block_height>
 ```
 
 你可以通过在命令行中附加`--dry-run`标识来模拟交易而不实际广播它：
 
 ```bash
-barkiscli tx send <destination_cosmosaccaddr> 10faucetToken \
+barkiscli tx send <destination_barkisaccaddr> 10ubarkis \
   --chain-id=<chain_id> \
   --from=<key_name> \
   --dry-run
@@ -218,7 +214,7 @@ barkiscli tx send <destination_cosmosaccaddr> 10faucetToken \
 此外，你可以通过将`--generate-only`附加到命令行参数列表来构建交易并将其JSON格式打印到STDOUT：
 
 ```bash
-barkiscli tx send <destination_cosmosaccaddr> 10faucetToken \
+barkiscli tx send <destination_barkisaccaddr> 10ubarkis \
   --chain-id=<chain_id> \
   --from=<key_name> \
   --generate-only > unsignedSendTx.json
@@ -277,15 +273,6 @@ barkiscli query txs --tags='<tag>:<value>' --page=1 --limit=20
 
 action标签始终等于相关message的`Type()`函数返回的消息类型。
 
-你可以在每个SDK的模块中找到目前的标签列表：
-- [Common tags](https://github.com/cosmos/cosmos-sdk/blob/d1e76221d8e28824bb4791cb4ad8662d2ae9051e/types/tags.go#L57-L63)
-- [Staking tags](https://github.com/cosmos/cosmos-sdk/blob/d1e76221d8e28824bb4791cb4ad8662d2ae9051e/x/staking/tags/tags.go#L8-L24)
-- [Governance tags](https://github.com/cosmos/cosmos-sdk/blob/d1e76221d8e28824bb4791cb4ad8662d2ae9051e/x/gov/tags/tags.go#L8-L22)
-- [Slashing tags](https://github.com/cosmos/cosmos-sdk/blob/d1e76221d8e28824bb4791cb4ad8662d2ae9051e/x/slashing/handler.go#L52)
-- [Distribution tags](https://github.com/cosmos/cosmos-sdk/blob/develop/x/distribution/tags/tags.go#L8-L17)
-- [Bank tags](https://github.com/cosmos/cosmos-sdk/blob/d1e76221d8e28824bb4791cb4ad8662d2ae9051e/x/bank/keeper.go#L193-L206)
-  :::
-
 #### 匹配一笔交易的hash
 
 你一可以通过指定hash值查询该笔交易：
@@ -329,7 +316,7 @@ barkiscli query slashing params
 
 #### 向一个验证人委托
 
-一旦主网上线，你可以把`atom`委托给一个验证人。这些委托人可以收到部分验证人的收益。阅读[Cosmos Token Model](https://github.com/cosmos/cosmos/raw/master/Cosmos_Token_Model.pdf)了解更多信息。
+一旦主网上线，你可以把`barkis`委托给一个验证人。这些委托人可以收到部分验证人的收益。
 
 #### 查询验证人
 
@@ -342,16 +329,16 @@ barkiscli query staking validators
 如果你想要获得单个验证人的信息，你可以使用下面的命令：
 
 ```bash
-barkiscli query staking validator <account_cosmosval>
+barkiscli query staking validator <account_barkisval>
 ```
 
 #### 绑定 Token
 
-在Cosmos Hub主网中，我们绑定`uatom`，`1atom = 1000000uatom`。你可以把token绑定在一个测试网验证人节点上（即委托）：
+在Barkis主网中，我们绑定`ubarkis`，`1barkis = 1000000ubarkis`。你可以把token绑定在一个测试网验证人节点上（即委托）：
 
 ```bash
 barkiscli tx staking delegate \
-  --amount=10000000uatom \
+  --amount=10000000ubarkis \
   --validator=<validator> \
   --from=<key_name> \
   --chain-id=<chain_id>
@@ -389,7 +376,7 @@ barkiscli query staking delegations <delegator_addr>
 ```bash
 barkiscli tx staking unbond \
   <validator_addr> \
-  10atom \
+  10barkis \
   --from=<key_name> \
   --chain-id=<chain_id>
 ```
@@ -407,13 +394,13 @@ barkiscli query staking unbonding-delegation <delegator_addr> <validator_addr>
 或者你可以查看当前你所有的unbonding-delegation:
 
 ```bash
-barkiscli query staking unbonding-delegations <account_cosmos>
+barkiscli query staking unbonding-delegations <account_barkis>
 ```
 
 此外，你可以从特定验证人获取所有unbonding-delegation：
 
 ```bash
-barkiscli query staking unbonding-delegations-from <account_cosmosval>
+barkiscli query staking unbonding-delegations-from <account_barkisval>
 ```
 
 要获取指定区块时的unbonding-delegation状态，请尝试添加`--height`标识。
@@ -426,7 +413,7 @@ barkiscli query staking unbonding-delegations-from <account_cosmosval>
 barkiscli tx staking redelegate \
   <src-validator-operator-addr> \
   <dst-validator-operator-addr> \
-  10atom \
+  10barkis \
   --from=<key_name> \
   --chain-id=<chain_id>
 ```
@@ -446,13 +433,13 @@ barkiscli query staking redelegation <delegator_addr> <src_val_addr> <dst_val_ad
 或者，如果你可以检查所有当前的unbonding-delegation：
 
 ```bash
-barkiscli query staking redelegations <account_cosmos>
+barkiscli query staking redelegations <account_barkis>
 ```
 
 此外，你可以查询某个特定验证人的所有转出的重新绑定：
 
 ```bash
-barkiscli query staking redelegations-from <account_cosmosval>
+barkiscli query staking redelegations-from <account_barkisval>
 ```
 
 添加`--height`标识来查询之前某个特定区块的redelegation。
@@ -491,15 +478,15 @@ barkiscli query staking pool
 你可以查询对某个验证人的所有绑定：
 
 ```bash
-barkiscli query delegations-to <account_cosmosval>
+barkiscli query delegations-to <account_barkisval>
 ```
 
 ### 治理
 
-治理是Cosmos Hub的用户可以就软件升级，主网的参数或自定义文本提案并达成共识的过程。这是通过对提案进行投票来完成的，提案将由主要网络上的`Atom`持有者提交。
+治理是Barkis的用户可以就软件升级，主网的参数或自定义文本提案并达成共识的过程。这是通过对提案进行投票来完成的，提案将由主要网络上的`barkis`持有者提交。
 
 关于投票过程的一些考虑因素：
-+ 投票由绑定`Atom`的持有者以1个绑定的`Atom`对应1票方式投出
++ 投票由绑定`barkis`的持有者以1个绑定的`barkis`对应1票方式投出
 + 委托人不投票的话会将票权继承给其验证人
 + **验证人必须对每个提案进行投票**。如果验证人未对提案进行投票，则会对其进行削减处罚。
 + 投票期结束时（主网上是2周）统计投票。每个地址可以多次投票以更新其`Option`值（每次支付交易费用），只有最后一次投票将被视为有效。
@@ -518,7 +505,7 @@ barkiscli tx gov submit-proposal \
   --title=<title> \
   --description=<description> \
   --type="Text" \
-  --deposit="1000000uatom" \
+  --deposit="1000000ubarkis" \
   --from=<name> \
   --chain-id=<chain_id>
 ```
@@ -604,7 +591,7 @@ barkiscli query gov proposer <proposal_id>
 为了将提案广播到网络，存入的金额必须高于`minDeposit`值（初始值：`10steak`）。如果你之前创建的提案不符合此要求，你仍可以增加存入的总金额以激活它。达到最低存入金后，提案进入投票期：
 
 ```bash
-barkiscli tx gov deposit <proposal_id> "10000000uatom" \
+barkiscli tx gov deposit <proposal_id> "10000000ubarkis" \
   --from=<name> \
   --chain-id=<chain_id>
 ```
@@ -627,7 +614,7 @@ barkiscli query gov deposit <proposal_id> <depositor_address>
 
 #### 投票给一个提案
 
-在提案的存入金达到`MinDeposit`后，投票期将开放。抵押了`Atom`的持有人可以投票：
+在提案的存入金达到`MinDeposit`后，投票期将开放。抵押了`barkis`的持有人可以投票：
 
 ```bash
 barkiscli tx gov vote <proposal_id> <Yes/No/NoWithVeto/Abstain> \
@@ -732,11 +719,11 @@ barkiscli query distribution rewards <delegator_address>
 ```bash
 barkiscli keys add \
   p2 \
-  --pubkey=cosmospub1addwnpepqtd28uwa0yxtwal5223qqr5aqf5y57tc7kk7z8qd4zplrdlk5ez5kdnlrj4
+  --pubkey=barkispub1addwnpepqtd28uwa0yxtwal5223qqr5aqf5y57tc7kk7z8qd4zplrdlk5ez5kdnlrj4
 
 barkiscli keys add \
   p3 \
-  --pubkey=cosmospub1addwnpepqgj04jpm9wrdml5qnss9kjxkmxzywuklnkj0g3a3f8l5wx9z4ennz84ym5t
+  --pubkey=barkispub1addwnpepqgj04jpm9wrdml5qnss9kjxkmxzywuklnkj0g3a3f8l5wx9z4ennz84ym5t
 
 barkiscli keys add \
   p1p2p3 \
@@ -761,7 +748,7 @@ barkiscli keys show p1p2p3 --show-multisig
 创建多签交易的第一步是使用上面创建的多签地址初始化：
 
 ```bash
-barkiscli tx send cosmos1570v2fq3twt0f0x02vhxpuzc9jc4yl30q2qned 10000000uatom \
+barkiscli tx send barkis1570v2fq3twt0f0x02vhxpuzc9jc4yl30q2qned 10000000ubarkis \
   --from=<multisig_address> \
   --generate-only > unsignedTx.json
 ```

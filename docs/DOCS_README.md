@@ -4,10 +4,6 @@ If you want to open a PR on Barkis to update the documentation, please follow th
 
 ## Docs Build Workflow
 
-The documentation for Barkis is hosted at:
-
-- https://hub.cosmos.network/docs/ 
-
 built from the files in this (`/docs`) directory for [master](https://github.com/barkisnet/barkis/tree/master/docs)
 
 
@@ -97,10 +93,6 @@ First, run `make tools` from the root of repo, to install the swagger-ui tool.
 Then, edit the `swagger.yaml` manually; it is found [here](https://github.com/barkisnet/barkis/blob/master/cmd/barkiscli/swagger-ui/swagger.yaml)
 
 Finally, run `make update-barkis-lite-docs` from the root of the repo.
-
-## Search
-
-We are using [Algolia](https://www.algolia.com) to power full-text search. This uses a public API search-only key in the `config.js` as well as a [cosmos_network.json](https://github.com/algolia/docsearch-configs/blob/master/configs/cosmos_network.json) configuration file that we can update with PRs.
 
 ## Consistency
 

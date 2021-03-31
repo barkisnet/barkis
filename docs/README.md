@@ -1,24 +1,24 @@
-# Cosmos Hub Documentation
+# Barkis Net Documentation
 
-Welcome to the documentation of the **Cosmos Hub application: `barkis`**.
+Welcome to the documentation of the **Barkis Net application: `Barkis`**.
 
 ## What is Barkis?
 
 - [Barkis](./what-is-barkis.md)
 
-## Join the Cosmos Hub Mainnet
+## Join the Barkis Net Mainnet
 
-- [Install the `barkis` application](./installation.md)
+- [Install the `Barkis` application](./installation.md)
 - [Set up a full node and join the mainnet](./join-mainnet.md)
 - [Upgrade to a validator node](./validators/validator-setup.md)
 
-## Join the Cosmos Hub Public Testnet
+## Join the Barkis Net Public Testnet
 
 - [Join the testnet](./join-testnet.md)
 
-## Setup Your Own `barkis` Testnet
+## Setup Your Own `Barkis` Testnet
 
-- [Setup your own `barkis` testnet](./deploy-testnet.md)
+- [Setup your own `Barkis` testnet](./deploy-testnet.md)
 
 ## Additional Resources
 

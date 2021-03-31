@@ -1,7 +1,7 @@
 # 加入公共测试网
 
 ::: 提示 当前测试网
-请查看[testnet repo](https://github.com/cosmos/testnets)获取最新的公共测试网信息，包含了所使用的Cosmos-SDK的正确版本和genesis文件。
+请查看[testnet repo](https://github.com/barkis/testnets)获取最新的公共测试网信息，包含了所使用的barkis的正确版本和genesis文件。
 :::
 
 ::: 警告
@@ -17,8 +17,8 @@
 + [加入mainnet](join-mainnet.md)
 + [部署验证人节点](validators/validator-setup.md)
 
-只有SDK的版本和genesis文件不同。查看[testnet repo](https://github.com/cosmos/testnets)
-获取测试网的信息，包括Cosmos-SDK正确的版本和genesis文件。
+只有SDK的版本和genesis文件不同。查看[testnet repo](https://github.com/barkisnet/testnets)
+获取测试网的信息，包括barkis正确的版本和genesis文件。
 
 
 ## 升级之前的Testnet
@@ -45,7 +45,7 @@ barkisd unsafe-reset-all
 现在升级软件：
 
 ```bash
-cd $GOPATH/src/github.com/cosmos/cosmos-sdk
+cd $GOPATH/src/github.com/barkisnet/barkis
 git fetch --all && git checkout master
 make update_tools install
 ```
@@ -54,6 +54,6 @@ make update_tools install
 *注意*：如果在这一步出现问题，请检查是否安装了最新稳定版本的Go。
 :::
 
-注意这里我们使用的是包含最新稳定发布版本的`master`分支。请查看[testnet repo](https://github.com/cosmos/testnets)查看哪个版本的测试网需要哪一个Cosmos-SDK版本，在[SDK发布版](https://github.com/cosmos/cosmos-sdk/releases)中对应的详细信息。
+注意这里我们使用的是包含最新稳定发布版本的`master`分支。请查看[testnet repo](https://github.com/barkisnet/testnets)查看哪个版本的测试网需要哪一个barkis版本，在[SDK发布版](https://github.com/barkisnet/barkis/releases)中对应的详细信息。
 
 你的全节点已经升级成功！

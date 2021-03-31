@@ -14,7 +14,7 @@ source ~/.bash_profile
 ```
 
 ::: tip
-**Go 1.12+** is required for the Cosmos SDK.
+**Go 1.12+** is required for the Barkis.
 :::
 
 ### Install the binaries
@@ -38,7 +38,7 @@ $ barkiscli version --long
 `barkiscli` for instance should output something similar to:
 
 ```
-cosmos-sdk: 0.33.0
+barkisd: 0.33.0
 git commit: 7b4104aced52aa5b59a96c28b5ebeea7877fc4f0
 build tags: netgo ledger
 go version go1.12 linux/amd64
@@ -62,7 +62,7 @@ Build tags indicate special features that have been enabled in the binary.
 To test any changes made in the SDK or Tendermint, a `replace` clause needs to be added to `go.mod` providing the correct import path.
 
 - Make appropriate changes
-- Add `replace github.com/cosmos/cosmos-sdk => /path/to/clone/cosmos-sdk` to `go.mod`
+- Add `replace github.com/barkisnet/barkis => /path/to/clone/barkis` to `go.mod`
 - Run `make clean install` or `make clean build`
 - Test changes
 

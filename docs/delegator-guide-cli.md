@@ -1,16 +1,16 @@
 # Delegator Guide (CLI)
 
-This document contains all the necessary information for delegators to interact with the Cosmos Hub through the Command-Line Interface (CLI).
+This document contains all the necessary information for delegators to interact with the BarkisNet through the Command-Line Interface (CLI).
 
 It also contains instructions on how to manage accounts, restore accounts from the fundraiser and use a ledger nano device.
 
 ::: danger
 **Very Important**: Please assure that you follow the steps described hereinafter
 carefully, as negligence in this significant process could lead to an indefinite
-loss of your Atoms. Therefore, read through the following instructions in their 
+loss of your BKS. Therefore, read through the following instructions in their 
 entirety prior to proceeding and reach out to us in case you need support.
 
-Please also note that you are about to interact with the Cosmos Hub, a
+Please also note that you are about to interact with the BarkisNet, a
 blockchain technology containing highly experimental software. While the
 blockchain has been developed in accordance to the state of the art and audited
 with utmost care, we can nevertheless expect to have issues, updates and bugs.
@@ -18,7 +18,7 @@ Furthermore, interaction with blockchain technology requires
 advanced technical skills and always entails risks that are outside our control.
 By using the software, you confirm that you understand the inherent risks
 associated with cryptographic software (see also risk section of the 
-[Interchain Cosmos Contribution terms](https://github.com/cosmos/cosmos/blob/master/fundraiser/Interchain%20Cosmos%20Contribution%20Terms%20-%20FINAL.pdf)) and that the Interchain Foundation and/or 
+[Interchain Carkis Contribution terms](https://github.com/barkis/barkis/blob/master/fundraiser/Interchain%20Barkis%20Contribution%20Terms%20-%20FINAL.pdf)) and that the Interchain Foundation and/or 
 the Tendermint Team may not be held liable for potential damages arising out of the use of the
 software. Any use of this open source software released under the Apache 2.0 license is
 done at your own risk and on a "AS IS" basis, without warranties or conditions
@@ -30,17 +30,17 @@ Please exercise extreme caution!
 ## Table of Contents
 
 - [Installing `barkiscli`](#installing-barkiscli)
-- [Cosmos Accounts](#cosmos-accounts)
+- [Barkis Accounts](#barkis-accounts)
     + [Restoring an Account from the Fundraiser](#restoring-an-account-from-the-fundraiser)
     + [Creating an Account](#creating-an-account)
-- [Accessing the Cosmos Hub Network](#accessing-the-cosmos-hub-network)
+- [Accessing the BarkisNet](#accessing-the-barkis-net)
     + [Running Your Own Full-Node](#running-your-own-full-node)
     + [Connecting to a Remote Full-Node](#connecting-to-a-remote-full-node)
 - [Setting Up `barkiscli`](#setting-up-barkiscli)
 - [Querying the State](#querying-the-state)
 - [Sending Transactions](#sending-transactions)
     + [A Note on Gas and Fees](#a-note-on-gas-and-fees)
-    + [Bonding Atoms and Withdrawing Rewards](#bonding-atoms-and-withdrawing-rewards)
+    + [Bonding BKS and Withdrawing Rewards](#bonding-bks-and-withdrawing-rewards)
     + [Participating in Governance](#participating-in-governance)
     + [Signing Transactions from an Offline Computer](#signing-transactions-from-an-offline-computer)
 
@@ -53,9 +53,9 @@ Please exercise extreme caution!
 :::
 
 [**Download the binaries**]
-Not available yet.
 
-[**Install from source**](https://cosmos.network/docs/cosmos-hub/installation.html)
+
+[**Install from source**](https://github.com/barkisnet/barkisnet-binary/raw/master/barkisnet-mainnet/binary/v2.2.3/barkiscli)
 
 ::: tip
 `barkiscli` is used from a terminal. To open the terminal, follow these steps:
@@ -64,9 +64,9 @@ Not available yet.
 - **Linux**: `Ctrl` + `Alt` + `T`
 :::
 
-## Cosmos Accounts
+## barkis Accounts
 
-At the core of every Cosmos account, there is a seed, which takes the form of a 12 or 24-words mnemonic. From this mnemonic, it is possible to create any number of Cosmos accounts, i.e. pairs of private key/public key. This is called an HD wallet (see [BIP32](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki) for more information on the HD wallet specification).
+At the core of every Barkis account, there is a seed, which takes the form of a 12 or 24-words mnemonic. From this mnemonic, it is possible to create any number of Barkis accounts, i.e. pairs of private key/public key. This is called an HD wallet (see [BIP32](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki) for more information on the HD wallet specification).
 
 ```
      Account 0                         Account 1                         Account 2
@@ -107,7 +107,7 @@ The funds stored in an account are controlled by the private key. This private k
 **Do not lose or share your 12 words with anyone. To prevent theft or loss of funds, it is best to ensure that you keep multiple copies of your mnemonic, and store it in a safe, secure place and that only you know how to access. If someone is able to gain access to your mnemonic, they will be able to gain access to your private keys and control the accounts associated with them.**
 :::
 
-The address is a public string with a human-readable prefix (e.g. `cosmos10snjt8dmpr5my0h76xj48ty80uzwhraqalu4eg`) that identifies your account. When someone wants to send you funds, they send it to your address. It is computationally infeasible to find the private key associated with a given address. 
+The address is a public string with a human-readable prefix (e.g. `barkis10snjt8dmpr5my0h76xj48ty80uzwhraqalu4eg`) that identifies your account. When someone wants to send you funds, they send it to your address. It is computationally infeasible to find the private key associated with a given address. 
 
 ### Restoring an Account from the Fundraiser
 
@@ -115,11 +115,11 @@ The address is a public string with a human-readable prefix (e.g. `cosmos10snjt8
 *NOTE: This section only concerns fundraiser participants*
 :::
 
-If you participated in the fundraiser, you should be in possession of a 12-words mnemonic. Newly generated mnemonics use 24 words, but 12-word mnemonics are also compatible with all the Cosmos tools. 
+If you participated in the fundraiser, you should be in possession of a 12-words mnemonic. Newly generated mnemonics use 24 words, but 12-word mnemonics are also compatible with all the Barkis tools. 
 
 #### On a Ledger Device
 
-At the core of a ledger device, there is a mnemonic used to generate accounts on multiple blockchains (including the Cosmos Hub). Usually, you will create a new mnemonic when you initialize your ledger device. However, it is possible to tell the ledger device to use a mnemonic provided by the user instead. Let us go ahead and see how you can input the mnemonic you obtained during the fundraiser as the seed of your ledger device. 
+At the core of a ledger device, there is a mnemonic used to generate accounts on multiple blockchains (including the BarkisNet). Usually, you will create a new mnemonic when you initialize your ledger device. However, it is possible to tell the ledger device to use a mnemonic provided by the user instead. Let us go ahead and see how you can input the mnemonic you obtained during the fundraiser as the seed of your ledger device. 
 
 ::: warning
 *NOTE: To do this, **it is preferable to use a brand new ledger device.**. Indeed, there can be only one mnemonic per ledger device. If, however, you want to use a ledger that is already initialized with a seed, you can reset it by going in `Settings`>`Device`>`Reset All`. **Please note that this will wipe out the seed currently stored on the device. If you have not properly secured the associated mnemonic, you could lose your funds!!!***
@@ -165,12 +165,12 @@ To create an account, you just need to have `barkiscli` installed. Before creati
 **Only use Ledger devices that you bought factory new or trust fully**
 :::
 
-When you initialize your ledger, a 24-word mnemonic is generated and stored in the device. This mnemonic is compatible with Cosmos and Cosmos accounts can be derived from it. Therefore, all you have to do is make your ledger compatible with `barkiscli`. To do so, you need to go through the following steps:
+When you initialize your ledger, a 24-word mnemonic is generated and stored in the device. This mnemonic is compatible with Barkis and Barkis accounts can be derived from it. Therefore, all you have to do is make your ledger compatible with `barkiscli`. To do so, you need to go through the following steps:
 
 1. Download the Ledger Live app [here](https://www.ledger.com/pages/ledger-live). 
 2. Connect your ledger via USB and update to the latest firmware
-3. Go to the ledger live app store, and download the "Cosmos" application (this can take a while). **Note: You may have to enable `Dev Mode` in the `Settings` of Ledger Live to be able to download the "Cosmos" application**. 
-4. Navigate to the Cosmos app on your ledger device
+3. Go to the ledger live app store, and download the "Barkis" application (this can take a while). **Note: You may have to enable `Dev Mode` in the `Settings` of Ledger Live to be able to download the "Barkis" application**. 
+4. Navigate to the Barkis app on your ledger device
 
 Then, to create an account, use the following command:
 
@@ -225,19 +225,19 @@ barkiscli keys add <yourKeyName> --recover --account 1
 This command will prompt you to input a passphrase as well as your mnemonic. Change the account number to generate a different account. 
 
 
-## Accessing the Cosmos Hub Network
+## Accessing the BarkisNet
 
 In order to query the state and send transactions, you need a way to access the network. To do so, you can either run your own full-node, or connect to someone else's.
 
 ::: danger
-**NOTE: Do not share your mnemonic (12 or 24 words) with anyone. The only person who should ever need to know it is you. This is especially important if you are ever approached via email or direct message by someone requesting that you share your mnemonic for any kind of blockchain services or support. No one from Cosmos, the Tendermint team or the Interchain Foundation will ever send an email that asks for you to share any kind of account credentials or your mnemonic."**.
+**NOTE: Do not share your mnemonic (12 or 24 words) with anyone. The only person who should ever need to know it is you. This is especially important if you are ever approached via email or direct message by someone requesting that you share your mnemonic for any kind of blockchain services or support. No one from Barkis, the Tendermint team or the Interchain Foundation will ever send an email that asks for you to share any kind of account credentials or your mnemonic."**.
 ::: 
 
 ### Running Your Own Full-Node
 
 This is the most secure option, but comes with relatively high resource requirements. In order to run your own full-node, you need good bandwidth and at least 1TB of disk space. 
 
-You will find the tutorial on how to install `barkisd` [here](https://cosmos.network/docs/cosmos-hub/installation.html), and the guide to run a full-node [here](https://cosmos.network/docs/cosmos-hub/join-mainnet.html).
+You will find the tutorial on how to install `barkisd` [here](https://github.com/barkisnet/barkisnet-deploy/blob/master/mainnet/fullnode/README.md), and the guide to run a full-node [here](https://github.com/barkisnet/barkis/blob/master/docs/join-mainnet.md).
 
 ### Connecting to a Remote Full-Node
 
@@ -248,14 +248,14 @@ In order to connect to the full-node, you will need an address of the following 
 ## Setting Up `barkiscli`
 
 ::: tip
-**Before setting up `barkiscli`, make sure you have set up a way to [access the Cosmos Hub network](#accessing-the-cosmos-hub-network)**
+**Before setting up `barkiscli`, make sure you have set up a way to [access the BarkisNet](#accessing-BarkisNet)**
 :::
 
 ::: warning
 **Please check that you are always using the latest stable release of `barkiscli`**
 :::
 
-`barkiscli` is the tool that enables you to interact with the node that runs on the Cosmos Hub network, whether you run it yourself or not. Let us set it up properly.
+`barkiscli` is the tool that enables you to interact with the node that runs on the BarkisNet, whether you run it yourself or not. Let us set it up properly.
 
 In order to set up `barkiscli`, use the following command:
 
@@ -286,13 +286,13 @@ barkiscli config trust-node false
 Finally, let us set the `chain-id` of the blockchain we want to interact with:
 
 ```bash
-barkiscli config chain-id cosmoshub-2
+barkiscli config chain-id barkisnet
 ```
 
 ## Querying the State
 
 ::: tip
-**Before you can bond atoms and withdraw rewards, you need to [set up `barkiscli`](#setting-up-barkiscli)**
+**Before you can bond BKS and withdraw rewards, you need to [set up `barkiscli`](#setting-up-barkiscli)**
 :::
 
 `barkiscli` lets you query all relevant information from the blockchain, like account balances, amount of bonded tokens, outstanding rewards, governance proposals and more. Next is a list of the most useful commands for delegator. 
@@ -304,16 +304,16 @@ barkiscli query account <yourAddress>
 // query the list of validators
 barkiscli query staking validators
 
-// query the information of a validator given their address (e.g. cosmosvaloper1n5pepvmgsfd3p2tqqgvt505jvymmstf6s9gw27)
+// query the information of a validator given their address (e.g. barkisvaloper1n5pepvmgsfd3p2tqqgvt505jvymmstf6s9gw27)
 barkiscli query staking validator <validatorAddress>
 
-// query all delegations made from a delegator given their address (e.g. cosmos10snjt8dmpr5my0h76xj48ty80uzwhraqalu4eg)
+// query all delegations made from a delegator given their address (e.g. barkis10snjt8dmpr5my0h76xj48ty80uzwhraqalu4eg)
 barkiscli query staking delegations <delegatorAddress>
 
-// query a specific delegation made from a delegator (e.g. cosmos10snjt8dmpr5my0h76xj48ty80uzwhraqalu4eg) to a validator (e.g. cosmosvaloper1n5pepvmgsfd3p2tqqgvt505jvymmstf6s9gw27) given their addresses
+// query a specific delegation made from a delegator (e.g. barkis10snjt8dmpr5my0h76xj48ty80uzwhraqalu4eg) to a validator (e.g. barkisvaloper1n5pepvmgsfd3p2tqqgvt505jvymmstf6s9gw27) given their addresses
 barkiscli query staking delegation <delegatorAddress> <validatorAddress>
 
-// query the rewards of a delegator given a delegator address (e.g. cosmos10snjt8dmpr5my0h76xj48ty80uzwhraqalu4eg)
+// query the rewards of a delegator given a delegator address (e.g. barkis10snjt8dmpr5my0h76xj48ty80uzwhraqalu4eg)
 barkiscli query distribution rewards <delegatorAddress> 
 
 // query all proposals currently open for depositing
@@ -337,12 +337,12 @@ For each command, you can use the `-h` or `--help` flag to get more information.
 ## Sending Transactions
 
 ::: warning
-On Cosmos Hub mainnet, the accepted denom is `uatom`, where `1atom = 1,000,000uatom`
+On barkisnet mainnet, the accepted denom is `ubarkis`, where `1barkis = 1,000,000ubarkis`
 :::
 
 ### A Note on Gas and Fees
 
-Transactions on the Cosmos Hub network need to include a transaction fee in order to be processed. This fee pays for the gas required to run the transaction. The formula is the following:
+Transactions on the BarkisNet need to include a transaction fee in order to be processed. This fee pays for the gas required to run the transaction. The formula is the following:
 
 ```
 fees = ceil(gas * gasPrices)
@@ -355,13 +355,13 @@ The `gasPrice` is the price of each unit of `gas`. Each validator sets a `min-ga
 The transaction `fees` are the product of `gas` and `gasPrice`. As a user, you have to input 2 out of 3. The higher the `gasPrice`/`fees`, the higher the chance that your transaction will get included in a block. 
 
 ::: tip
-For mainnet, the recommended `gas-prices` is `0.025uatom`. 
+For mainnet, the recommended `gas-prices` is `0.025ubarkis`. 
 ::: 
 
 ### Sending Tokens
 
 ::: tip
-**Before you can bond atoms and withdraw rewards, you need to [set up `barkiscli`](#setting-up-barkiscli) and [create an account](#creating-an-account)**
+**Before you can bond BKS and withdraw rewards, you need to [set up `barkiscli`](#setting-up-barkiscli) and [create an account](#creating-an-account)**
 :::
 
 ::: warning
@@ -370,20 +370,16 @@ For mainnet, the recommended `gas-prices` is `0.025uatom`.
 
 ```bash
 // Send a certain amount of tokens to an address
-// Ex value for parameters (do not actually use these values in your tx!!): <to_address>=cosmos16m93fezfiezhvnjajzrfyszml8qm92a0w67ntjhd3d0 <amount>=1000000uatom 
-// Ex value for flags: <gasPrice>=0.025uatom
+// Ex value for parameters (do not actually use these values in your tx!!): <to_address>=barkis16m93fezfiezhvnjajzrfyszml8qm92a0w67ntjhd3d0 <amount>=1000000ubarkis 
+// Ex value for flags: <gasPrice>=0.025ubarkis
 
 barkiscli tx send <to_address> <amount> --from <yourKeyName> --gas auto --gas-adjustment 1.5 --gas-prices <gasPrice>
 ```
 
-### Bonding Atoms and Withdrawing Rewards
+### Bonding BKS and Withdrawing Rewards
 
 ::: tip
-**Before you can bond atoms and withdraw rewards, you need to [set up `barkiscli`](#setting-up-barkiscli) and [create an account](#creating-an-account)**
-:::
-
-::: warning
-**Before bonding Atoms, please read the [delegator faq](https://cosmos.network/resources/delegators) to understand the risk and responsibilities involved with delegating**
+**Before you can bond BKS and withdraw rewards, you need to [set up `barkiscli`](#setting-up-barkiscli) and [create an account](#creating-an-account)**
 :::
 
 ::: warning
@@ -391,29 +387,29 @@ barkiscli tx send <to_address> <amount> --from <yourKeyName> --gas auto --gas-ad
 ::: 
 
 ```bash
-// Bond a certain amount of Atoms to a given validator
-// ex value for flags: <validatorAddress>=cosmosvaloper18thamkhnj9wz8pa4nhnp9rldprgant57pk2m8s, <amountToBound>=10000000uatom, <gasPrice>=0.025uatom
+// Bond a certain amount of BKS to a given validator
+// ex value for flags: <validatorAddress>=barkisvaloper18thamkhnj9wz8pa4nhnp9rldprgant57pk2m8s, <amountToBound>=10000000ubarkis, <gasPrice>=0.025ubarkis
 
 barkiscli tx staking delegate <validatorAddress> <amountToBond> --from <delegatorKeyName> --gas auto --gas-adjustment 1.5 --gas-prices <gasPrice>
 
 
-// Redelegate a certain amount of Atoms from a validator to another
+// Redelegate a certain amount of BKS from a validator to another
 // Can only be used if already bonded to a validator
 // Redelegation takes effect immediately, there is no waiting period to redelegate
 // After a redelegation, no other redelegation can be made from the account for the next 3 weeks
-// ex value for flags: <stcValidatorAddress>=cosmosvaloper18thamkhnj9wz8pa4nhnp9rldprgant57pk2m8s, <amountToRedelegate>=100000000uatom, <gasPrice>=0.025uatom
+// ex value for flags: <stcValidatorAddress>=barkisvaloper18thamkhnj9wz8pa4nhnp9rldprgant57pk2m8s, <amountToRedelegate>=100000000ubarkis, <gasPrice>=0.025ubarkis
 
 barkiscli tx staking redelegate <srcValidatorAddress> <destValidatorAddress> <amountToRedelegate> --from <delegatorKeyName> --gas auto --gas-adjustment 1.5 --gas-prices <gasPrice>
 
 // Withdraw all rewards
-// ex value for flag: <gasPrice>=0.025uatom
+// ex value for flag: <gasPrice>=0.025ubarkis
 
 barkiscli tx distribution withdraw-all-rewards --from <delegatorKeyName> --gas auto --gas-adjustment 1.5 --gas-prices <gasPrice>
 
 
-// Unbond a certain amount of Atoms from a given validator 
-// You will have to wait 3 weeks before your Atoms are fully unbonded and transferrable 
-// ex value for flags: <validatorAddress>=cosmosvaloper18thamkhnj9wz8pa4nhnp9rldprgant57pk2m8s, <amountToUnbound>=10000000uatom, <gasPrice>=0.025uatom
+// Unbond a certain amount of BKS from a given validator 
+// You will have to wait 3 weeks before your BKS are fully unbonded and transferrable 
+// ex value for flags: <validatorAddress>=barkisvaloper18thamkhnj9wz8pa4nhnp9rldprgant57pk2m8s, <amountToUnbound>=10000000ubarkis, <gasPrice>=0.025ubarkis
 
 barkiscli tx staking unbond <validatorAddress> <amountToUnbond> --from <delegatorKeyName> --gas auto --gas-adjustment 1.5 --gas-prices <gasPrice>
 ```
@@ -425,10 +421,10 @@ barkiscli tx staking unbond <validatorAddress> <amountToUnbond> --from <delegato
 To confirm that your transaction went through, you can use the following queries:
 
 ```bash
-// your balance should change after you bond Atoms or withdraw rewards
+// your balance should change after you bond BKS or withdraw rewards
 barkiscli query account
 
-// you should have delegations after you bond Atom
+// you should have delegations after you bond BKS
 barkiscli query staking delegations <delegatorAddress>
 
 // this returns your tx if it has been included
@@ -443,22 +439,22 @@ Double check with a block explorer if you interact with the network through a tr
 
 #### Primer on Governance
 
-The Cosmos Hub has a built-in governance system that lets bonded Atom holders vote on proposals. There are three types of proposal:
+The BarkisNet has a built-in governance system that lets bonded BKS holders vote on proposals. There are three types of proposal:
 
 - `Text Proposals`: These are the most basic type of proposals. They can be used to get the opinion of the network on a given topic. 
 - `Parameter Proposals`: These are used to update the value of an existing parameter.
 - `Software Upgrade Proposal`: These are used to propose an upgrade of the Hub's software.
 
-Any Atom holder can submit a proposal. In order for the proposal to be open for voting, it needs to come with a `deposit` that is greater than a parameter called `minDeposit`. The `deposit` need not be provided in its entirety by the submitter. If the initial proposer's `deposit` is not sufficient, the proposal enters the `deposit_period` status. Then, any Atom holder can increase the deposit by sending a `depositTx`. 
+Any BKS holder can submit a proposal. In order for the proposal to be open for voting, it needs to come with a `deposit` that is greater than a parameter called `minDeposit`. The `deposit` need not be provided in its entirety by the submitter. If the initial proposer's `deposit` is not sufficient, the proposal enters the `deposit_period` status. Then, any BKS holder can increase the deposit by sending a `depositTx`. 
 
-Once the `deposit` reaches `minDeposit`, the proposal enters the `voting_period`, which lasts 2 weeks. Any **bonded** Atom holder can then cast a vote on this proposal. The options are `Yes`, `No`, `NoWithVeto` and `Abstain`. The weight of the vote is based on the amount of bonded Atoms of the sender. If they don't vote, delegator inherit the vote of their validator. However, delegators can override their validator's vote by sending a vote themselves. 
+Once the `deposit` reaches `minDeposit`, the proposal enters the `voting_period`, which lasts 2 weeks. Any **bonded** BKS holder can then cast a vote on this proposal. The options are `Yes`, `No`, `NoWithVeto` and `Abstain`. The weight of the vote is based on the amount of bonded BKS of the sender. If they don't vote, delegator inherit the vote of their validator. However, delegators can override their validator's vote by sending a vote themselves. 
 
 At the end of the voting period, the proposal is accepted if there are more than 50% `Yes` votes (excluding `Abstain ` votes) and less than 33.33% of `NoWithVeto` votes (excluding `Abstain` votes).
 
 #### In Practice
 
 ::: tip
-**Before you can bond atoms and withdraw rewards, you need to [bond Atoms](#bonding-atoms-and-withdrawing-rewards)**
+**Before you can bond BKS and withdraw rewards, you need to [bond BKS](#bonding-BKS-and-withdrawing-rewards)**
 :::
 
 ::: warning
@@ -468,13 +464,13 @@ At the end of the voting period, the proposal is accepted if there are more than
 ```bash
 // Submit a Proposal
 // <type>=text/parameter_change/software_upgrade
-// ex value for flag: <gasPrice>=0.025uatom
+// ex value for flag: <gasPrice>=0.025ubarkis
 
-barkiscli tx gov submit-proposal --title "Test Proposal" --description "My awesome proposal" --type <type> --deposit=10000000uatom --gas auto --gas-adjustment 1.5 --gas-prices <gasPrice> --from <delegatorKeyName>
+barkiscli tx gov submit-proposal --title "Test Proposal" --description "My awesome proposal" --type <type> --deposit=10000000ubarkis --gas auto --gas-adjustment 1.5 --gas-prices <gasPrice> --from <delegatorKeyName>
 
 // Increase deposit of a proposal
 // Retrieve proposalID from $barkiscli query gov proposals --status deposit_period
-// ex value for parameter: <deposit>=10000000uatom
+// ex value for parameter: <deposit>=10000000ubarkis
 
 barkiscli tx gov deposit <proposalID> <deposit> --gas auto --gas-adjustment 1.5 --gas-prices <gasPrice> --from <delegatorKeyName>
 
@@ -490,18 +486,18 @@ barkiscli tx gov vote <proposalID> <option> --gas auto --gas-adjustment 1.5 --ga
 If you do not have a ledger device and want to interact with your private key on an offline computer, you can use the following procedure. First, generate an unsigned transaction on an **online computer** with the following command (example with a bonding transaction):
 
 ```bash
-// Bond Atoms 
-// ex value for flags: <amountToBound>=10000000uatom, <bech32AddressOfValidator>=cosmosvaloper18thamkhnj9wz8pa4nhnp9rldprgant57pk2m8s, <gasPrice>=0.025uatom, <delegatorAddress>=cosmos10snjt8dmpr5my0h76xj48ty80uzwhraqalu4eg
+// Bond BKS 
+// ex value for flags: <amountToBound>=10000000ubarkis, <bech32AddressOfValidator>=barkisvaloper18thamkhnj9wz8pa4nhnp9rldprgant57pk2m8s, <gasPrice>=0.025ubarkis, <delegatorAddress>=barkis10snjt8dmpr5my0h76xj48ty80uzwhraqalu4eg
 
 barkiscli tx staking delegate <validatorAddress> <amountToBond> --from <delegatorAddress> --gas auto --gas-adjustment 1.5 --gas-prices <gasPrice> --generate-only > unsignedTX.json
 ```
 
 In order to sign, you will also need the `chain-id`, `account-number` and `sequence`. The `chain-id` is a unique identifier for the blockchain on which you are submitting the transaction. The `account-number` is an identifier generated when your account first receives funds. The `sequence` number is used to keep track of the number of transactions you have sent and prevent replay attacks.
 
-Get the chain-id from the genesis file (`cosmoshub-2`), and the two other fields using the account query:
+Get the chain-id from the genesis file (`barkisnet-2`), and the two other fields using the account query:
 
 ```bash
-barkiscli query account <yourAddress> --chain-id cosmoshub-2
+barkiscli query account <yourAddress> --chain-id barkisnet-2
 ```
 
 Then, copy `unsignedTx.json` and transfer it (e.g. via USB) to the offline computer. If it is not done already, [create an account on the offline computer](#using-a-computer). For additional security, you can double check the parameters of your transaction before signing it using the following command:
@@ -513,7 +509,7 @@ cat unsignedTx.json
 Now, sign the transaction using the following command. You will need the `chain-id`, `sequence` and `account-number` obtained earlier:
 
 ```bash
-barkiscli tx sign unsignedTx.json --from <delegatorKeyName> --offline --chain-id cosmoshub-2 --sequence <sequence> --account-number <account-number> > signedTx.json
+barkiscli tx sign unsignedTx.json --from <delegatorKeyName> --offline --chain-id barkisnet-2 --sequence <sequence> --account-number <account-number> > signedTx.json
 ```
 
 Copy `signedTx.json` and transfer it back to the online computer. Finally, use the following command to broadcast the transaction:
