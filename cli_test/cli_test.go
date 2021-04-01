@@ -35,6 +35,7 @@ func TestBarkisCLIKeysAddMultisig(t *testing.T) {
 	f := InitFixtures(t)
 
 	// key names order does not matter
+	// add multiple msigkeys
 	f.KeysAdd("msig1", "--multisig-threshold=2",
 		fmt.Sprintf("--multisig=%s,%s", keyBar, keyBaz))
 	f.KeysAdd("msig2", "--multisig-threshold=2",
@@ -182,7 +183,7 @@ func TestBarkisCLIFeesDeduction(t *testing.T) {
 		fmt.Sprintf("--fees=%s", sdk.NewInt64Coin(feeDenom, 2)), "--dry-run")
 	require.True(t, success)
 
-	// Wait for a block
+	// Wait for a block generate
 	tests.WaitForNextNBlocksTM(1, f.Port)
 
 	// ensure state didn't change
@@ -197,7 +198,7 @@ func TestBarkisCLIFeesDeduction(t *testing.T) {
 	require.Contains(t, stdOut, "insufficient account funds")
 	require.True(t, success)
 
-	// Wait for a block
+	// Wait for a block generate
 	tests.WaitForNextNBlocksTM(1, f.Port)
 
 	// ensure state didn't change
