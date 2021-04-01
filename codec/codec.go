@@ -52,7 +52,7 @@ func MustMarshalJSONIndent(cdc *Codec, obj interface{}) []byte {
 	return bz
 }
 
-//__________________________________________________________________
+//===============================================================
 
 // generic sealed codec to be used throughout sdk
 var Cdc *Codec
