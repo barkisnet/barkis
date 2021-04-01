@@ -16,7 +16,8 @@ import (
 func TestSimAppExport(t *testing.T) {
 	db := dbm.NewMemDB()
 	app := NewSimApp(log.NewTMLogger(log.NewSyncWriter(os.Stdout)), db, nil, true, 0)
-
+	
+	 // NewDefaultGenesisState generates the default state for the application.
 	genesisState := NewDefaultGenesisState()
 	stateBytes, err := codec.MarshalJSONIndent(app.cdc, genesisState)
 	require.NoError(t, err)
