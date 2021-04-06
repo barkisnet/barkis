@@ -11,6 +11,7 @@ import (
 	"github.com/tendermint/tendermint/libs/cli"
 )
 
+// Cmd lable
 const flagLong = "long"
 
 func init() {
