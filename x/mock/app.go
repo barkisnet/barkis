@@ -124,7 +124,7 @@ func (app *App) InitChainer(ctx sdk.Context, _ abci.RequestInitChain) abci.Respo
 	return abci.ResponseInitChain{}
 }
 
-// Type that combines an Address with the privKey and pubKey to that address
+// Type that combines an Address with the privKey and pubKey to that address.
 type AddrKeys struct {
 	Address sdk.AccAddress
 	PubKey  crypto.PubKey
