@@ -1,4 +1,4 @@
-## PGP keys of Gitian builders and Barkis Developers
+## PGP keys of Gitian builders and Barkis Developer
 
 The file `keys.txt` contains fingerprints of the public keys of Gitian builders
 and active developers.
