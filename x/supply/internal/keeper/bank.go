@@ -50,7 +50,7 @@ func (k Keeper) SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.Acc
 }
 
 // DelegateCoinsFromAccountToModule delegates coins and transfers
-// them from a delegator account to a module account
+// them from a delegator account to a module account.
 func (k Keeper) DelegateCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress,
 	recipientModule string, amt sdk.Coins) sdk.Error {
 
@@ -68,7 +68,7 @@ func (k Keeper) DelegateCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk
 }
 
 // UndelegateCoinsFromModuleToAccount undelegates the unbonding coins and transfers
-// them from a module account to the delegator account
+// them from a module account to the delegator account.
 func (k Keeper) UndelegateCoinsFromModuleToAccount(ctx sdk.Context, senderModule string,
 	recipientAddr sdk.AccAddress, amt sdk.Coins) sdk.Error {
 
