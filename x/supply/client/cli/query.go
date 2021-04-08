@@ -13,7 +13,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// GetQueryCmd returns the cli query commands for this module
+// GetQueryCmd returns the cli query commands for this module.
 func GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 	// Group supply queries under a subcommand
 	supplyQueryCmd := &cobra.Command{
