@@ -25,7 +25,7 @@ func (k Keeper) GetModuleAddressAndPermissions(moduleName string) (addr sdk.AccA
 }
 
 // GetModuleAccountAndPermissions gets the module account from the auth account store and its
-// registered permissions
+// registered permissions.
 func (k Keeper) GetModuleAccountAndPermissions(ctx sdk.Context, moduleName string) (exported.ModuleAccountI, []string) {
 	addr, perms := k.GetModuleAddressAndPermissions(moduleName)
 	if addr == nil {
