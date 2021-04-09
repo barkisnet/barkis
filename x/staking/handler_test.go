@@ -17,7 +17,7 @@ import (
 	"github.com/barkisnet/barkis/x/staking/types"
 )
 
-//______________________________________________________________________
+//======================================================================
 
 // retrieve params which are instant
 func setInstantUnbondPeriod(keeper keep.Keeper, ctx sdk.Context) types.Params {
