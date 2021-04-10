@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 
-########################################
+#########################################
 ### Simulations
 
 SIMAPP = github.com/barkisnet/barkis/app
