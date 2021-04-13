@@ -21,7 +21,7 @@ func keeperTestParams() types.Params {
 	return params
 }
 
-// ______________________________________________________________
+// ==============================================================
 
 // Test that a validator is slashed correctly
 // when we discover evidence of infraction
