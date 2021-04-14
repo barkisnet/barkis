@@ -243,7 +243,7 @@ func SimulateFromSeed(
 	return false, exportedParams, nil
 }
 
-//______________________________________________________________________________
+//==============================================================================
 
 type blockSimFn func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context,
 	accounts []Account, header abci.Header) (opCount int)
