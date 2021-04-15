@@ -21,8 +21,7 @@ func init() {
 	govtypes.RegisterProposalTypeCodec(ParameterChangeProposal{}, "cosmos-sdk/ParameterChangeProposal")
 }
 
-// ParameterChangeProposal defines a proposal which contains multiple parameter
-// changes.
+// ParameterChangeProposal defines a proposal which contains multiple parameter changes.
 type ParameterChangeProposal struct {
 	Title       string        `json:"title" yaml:"title"`
 	Description string        `json:"description" yaml:"description"`
@@ -103,8 +102,8 @@ func (pc ParamChange) String() string {
 `, pc.Subspace, pc.Key, pc.Subkey, pc.Value)
 }
 
-// ValidateChange performs basic validation checks over a set of ParamChange. It
-// returns an error if any ParamChange is invalid.
+// ValidateChange performs basic validation checks over a set of ParamChange.
+// It returns an error if any ParamChange is invalid.
 func ValidateChanges(changes []ParamChange) sdk.Error {
 	if len(changes) == 0 {
 		return ErrEmptyChanges(DefaultCodespace)
