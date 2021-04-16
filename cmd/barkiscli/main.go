@@ -40,9 +40,8 @@ func main() {
 	config.SetBech32PrefixForConsensusNode(sdk.Bech32PrefixConsAddr, sdk.Bech32PrefixConsPub)
 	config.Seal()
 
-	// TODO: setup keybase, viper object, etc. to be passed into
-	// the below functions and eliminate global vars, like we do
-	// with the cdc
+	// TODO: setup keybase, viper object, etc. to be passed into the below
+	// functions and eliminate global vars, like we do with the cdc
 
 	rootCmd := &cobra.Command{
 		Use:   "barkiscli",
