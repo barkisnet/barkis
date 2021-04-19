@@ -62,7 +62,7 @@ func (AppModuleBasic) GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 	return cli.GetQueryCmd(cdc)
 }
 
-//___________________________
+//===========================
 // app module
 type AppModule struct {
 	AppModuleBasic
