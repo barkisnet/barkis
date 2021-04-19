@@ -38,7 +38,7 @@ func NewKeeper(
 	}
 }
 
-//______________________________________________________________________
+//======================================================================
 
 // Logger returns a module-specific logger.
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
@@ -64,7 +64,7 @@ func (k Keeper) SetMinter(ctx sdk.Context, minter types.Minter) {
 	store.Set(types.MinterKey, b)
 }
 
-//______________________________________________________________________
+//======================================================================
 
 // GetParams returns the total set of minting parameters.
 func (k Keeper) GetUpdatedParams(ctx sdk.Context) (params types.UpdatedParams) {
