@@ -206,7 +206,7 @@ func testChangeNameHelper(name string) func(*BaseApp) {
 }
 
 // Test that txs can be unmarshalled and read and that
-// correct error codes are returned when not
+// correct error codes are returned when not.
 func TestTxDecoder(t *testing.T) {
 	codec := codec.New()
 	registerTestCodec(codec)
@@ -383,7 +383,7 @@ const (
 )
 
 // ValidateBasic() fails on negative counters.
-// Otherwise it's up to the handlers
+// Otherwise it's up to the handlers.
 type msgCounter struct {
 	Counter       int64
 	FailOnHandler bool
@@ -1063,7 +1063,7 @@ func TestBaseAppAnteHandler(t *testing.T) {
 	require.Equal(t, int64(0), getIntFromStore(store, anteKey))
 
 	// execute at tx that will pass the ante handler (the checkTx state should
-	// mutate) but will fail the message handler
+	// mutate) but will fail the message handler.
 	tx = newTxCounter(0, 0)
 	tx.setFailOnHandler(true)
 
