@@ -53,7 +53,7 @@ type (
 //
 // This function is marked as unsafe as it will retrieve a pubkey without user verification.
 // It can only be used to verify a pubkey but never to create new accounts/keys. In that case,
-// please refer to NewPrivKeyLedgerSecp256k1
+// please refer to NewPrivKeyLedgerSecp256k1.
 func NewPrivKeyLedgerSecp256k1Unsafe(path hd.BIP44Params) (tmcrypto.PrivKey, error) {
 	device, err := getLedgerDevice()
 	if err != nil {
