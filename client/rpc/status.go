@@ -64,8 +64,7 @@ func printNodeStatus(_ *cobra.Command, _ []string) error {
 	return nil
 }
 
-// NodeInfoResponse defines a response type that contains node status and version
-// information.
+// NodeInfoResponse defines a response type that contains node status and version information.
 type NodeInfoResponse struct {
 	p2p.DefaultNodeInfo `json:"node_info"`
 
