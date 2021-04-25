@@ -9,8 +9,8 @@
 
 # This assumes your installing it through tcsh as root.
 # Change the relevant lines from tcsh to csh if your
-# installing as a different user, along with changing the
-# gopath.
+# installing as a different user, along with changing
+# the gopath.
 
 # change this to a specific release or branch
 set BRANCH=master
