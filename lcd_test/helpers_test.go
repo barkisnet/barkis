@@ -302,10 +302,10 @@ func doTransfer(
 	return recvAddr, txResp
 }
 
-// doTransferWithGas performs a balance transfer with a specified gas value. The
-// broadcast parameter determines if the tx should only be generated or also
-// signed and broadcasted. The sending account's number and sequence are
-// determined prior to generating the tx.
+// doTransferWithGas performs a balance transfer with a specified gas value.
+// The broadcast parameter determines if the tx should only be generated or
+// also signed and broadcasted. The sending account's number and sequence
+// are determined prior to generating the tx.
 func doTransferWithGas(
 	t *testing.T, port, seed, name, memo, pwd string, addr sdk.AccAddress,
 	gas string, gasAdjustment float64, simulate, broadcast bool, fees sdk.Coins,
