@@ -48,7 +48,6 @@ func MustMarshalJSONIndent(cdc *Codec, obj interface{}) []byte {
 	if err != nil {
 		panic(fmt.Sprintf("failed to marshal JSON: %s", err))
 	}
-
 	return bz
 }
 
