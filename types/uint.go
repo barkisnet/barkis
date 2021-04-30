@@ -138,7 +138,7 @@ func (u *Uint) UnmarshalJSON(bz []byte) error {
 	return unmarshalJSON(u.i, bz)
 }
 
-//__________________________________________________________________________
+//==========================================================================
 
 // UintOverflow returns true if a given unsigned integer overflows and false
 // otherwise.
