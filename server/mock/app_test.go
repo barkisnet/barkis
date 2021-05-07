@@ -15,7 +15,7 @@ func TestInitApp(t *testing.T) {
 	// set up an app
 	app, closer, err := SetupApp()
 
-	// closer may need to be run, even when error in later stage
+	// closer may need to be run, even when error in later stage.
 	if closer != nil {
 		defer closer()
 	}
