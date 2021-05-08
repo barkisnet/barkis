@@ -17,7 +17,7 @@ barkisdebug pubkey 4D94D09DFA8EB22F3D49EA17567230FAD9C5267AF85FCA950B453C02C1261
 
 ## Txs
 
-Pass in a hex/base64 tx and get back the full JSON
+Pass in a hex/base64 tx and get back the full JSON:
 
 ```
 barkisdebug tx <hex or base64 transaction>
