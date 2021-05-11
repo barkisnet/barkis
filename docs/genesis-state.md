@@ -55,6 +55,6 @@ information. Vesting accounts must provide at a minimum `OriginalVesting` and
 Providing a `StartTime` must be less than `EndTime` but may be in the future.
 In other words, it does not have to be equal to the genesis time. In a new chain
 starting from a fresh state (not exported), `OriginalVesting` must be less than
-or equal to `Coins.`
+or equal to `Coins`.
 
 <!-- TODO: Remaining modules and components in GenesisState -->
