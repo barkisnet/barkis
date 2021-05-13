@@ -10,8 +10,8 @@ import (
 	sdk "github.com/barkisnet/barkis/types"
 )
 
-// File for storing in-package BaseApp optional functions,
-// for options that need access to non-exported fields of the BaseApp
+// File for storing in-package BaseApp optional functions, for
+// options that need access to non-exported fields of the BaseApp
 
 // SetPruning sets a pruning option on the multistore associated with the app
 func SetPruning(opts sdk.PruningOptions) func(*BaseApp) {
