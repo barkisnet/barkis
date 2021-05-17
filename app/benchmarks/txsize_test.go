@@ -12,7 +12,7 @@ import (
 	"github.com/barkisnet/barkis/x/bank"
 )
 
-// This will fail half the time with the second output being 173
+// This will fail half the time with the second output being 173.
 // This is due to secp256k1 signatures not being constant size.
 // nolint: vet
 func ExampleTxSendSize() {
