@@ -27,7 +27,7 @@ func (e errKeyNotFound) Error() string {
 	return fmt.Sprintf("Key %s not found", e.name)
 }
 
-// NewErrKeyNotFound returns a standardized error reflecting that the specified key doesn't exist
+// NewErrKeyNotFound returns a standardized error reflecting that the specified key doesn't exist.
 func NewErrKeyNotFound(name string) error {
 	return errKeyNotFound{
 		code: codeKeyNotFound,
