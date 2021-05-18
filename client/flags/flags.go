@@ -57,8 +57,8 @@ const (
 	FlagSkipConfirmation   = "yes"
 )
 
-// LineBreak can be included in a command list to provide a blank line
-// to help with readability
+// LineBreak can be included in a command list to provide a blank line to
+// help with readability
 var (
 	LineBreak  = &cobra.Command{Run: func(*cobra.Command, []string) {}}
 	GasFlagVar = GasSetting{Gas: DefaultGasLimit}
