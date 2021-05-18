@@ -8,6 +8,7 @@ import (
 	"github.com/barkisnet/barkis/client"
 )
 
+// test paginate
 func TestPaginate(t *testing.T) {
 	testCases := []struct {
 		name                           string
