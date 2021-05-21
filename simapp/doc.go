@@ -39,10 +39,10 @@ if a new message type is created and needs to be simulated, the new introduced
 PRNG call will change all subsequent operations.
 
 This may can often be problematic when testing fixes to simulation faults. One
-current solution to this is to use a params file as mentioned above. In the future
-the simulation suite is expected to support a series of PRNGs that can be used
-uniquely per module and simulation component so that they will not effect each
-others state execution outcome.
+current solution to this is to use a params file as mentioned above. In the 
+future the simulation suite is expected to support a series of PRNGs that can 
+be used uniquely per module and simulation component so that they will not 
+effect each others state execution outcome.
 
 Usage
 
