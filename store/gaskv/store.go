@@ -130,9 +130,9 @@ func (gi *gasIterator) Valid() bool {
 	return gi.parent.Valid()
 }
 
-// Next implements the Iterator interface. It seeks to the next key/value pair
-// in the iterator. It incurs a flat gas cost for seeking and a variable gas
-// cost based on the current value's length if the iterator is valid.
+// Next implements the Iterator interface. It seeks to the next key/value
+// pair in the iterator. It incurs a flat gas cost for seeking and a variable
+// gas cost based on the current value's length if the iterator is valid.
 func (gi *gasIterator) Next() {
 	if gi.Valid() {
 		gi.consumeSeekGas()
