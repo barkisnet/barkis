@@ -35,7 +35,7 @@ func TestBarkisCLIKeysAddMultisig(t *testing.T) {
 	f := InitFixtures(t)
 
 	// key names order does not matter
-	// add multiple msigkeys
+	// Add multiple msigkeys
 	f.KeysAdd("msig1", "--multisig-threshold=2",
 		fmt.Sprintf("--multisig=%s,%s", keyBar, keyBaz))
 	f.KeysAdd("msig2", "--multisig-threshold=2",
