@@ -8,7 +8,7 @@ import (
 )
 
 // Iterates over iterKVCache items.
-// if key is nil, means it was deleted.
+// If key is nil, means it was deleted.
 // Implements Iterator.
 type memIterator struct {
 	start, end []byte
