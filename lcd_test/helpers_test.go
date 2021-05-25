@@ -350,8 +350,8 @@ func doTransferWithGas(
 }
 
 // doTransferWithGasAccAuto is similar to doTransferWithGas except that it
-// automatically determines the account's number and sequence when generating the
-// tx.
+// automatically determines the account's number and sequence when generating
+// the tx.
 func doTransferWithGasAccAuto(
 	t *testing.T, port, seed, name, memo, pwd string, addr sdk.AccAddress,
 	gas string, gasAdjustment float64, simulate, broadcast bool, fees sdk.Coins,
