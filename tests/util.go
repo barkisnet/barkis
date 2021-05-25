@@ -18,8 +18,7 @@ import (
 	"github.com/barkisnet/barkis/codec"
 )
 
-// Wait for the next tendermint block from the Tendermint RPC
-// on localhost
+// Wait for the next tendermint block from the Tendermint RPC on localhost
 func WaitForNextHeightTM(port string) {
 	WaitForNextNBlocksTM(1, port)
 }
