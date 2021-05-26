@@ -22,7 +22,8 @@ func RegisterCrypto(cdc *Codec) {
 	cryptoamino.RegisterAmino(cdc)
 }
 
-// RegisterEvidences registers Tendermint evidence types with the provided codec.
+// RegisterEvidences registers Tendermint
+// evidence types with the provided codec.
 func RegisterEvidences(cdc *Codec) {
 	tmtypes.RegisterEvidences(cdc)
 }
