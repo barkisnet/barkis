@@ -40,7 +40,7 @@ import (
 	sdk "github.com/barkisnet/barkis/types"
 )
 
-//__________________________________________________________________________________________
+//==========================================================================================
 // AppModuleBasic is the standard form for basic non-dependant elements of an application module.
 type AppModuleBasic interface {
 	Name() string
