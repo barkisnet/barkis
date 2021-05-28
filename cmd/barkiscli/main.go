@@ -41,7 +41,7 @@ func main() {
 	config.Seal()
 
 	// TODO: setup keybase, viper object, etc. to be passed into the below
-	// functions and eliminate global vars, like we do with the cdc
+	// functions and eliminate global vars, like we do with the cdc.
 
 	rootCmd := &cobra.Command{
 		Use:   "barkiscli",
