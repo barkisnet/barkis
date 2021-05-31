@@ -43,7 +43,7 @@ func CreateTestInput(t *testing.T) (sdk.Context, crisis.Keeper, auth.AccountKeep
 	return ctx, crisisKeeper, accKeeper, distrKeeper
 }
 
-//____________________________________________________________________________
+//============================================================================
 
 func TestHandleMsgVerifyInvariantWithNotEnoughSenderCoins(t *testing.T) {
 	ctx, crisisKeeper, accKeeper, _ := CreateTestInput(t)
