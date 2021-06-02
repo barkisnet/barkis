@@ -9,8 +9,7 @@ import (
 
 // BroadcastTx broadcasts a transactions either synchronously or asynchronously
 // based on the context parameters. The result of the broadcast is parsed into
-// an intermediate structure which is logged if the context has a logger
-// defined.
+// an intermediate structure which is logged if the context has a logger defined.
 func (ctx CLIContext) BroadcastTx(txBytes []byte) (res sdk.TxResponse, err error) {
 	switch ctx.BroadcastMode {
 	case flags.BroadcastSync:
